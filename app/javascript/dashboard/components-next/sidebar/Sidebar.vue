@@ -37,7 +37,7 @@ const emit = defineEmits([
   'closeMobileSidebar',
 ]);
 
-const { accountScopedRoute, isOnChatwootCloud } = useAccount();
+const { accountScopedRoute, isOnStravoXCloud } = useAccount();
 const store = useStore();
 const searchShortcut = useKbd([`$mod`, 'k']);
 const { t } = useI18n();
@@ -96,7 +96,7 @@ provideSidebarContext({
 
 // Get clientX from mouse or touch event
 const getClientX = event =>
-  event.touches ? event.touches[0].clientX : event.clientX;
+  event.touches?.length ? event.touches[0].clientX : event.clientX;
 
 const onResizeStart = event => {
   isResizing.value = true;
@@ -221,6 +221,13 @@ const menuItems = computed(() => {
       },
     },
     {
+      name: 'Kanban',
+      label: t('SIDEBAR.KANBAN'),
+      icon: 'i-lucide-users',
+      to: accountScopedRoute('kanban_view'),
+      activeOn: ['kanban_view'],
+    },
+    {
       name: 'Conversation',
       label: t('SIDEBAR.CONVERSATIONS'),
       icon: 'i-lucide-message-circle',
@@ -301,6 +308,13 @@ const menuItems = computed(() => {
           })),
         },
       ],
+    },
+    {
+      name: 'Calendar',
+      label: t('SIDEBAR.CALENDAR'),
+      icon: 'i-lucide-calendar',
+      to: accountScopedRoute('calendar_view'),
+      activeOn: ['calendar_view'],
     },
     {
       name: 'Captain',
@@ -686,10 +700,10 @@ const menuItems = computed(() => {
       closeMobileSidebar,
       { ignore: ['#mobile-sidebar-launcher'] },
     ]"
-    class="bg-n-background flex flex-col text-sm pb-0.5 fixed top-0 ltr:left-0 rtl:right-0 h-full z-40 w-[200px] md:w-auto md:relative md:flex-shrink-0 md:ltr:translate-x-0 md:rtl:translate-x-0 ltr:border-r rtl:border-l border-n-weak"
+    class="group/sidebar bg-gradient-to-b from-n-slate-1 via-n-slate-1/95 to-n-slate-2/90 flex flex-col text-sm pb-0.5 fixed top-0 ltr:left-0 rtl:right-0 h-full z-40 w-[200px] md:w-auto md:relative md:flex-shrink-0 md:ltr:translate-x-0 md:rtl:translate-x-0 ltr:border-r rtl:border-l border-n-violet-7/10 backdrop-blur-xl"
     :class="[
       {
-        'shadow-lg md:shadow-none': isMobileSidebarOpen,
+        'shadow-lg shadow-n-violet-9/10 md:shadow-none': isMobileSidebarOpen,
         'ltr:-translate-x-full rtl:translate-x-full': !isMobileSidebarOpen,
         'transition-transform duration-200 ease-out md:transition-[width]':
           !isResizing,
@@ -699,47 +713,66 @@ const menuItems = computed(() => {
   >
     <section
       class="grid"
-      :class="isEffectivelyCollapsed ? 'mt-3 mb-6 gap-4' : 'mt-1 mb-4 gap-2'"
+      :class="isEffectivelyCollapsed ? 'mt-3 mb-4 gap-3' : 'mt-1.5 mb-3 gap-2.5'"
     >
       <div
         class="flex gap-2 items-center min-w-0"
         :class="{
           'justify-center px-1': isEffectivelyCollapsed,
-          'px-2': !isEffectivelyCollapsed,
+          'px-2.5': !isEffectivelyCollapsed,
         }"
       >
         <template v-if="isEffectivelyCollapsed">
-          <SidebarAccountSwitcher
-            is-collapsed
-            @show-create-account-modal="emit('showCreateAccountModal')"
-          />
+          <div class="flex flex-col items-center gap-2">
+            <SidebarAccountSwitcher
+              is-collapsed
+              @show-create-account-modal="emit('showCreateAccountModal')"
+            />
+            <!-- Expand button below logo when collapsed -->
+            <button
+              class="flex items-center justify-center size-7 rounded-lg text-n-slate-10 hover:text-n-violet-11 hover:bg-n-violet-4/30 transition-all duration-200 ease-out"
+              :title="'Expand sidebar'"
+              @click="snapToExpanded"
+            >
+              <span class="i-lucide-panel-left-open size-3.5" />
+            </button>
+          </div>
         </template>
         <template v-else>
-          <div class="grid flex-shrink-0 place-content-center size-6">
-            <Logo class="size-4" />
+          <div class="flex items-center gap-2.5 flex-grow min-w-0">
+            <div class="grid flex-shrink-0 place-content-center size-8 rounded-xl bg-gradient-to-br from-violet-500/15 to-indigo-500/15">
+              <Logo class="size-5" />
+            </div>
+            <SidebarAccountSwitcher
+              class="flex-grow -mx-1 min-w-0"
+              @show-create-account-modal="emit('showCreateAccountModal')"
+            />
           </div>
-          <div class="flex-shrink-0 w-px h-3 bg-n-strong" />
-          <SidebarAccountSwitcher
-            class="flex-grow -mx-1 min-w-0"
-            @show-create-account-modal="emit('showCreateAccountModal')"
-          />
+          <!-- Collapse toggle button -->
+          <button
+            class="flex-shrink-0 flex items-center justify-center size-7 rounded-lg text-n-slate-10 hover:text-n-slate-12 hover:bg-n-alpha-2 dark:hover:bg-n-slate-9/30 transition-all duration-200 ease-out opacity-0 group-hover/sidebar:opacity-100 focus:opacity-100"
+            :title="'Collapse sidebar'"
+            @click="snapToCollapsed"
+          >
+            <span class="i-lucide-panel-left-close size-4" />
+          </button>
         </template>
       </div>
       <div
         class="flex gap-2"
-        :class="isEffectivelyCollapsed ? 'flex-col items-center' : 'px-2'"
+        :class="isEffectivelyCollapsed ? 'flex-col items-center' : 'px-2.5'"
       >
         <RouterLink
           v-if="!isEffectivelyCollapsed"
           :to="{ name: 'search' }"
-          class="flex gap-2 items-center px-2 py-1 w-full h-7 rounded-lg outline outline-1 outline-n-weak bg-n-button-color transition-all duration-100 ease-out"
+          class="flex gap-2 items-center px-2.5 py-1.5 w-full h-8 rounded-xl outline outline-1 outline-n-violet-7/20 bg-n-solid-2/60 backdrop-blur-sm transition-all duration-200 ease-out hover:outline-n-violet-8/40 hover:bg-n-solid-3/80 hover:shadow-sm focus:outline-n-violet-9 focus:shadow-sm"
         >
-          <span class="flex-shrink-0 i-lucide-search size-4 text-n-slate-10" />
-          <span class="flex-grow text-start text-n-slate-10">
+          <span class="flex-shrink-0 i-lucide-search size-3.5 text-n-violet-11/70" />
+          <span class="flex-grow text-start text-n-slate-10 text-xs">
             {{ t('COMBOBOX.SEARCH_PLACEHOLDER') }}
           </span>
           <span
-            class="hidden tracking-wide pointer-events-none select-none text-n-slate-10"
+            class="hidden tracking-wide pointer-events-none select-none text-n-slate-10 text-xs"
           >
             {{ searchShortcut }}
           </span>
@@ -747,10 +780,10 @@ const menuItems = computed(() => {
         <RouterLink
           v-else
           :to="{ name: 'search' }"
-          class="flex items-center justify-center size-8 rounded-lg outline outline-1 outline-n-weak bg-n-button-color transition-all duration-100 ease-out hover:bg-n-alpha-2 dark:hover:bg-n-slate-9/30"
+          class="flex items-center justify-center size-9 rounded-xl outline outline-1 outline-n-weak/50 bg-n-button-color/80 transition-all duration-200 ease-out hover:bg-n-alpha-2 dark:hover:bg-n-slate-9/30 hover:shadow-sm"
           :title="t('COMBOBOX.SEARCH_PLACEHOLDER')"
         >
-          <span class="i-lucide-search size-4 text-n-slate-11" />
+          <span class="i-lucide-search size-3.5 text-n-slate-11" />
         </RouterLink>
         <ComposeConversation align-position="right" @close="onComposeClose">
           <template #trigger="{ toggle, isOpen }">
@@ -758,11 +791,11 @@ const menuItems = computed(() => {
               icon="i-lucide-pen-line"
               color="slate"
               size="sm"
-              class="dark:hover:!bg-n-slate-9/30"
+              class="dark:hover:!bg-n-slate-9/30 !rounded-xl"
               :class="[
                 isEffectivelyCollapsed
-                  ? '!size-8 !outline-n-weak !text-n-slate-11'
-                  : '!h-7 !outline-n-weak !text-n-slate-11',
+                  ? '!size-9 !outline-n-weak/50 !text-n-slate-11'
+                  : '!h-8 !outline-n-weak/50 !text-n-slate-11',
                 { '!bg-n-alpha-2 dark:!bg-n-slate-9/30': isOpen },
               ]"
               @click="onComposeOpen(toggle)"
@@ -772,11 +805,11 @@ const menuItems = computed(() => {
       </div>
     </section>
     <nav
-      class="grid overflow-y-scroll flex-grow gap-2 pb-5 no-scrollbar min-w-0"
+      class="grid overflow-y-scroll flex-grow gap-1.5 pb-5 no-scrollbar min-w-0"
       :class="isEffectivelyCollapsed ? 'px-1' : 'px-2'"
     >
       <ul
-        class="flex flex-col gap-1 m-0 list-none min-w-0"
+        class="flex flex-col gap-0.5 m-0 list-none min-w-0"
         :class="{ 'items-center': isEffectivelyCollapsed }"
       >
         <SidebarGroup
@@ -790,24 +823,24 @@ const menuItems = computed(() => {
       class="flex relative flex-col flex-shrink-0 gap-1 justify-between items-center"
     >
       <div
-        class="pointer-events-none absolute inset-x-0 -top-[1.938rem] h-8 bg-gradient-to-t from-n-background to-transparent"
+        class="pointer-events-none absolute inset-x-0 -top-[2.5rem] h-10 bg-gradient-to-t from-n-slate-2/90 to-transparent"
       />
       <SidebarChangelogCard
         v-if="
-          isOnChatwootCloud &&
+          isOnStravoXCloud &&
           !isACustomBrandedInstance &&
           !isEffectivelyCollapsed
         "
       />
       <SidebarChangelogButton
         v-if="
-          isOnChatwootCloud &&
+          isOnStravoXCloud &&
           !isACustomBrandedInstance &&
           isEffectivelyCollapsed
         "
       />
       <div
-        class="p-1 flex-shrink-0 flex w-full z-50 gap-2 items-center border-t border-n-weak shadow-[0px_-2px_4px_0px_rgba(27,28,29,0.02)]"
+        class="p-1.5 flex-shrink-0 flex w-full z-50 gap-2 items-center border-t border-n-violet-7/10 bg-n-solid-1/40 backdrop-blur-md"
         :class="isEffectivelyCollapsed ? 'justify-center' : 'justify-between'"
       >
         <SidebarProfileMenu
@@ -818,14 +851,14 @@ const menuItems = computed(() => {
     </section>
     <!-- Resize Handle (desktop only) -->
     <div
-      class="hidden md:block absolute top-0 h-full w-1 cursor-col-resize z-40 ltr:right-0 rtl:left-0 group"
+      class="hidden md:block absolute top-0 h-full w-1.5 cursor-col-resize z-40 ltr:right-0 rtl:left-0 group/resize"
       @mousedown="onResizeStart"
       @touchstart="onResizeStart"
       @dblclick="onResizeHandleDoubleClick"
     >
       <div
-        class="absolute top-0 h-full w-px ltr:right-0 rtl:left-0 bg-transparent group-hover:bg-n-brand transition-colors"
-        :class="{ 'bg-n-brand': isResizing }"
+        class="absolute top-0 h-full w-0.5 ltr:right-0 rtl:left-0 bg-transparent group-hover/resize:bg-violet-500/50 transition-all duration-200 rounded-full"
+        :class="{ '!bg-violet-500/70 !w-1': isResizing }"
       />
     </div>
   </aside>

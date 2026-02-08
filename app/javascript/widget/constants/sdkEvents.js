@@ -1,7 +1,7 @@
-export const CHATWOOT_ERROR = 'chatwoot:error';
-export const CHATWOOT_ON_MESSAGE = 'chatwoot:on-message';
-export const CHATWOOT_ON_START_CONVERSATION = 'chatwoot:on-start-conversation';
-export const CHATWOOT_POSTBACK = 'chatwoot:postback';
-export const CHATWOOT_READY = 'chatwoot:ready';
-export const CHATWOOT_OPENED = 'chatwoot:opened';
-export const CHATWOOT_CLOSED = 'chatwoot:closed';
+export const STRAVOX_ERROR = 'stravox:error';
+export const STRAVOX_ON_MESSAGE = 'stravox:on-message';
+export const STRAVOX_ON_START_CONVERSATION = 'stravox:on-start-conversation';
+export const STRAVOX_POSTBACK = 'stravox:postback';
+export const STRAVOX_READY = 'stravox:ready';
+export const STRAVOX_OPENED = 'stravox:opened';
+export const STRAVOX_CLOSED = 'stravox:closed';

@@ -44,6 +44,6 @@ module AccountEmailRateLimitable
   end
 
   def default_limit
-    ChatwootApp.max_limit.to_i
+    ::StravoXApp.max_limit.to_i
   end
 end

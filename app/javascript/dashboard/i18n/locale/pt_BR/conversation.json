@@ -186,6 +186,7 @@
       "MSG_INPUT": "Shift + enter para nova linha. Digite '/' para selecionar uma Resposta Pronta.",
       "PRIVATE_MSG_INPUT": "A mensagem será visível apenas para agentes",
       "MESSAGE_SIGNATURE_NOT_CONFIGURED": "A assinatura da mensagem não está configurada. Por favor, configure-a nas configurações do perfil.",
+      "COPILOT_MSG_INPUT": "Dê comandos adicionais ao copiloto, ou pergunte qualquer coisa... Pressione enter para enviar",
       "CLICK_HERE": "Clique aqui para atualizar",
       "WHATSAPP_TEMPLATES": "Templates do Whatsapp"
     },
@@ -205,7 +206,7 @@
       "DRAG_DROP": "Arraste e solte aqui para anexar",
       "START_AUDIO_RECORDING": "Iniciar gravação de áudio",
       "STOP_AUDIO_RECORDING": "Parar gravação de áudio",
-      "": "",
+      "COPILOT_THINKING": "Copiloto está pensando",
       "EMAIL_HEAD": {
         "TO": "Para",
         "ADD_BCC": "Adicionar cco",
@@ -250,6 +251,9 @@
     "MESSAGE_ERROR": "Não foi possível enviar esta mensagem, por favor, tente novamente mais tarde",
     "SENT_BY": "Enviado por:",
     "BOT": "Robôs",
+    "FILE_TYPE_NOT_SUPPORTED": "Este tipo de arquivo {fileName} não é suportado nesta conversa",
+    "NATIVE_APP": "Aplicativo nativo",
+    "NATIVE_APP_ADVISORY": "Esta mensagem foi enviada pelo aplicativo nativo. Responda pelo StravoX para manter a janela de mensagens.",
     "SEND_FAILED": "Não foi possível enviar a mensagem! Tente novamente",
     "TRY_AGAIN": "tentar novamente",
     "ASSIGNMENT": {
@@ -274,7 +278,34 @@
     },
     "SIDEBAR": {
       "CONTACT": "Contatos",
+      "KANBAN": "Pipeline",
+      "CALENDAR": "Calendário",
       "COPILOT": "Copiloto"
+    },
+    "KANBAN": {
+      "TITLE": "Quadro Kanban",
+      "STATUS_OPEN": "Aberto",
+      "STATUS_PENDING": "Pendente",
+      "STATUS_SNOOZED": "Adiado",
+      "STATUS_RESOLVED": "Resolvido",
+      "WORK_IN_PROGRESS": "Em desenvolvimento...",
+      "EMPTY_COLUMN": "Nenhuma conversa",
+      "DRAG_HINT": "Arraste conversas aqui para mudar o status",
+      "LOADING": "Carregando conversas...",
+      "FILTER_MINE": "Minhas",
+      "FILTER_UNASSIGNED": "Sem atribuir",
+      "FILTER_ALL": "Todas",
+      "SORT_LATEST": "Atividade recente",
+      "SORT_CREATED": "Data de criacao",
+      "SORT_PRIORITY": "Prioridade",
+      "SNOOZE_TITLE": "Adiar conversa",
+      "SNOOZE_DESCRIPTION": "Escolha por quanto tempo adiar esta conversa.",
+      "SNOOZE_1H": "Por 1 hora",
+      "SNOOZE_TOMORROW": "Ate amanha",
+      "SNOOZE_NEXT_WEEK": "Ate a proxima semana",
+      "SNOOZE_NEXT_MONTH": "Ate o proximo mes",
+      "SNOOZE_CONFIRM": "Adiar",
+      "CANCEL": "Cancelar"
     },
     "VOICE_WIDGET": {
       "INCOMING_CALL": "Chamada recebida",
@@ -352,22 +383,22 @@
       "SHOPIFY_ORDERS": "Shopify Orders"
     },
     "SHOPIFY": {
-      "ORDER_ID": "Order #{id}",
-      "ERROR": "Error loading orders",
-      "NO_SHOPIFY_ORDERS": "No orders found",
+      "ORDER_ID": "Pedido #{id}",
+      "ERROR": "Erro ao carregar pedidos",
+      "NO_SHOPIFY_ORDERS": "Nenhum pedido encontrado",
       "FINANCIAL_STATUS": {
-        "PENDING": "Pendentes",
-        "AUTHORIZED": "Authorized",
-        "PARTIALLY_PAID": "Partially Paid",
-        "PAID": "Paid",
-        "PARTIALLY_REFUNDED": "Partially Refunded",
-        "REFUNDED": "Refunded",
-        "VOIDED": "Voided"
+        "PENDING": "Pendente",
+        "AUTHORIZED": "Autorizado",
+        "PARTIALLY_PAID": "Parcialmente pago",
+        "PAID": "Pago",
+        "PARTIALLY_REFUNDED": "Parcialmente reembolsado",
+        "REFUNDED": "Reembolsado",
+        "VOIDED": "Cancelado"
       },
       "FULFILLMENT_STATUS": {
-        "FULFILLED": "Fulfilled",
-        "PARTIALLY_FULFILLED": "Partially Fulfilled",
-        "UNFULFILLED": "Unfulfilled"
+        "FULFILLED": "Entregue",
+        "PARTIALLY_FULFILLED": "Parcialmente entregue",
+        "UNFULFILLED": "Não entregue"
       }
     }
   },

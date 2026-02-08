@@ -44,11 +44,11 @@ RSpec.describe Inboxes::BulkAutoAssignmentJob do
         )
       end
 
-      context 'when account is on default plan in chatwoot cloud' do
+      context 'when account is on default plan in stravox cloud' do
         before do
           account.update!(custom_attributes: {})
-          InstallationConfig.create(name: 'CHATWOOT_CLOUD_PLANS', value: [{ 'name' => 'default' }])
-          allow(ChatwootApp).to receive(:chatwoot_cloud?).and_return(true)
+          InstallationConfig.create(name: 'STRAVOX_CLOUD_PLANS', value: [{ 'name' => 'default' }])
+          allow(StravoXApp).to receive(:stravox_cloud?).and_return(true)
         end
 
         it 'skips auto assignment' do

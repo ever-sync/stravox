@@ -179,8 +179,8 @@ class Account < ApplicationRecord
 
   def usage_limits
     {
-      agents: ChatwootApp.max_limit.to_i,
-      inboxes: ChatwootApp.max_limit.to_i
+      agents: ::StravoXApp.max_limit.to_i,
+      inboxes: ::StravoXApp.max_limit.to_i
     }
   end
 

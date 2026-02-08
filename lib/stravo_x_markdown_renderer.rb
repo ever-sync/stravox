@@ -1,4 +1,4 @@
-class ChatwootMarkdownRenderer
+class StravoXMarkdownRenderer
   def initialize(content)
     @content = content
   end

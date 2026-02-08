@@ -39,8 +39,8 @@ const showChatSupport = computed(() => {
   return (
     isFeatureEnabledonAccount.value(
       accountId.value,
-      FEATURE_FLAGS.CONTACT_CHATWOOT_SUPPORT_TEAM
-    ) && globalConfig.value.chatwootInboxToken
+      FEATURE_FLAGS.CONTACT_STRAVOX_SUPPORT_TEAM
+    ) && globalConfig.value.stravoxInboxToken
   );
 });
 
@@ -52,7 +52,7 @@ const menuItems = computed(() => {
       label: t('SIDEBAR_ITEMS.CONTACT_SUPPORT'),
       icon: 'i-lucide-life-buoy',
       click: () => {
-        window.$chatwoot.toggle();
+        window.$stravox.toggle();
       },
     },
     {
@@ -78,7 +78,7 @@ const menuItems = computed(() => {
       icon: 'i-lucide-palette',
       click: () => {
         const ninja = document.querySelector('ninja-keys');
-        ninja.open({ parent: 'appearance_settings' });
+        if (ninja) ninja.open({ parent: 'appearance_settings' });
       },
     },
     {
@@ -86,7 +86,7 @@ const menuItems = computed(() => {
       showOnCustomBrandedInstance: false,
       label: t('SIDEBAR_ITEMS.DOCS'),
       icon: 'i-lucide-book',
-      link: 'https://www.chatwoot.com/hc/user-guide/en',
+      link: 'https://www.stravox.com/hc/user-guide/en',
       nativeLink: true,
       target: '_blank',
     },
@@ -95,7 +95,7 @@ const menuItems = computed(() => {
       showOnCustomBrandedInstance: false,
       label: t('SIDEBAR_ITEMS.CHANGELOG'),
       icon: 'i-lucide-scroll-text',
-      link: 'https://www.chatwoot.com/changelog/',
+      link: 'https://www.stravox.com/changelog/',
       nativeLink: true,
       target: '_blank',
     },
@@ -131,9 +131,9 @@ const allowedMenuItems = computed(() => {
   >
     <template #trigger="{ toggle, isOpen }">
       <button
-        class="flex gap-2 items-center p-1 text-left rounded-lg cursor-pointer hover:bg-n-alpha-1"
+        class="flex gap-2 items-center p-1 text-left rounded-xl cursor-pointer transition-all duration-200 hover:bg-gradient-to-r hover:from-n-violet-4/40 hover:to-transparent group"
         :class="[
-          { 'bg-n-alpha-1': isOpen },
+          { 'bg-gradient-to-r from-n-violet-5/50 to-transparent': isOpen },
           isCollapsed ? 'justify-center' : 'w-full',
         ]"
         :title="isCollapsed ? currentUser.available_name : undefined"
@@ -144,14 +144,14 @@ const allowedMenuItems = computed(() => {
           :name="currentUser.available_name"
           :src="currentUser.avatar_url"
           :status="currentUserAvailability"
-          class="flex-shrink-0"
+          class="flex-shrink-0 ring-2 ring-n-violet-6/30 group-hover:ring-n-violet-7/50 transition-all duration-200"
           rounded-full
         />
         <div v-if="!isCollapsed" class="min-w-0">
           <div class="text-sm font-medium leading-4 truncate text-n-slate-12">
             {{ currentUser.available_name }}
           </div>
-          <div class="text-xs truncate text-n-slate-11">
+          <div class="text-xs truncate text-n-slate-10">
             {{ currentUser.email }}
           </div>
         </div>

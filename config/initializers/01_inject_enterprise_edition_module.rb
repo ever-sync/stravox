@@ -19,6 +19,11 @@
 ########
 
 require 'active_support/inflector'
+require 'stravo_x_app'
+require 'stravo_x_hub'
+require 'stravo_x_captcha'
+require 'stravo_x_exception_tracker'
+require 'stravo_x_markdown_renderer'
 
 module InjectEnterpriseEditionModule
   def prepend_mod_with(constant_name, namespace: Object, with_descendants: false)
@@ -68,7 +73,7 @@ module InjectEnterpriseEditionModule
   end
 
   def each_extension_for(constant_name, namespace)
-    ChatwootApp.extensions.each do |extension_name|
+    ::StravoXApp.extensions.each do |extension_name|
       extension_namespace =
         const_get_maybe_false(namespace, extension_name.camelize)
 

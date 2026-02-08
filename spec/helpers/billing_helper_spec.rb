@@ -7,7 +7,7 @@ RSpec.describe BillingHelper do
 
     before do
       create(:installation_config, {
-               name: 'CHATWOOT_CLOUD_PLANS',
+               name: 'STRAVOX_CLOUD_PLANS',
                value: [
                  {
                    'name' => 'Hacker',

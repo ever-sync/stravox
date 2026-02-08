@@ -174,7 +174,7 @@ const handleCollapsedClick = () => {
   }
 };
 
-const toggleTrigger = () => {
+const toggleTrigger = async () => {
   if (
     hasAccessibleChildren.value &&
     !isExpanded.value &&
@@ -182,7 +182,7 @@ const toggleTrigger = () => {
   ) {
     // if not already expanded, navigate to the first child
     const firstItem = accessibleItems.value[0];
-    router.push(firstItem.to);
+    await router.push(firstItem.to);
   }
   setExpandedItem(props.name);
 };
@@ -233,10 +233,10 @@ watch(
           ref="triggerRef"
           :to="to && !hasChildren ? to : undefined"
           type="button"
-          class="flex items-center justify-center size-10 rounded-lg"
+          class="flex items-center justify-center size-10 rounded-xl transition-all duration-200"
           :class="{
-            'text-n-slate-12 bg-n-alpha-2': isActive || hasActiveChild,
-            'text-n-slate-11 hover:bg-n-alpha-2': !isActive && !hasActiveChild,
+            'bg-gradient-to-br from-n-violet-7 to-n-iris-8 text-white shadow-lg shadow-n-violet-9/40': isActive || hasActiveChild,
+            'text-n-slate-11 hover:bg-n-violet-4/50 hover:text-n-violet-11 bg-n-violet-3/30': !isActive && !hasActiveChild,
           }"
           :title="label"
           @click="hasChildren ? handleCollapsedClick() : undefined"
@@ -305,6 +305,7 @@ watch(
   width: 0.125rem;
   /* 0.5px */
   height: 100%;
+  background: linear-gradient(180deg, rgba(135, 105, 230, 0.3) 0%, rgba(135, 105, 230, 0.1) 100%);
 }
 
 .sidebar-group-children .child-item:first-child::before {
@@ -337,6 +338,7 @@ watch(
   border-top-width: 0px;
   border-radius: 0 0 0 4px;
   left: 0;
+  border-color: rgba(135, 105, 230, 0.3);
 }
 
 #app[dir='rtl'] .sidebar-group-children > .child-item:last-child::after,

@@ -1,6 +1,6 @@
 {
   "LOGIN": {
-    "TITLE": "Entrar no Chatwoot",
+    "TITLE": "Entrar no StravoX",
     "EMAIL": {
       "LABEL": "e-mail",
       "PLACEHOLDER": "nome{'@'}empresa.com.br",
@@ -22,6 +22,13 @@
     },
     "FORGOT_PASSWORD": "Esqueceu-se da sua senha?",
     "CREATE_NEW_ACCOUNT": "Criar nova conta",
+    "SIGNUP_QUESTION": "Não tem uma conta?",
+    "SUBTITLE": "Acesse seu painel com chat, CRM, automação e IA em um só lugar.",
+    "TESTIMONIAL": {
+      "QUOTE": "Organizou nosso WhatsApp, CRM e automações. Hoje cada conversa vira uma oportunidade real.",
+      "AUTHOR": "Ana Ribeiro",
+      "ROLE": "Head de Vendas, Grupo Lumina"
+    },
     "SUBMIT": "Entrar",
     "SAML": {
       "LABEL": "Login via SSO",

@@ -254,7 +254,7 @@
     "SENT_BY": "Sent by:",
     "BOT": "Bot",
     "NATIVE_APP": "Native app",
-    "NATIVE_APP_ADVISORY": "This message was sent from the native app. Reply from Chatwoot to maintain the message window.",
+    "NATIVE_APP_ADVISORY": "This message was sent from the native app. Reply from StravoX to maintain the message window.",
     "SEND_FAILED": "Couldn't send message! Try again",
     "TRY_AGAIN": "retry",
     "ASSIGNMENT": {
@@ -279,7 +279,34 @@
     },
     "SIDEBAR": {
       "CONTACT": "Contact",
-      "COPILOT": "Copilot"
+      "COPILOT": "Copilot",
+      "KANBAN": "Pipeline",
+      "CALENDAR": "Calendar"
+    },
+    "KANBAN": {
+      "TITLE": "Kanban Board",
+      "STATUS_OPEN": "Open",
+      "STATUS_PENDING": "Pending",
+      "STATUS_SNOOZED": "Snoozed",
+      "STATUS_RESOLVED": "Resolved",
+      "WORK_IN_PROGRESS": "Work in progress...",
+      "EMPTY_COLUMN": "No conversations",
+      "DRAG_HINT": "Drag conversations here to change status",
+      "LOADING": "Loading conversations...",
+      "FILTER_MINE": "Mine",
+      "FILTER_UNASSIGNED": "Unassigned",
+      "FILTER_ALL": "All",
+      "SORT_LATEST": "Latest activity",
+      "SORT_CREATED": "Created date",
+      "SORT_PRIORITY": "Priority",
+      "SNOOZE_TITLE": "Snooze conversation",
+      "SNOOZE_DESCRIPTION": "Choose how long to snooze this conversation.",
+      "SNOOZE_1H": "For 1 hour",
+      "SNOOZE_TOMORROW": "Until tomorrow",
+      "SNOOZE_NEXT_WEEK": "Until next week",
+      "SNOOZE_NEXT_MONTH": "Until next month",
+      "SNOOZE_CONFIRM": "Snooze",
+      "CANCEL": "Cancel"
     },
     "VOICE_WIDGET": {
       "INCOMING_CALL": "Incoming call",

@@ -146,7 +146,7 @@ const onCardClick = e => {
   if (e.metaKey || e.ctrlKey) {
     e.preventDefault();
     window.open(
-      `${window.chatwootConfig.hostURL}${path}`,
+      `${window.stravoxConfig.hostURL}${path}`,
       '_blank',
       'noopener,noreferrer'
     );
@@ -234,10 +234,10 @@ const deleteConversation = () => {
 
 <template>
   <div
-    class="relative flex items-start flex-grow-0 flex-shrink-0 w-auto max-w-full py-0 border-t-0 border-b-0 border-l-0 border-r-0 border-transparent border-solid cursor-pointer conversation hover:bg-n-alpha-1 dark:hover:bg-n-alpha-3 group"
+    class="relative flex items-start flex-grow-0 flex-shrink-0 w-auto max-w-full py-0 border-t-0 border-b-0 border-l-0 border-r-0 border-transparent border-solid cursor-pointer conversation hover:bg-gradient-to-r hover:from-n-violet-3/30 hover:via-n-violet-4/20 hover:to-transparent transition-all duration-200 group"
     :class="{
-      'active animate-card-select bg-n-background border-n-weak': isActiveChat,
-      'bg-n-slate-2': selected,
+      'active animate-card-select bg-gradient-to-r from-n-violet-5/40 via-n-violet-4/30 to-transparent border-l-2 !border-l-n-violet-9 shadow-[inset_0_0_0_1px_rgba(135,105,230,0.15)]': isActiveChat,
+      'bg-n-violet-3/20': selected,
       'px-0': compact,
       'px-3': !compact,
     }"
@@ -278,7 +278,7 @@ const deleteConversation = () => {
       </Avatar>
     </div>
     <div
-      class="px-0 py-3 border-b group-hover:border-transparent flex-1 border-n-slate-3 min-w-0"
+      class="px-0 py-3 border-b group-hover:border-transparent flex-1 border-n-violet-6/10 min-w-0"
     >
       <div
         v-if="showMetaSection"
@@ -351,7 +351,7 @@ const deleteConversation = () => {
           />
         </span>
         <span
-          class="shadow-lg rounded-full text-xxs font-semibold h-4 leading-4 ltr:ml-auto rtl:mr-auto mt-1 min-w-[1rem] px-1 py-0 text-center text-white bg-n-teal-9"
+          class="shadow-lg shadow-n-teal-9/30 rounded-full text-xxs font-semibold h-4 leading-4 ltr:ml-auto rtl:mr-auto mt-1 min-w-[1rem] px-1 py-0 text-center text-white bg-gradient-to-r from-n-teal-9 to-n-teal-8"
           :class="hasUnread ? 'block' : 'hidden'"
         >
           {{ unreadCount > 9 ? '9+' : unreadCount }}

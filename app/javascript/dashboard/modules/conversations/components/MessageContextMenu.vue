@@ -85,7 +85,7 @@ export default {
   methods: {
     async copyLinkToMessage() {
       const fullConversationURL =
-        window.chatwootConfig.hostURL +
+        window.stravoxConfig.hostURL +
         frontendURL(
           conversationUrl({
             id: this.conversationId,

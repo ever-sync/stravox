@@ -44,6 +44,44 @@ if (isLibraryMode) {
 
 export default defineConfig({
   plugins: plugins,
+  // Performance optimizations for faster development
+  server: {
+    // Pre-warm critical files for faster initial load
+    warmup: {
+      clientFiles: [
+        './app/javascript/dashboard/App.vue',
+        './app/javascript/dashboard/components-next/sidebar/Sidebar.vue',
+        './app/javascript/dashboard/components/ChatList.vue',
+      ],
+    },
+    // Watch options - enable polling for Docker/WSL compatibility
+    watch: {
+      usePolling: process.env.VITE_USE_POLLING === 'true',
+      interval: 500,
+    },
+    // Increase connection limit for faster parallel requests
+    hmr: {
+      overlay: true,
+    },
+  },
+  // Optimize dependency pre-bundling
+  optimizeDeps: {
+    // Include frequently used deps for faster startup
+    include: [
+      'vue',
+      'vue-router',
+      'pinia',
+      'vue-i18n',
+      '@vueuse/core',
+      'axios',
+    ],
+    // Exclude large deps that rarely change
+    exclude: ['@iconify/vue'],
+    // Enable persistent caching
+    force: false,
+  },
+  // Enable filesystem caching for faster rebuilds
+  cacheDir: 'node_modules/.vite',
   build: {
     rollupOptions: {
       output: {
