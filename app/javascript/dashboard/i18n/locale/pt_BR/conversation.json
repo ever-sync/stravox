@@ -305,7 +305,36 @@
       "SNOOZE_NEXT_WEEK": "Ate a proxima semana",
       "SNOOZE_NEXT_MONTH": "Ate o proximo mes",
       "SNOOZE_CONFIRM": "Adiar",
-      "CANCEL": "Cancelar"
+      "CANCEL": "Cancelar",
+      "SEARCH_PLACEHOLDER": "Buscar conversas...",
+      "FILTER_INBOX": "Todas as caixas",
+      "SELECTED_COUNT": "{count} selecionados",
+      "BATCH_ASSIGN": "Atribuir",
+      "BATCH_STATUS": "Mudar status",
+      "BATCH_LABEL": "Adicionar label"
+    },
+    "CALENDAR": {
+      "TITLE": "Calendário",
+      "TODAY": "Hoje",
+      "MONTH": "Mês",
+      "WEEK": "Semana",
+      "DAY": "Dia",
+      "NO_EVENTS": "Nenhuma conversa neste dia",
+      "SNOOZED_UNTIL": "Adiado até {date}"
+    },
+    "DASHBOARD": {
+      "TITLE": "Painel",
+      "OPEN_CONVERSATIONS": "Conversas abertas",
+      "AVG_RESPONSE_TIME": "Tempo médio de resposta",
+      "RESOLVED_TODAY": "Resolvidas hoje",
+      "CSAT_SCORE": "Nota CSAT",
+      "CONVERSATIONS_CHART": "Conversas (últimos 7 dias)",
+      "AGENT_PERFORMANCE": "Performance dos agentes",
+      "BY_INBOX": "Por caixa de entrada",
+      "NO_DATA": "Sem dados disponíveis",
+      "AGENT": "Agente",
+      "ACTIVE_CHATS": "Chats ativos",
+      "RESPONSE_TIME": "Tempo de resposta"
     },
     "VOICE_WIDGET": {
       "INCOMING_CALL": "Chamada recebida",

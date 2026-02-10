@@ -17,6 +17,8 @@ const store = useStore();
 // --- Reactive state ---
 const assigneeTab = ref(ASSIGNEE_TYPE.ME);
 const sortKey = ref(SORT_BY_TYPE.LAST_ACTIVITY_AT_DESC);
+const searchQuery = ref('');
+const selectedInboxId = ref('');
 const loading = ref(false);
 
 // Context menu state
@@ -31,6 +33,7 @@ const pendingSnoozeConversation = ref(null);
 // --- Store getters ---
 const allConversations = useMapGetter('getAllConversations');
 const currentUser = useMapGetter('getCurrentUser');
+const inboxes = useMapGetter('inboxes/getInboxes');
 
 // --- Column definitions ---
 const columns = [
@@ -56,18 +59,39 @@ const columns = [
   },
 ];
 
-// --- Filtered conversations (by assignee) ---
+// --- Filtered conversations (by assignee, inbox, search) ---
 const filteredConversations = computed(() => {
-  const all = allConversations.value || [];
+  let result = allConversations.value || [];
+
+  // Filter by assignee
   if (assigneeTab.value === ASSIGNEE_TYPE.ME) {
     const userId = currentUser.value?.id;
-    return all.filter(c => c.meta?.assignee?.id === userId);
+    result = result.filter(c => c.meta?.assignee?.id === userId);
+  } else if (assigneeTab.value === ASSIGNEE_TYPE.UNASSIGNED) {
+    result = result.filter(c => !c.meta?.assignee);
   }
-  if (assigneeTab.value === ASSIGNEE_TYPE.UNASSIGNED) {
-    return all.filter(c => !c.meta?.assignee);
+
+  // Filter by inbox
+  if (selectedInboxId.value) {
+    const inboxId = Number(selectedInboxId.value);
+    result = result.filter(c => c.inbox_id === inboxId);
   }
-  return all;
+
+  // Filter by search query
+  if (searchQuery.value.trim()) {
+    const query = searchQuery.value.toLowerCase().trim();
+    result = result.filter(c => {
+      const contactName = (c.meta?.sender?.name || '').toLowerCase();
+      const id = String(c.id);
+      const lastMsg = (c.last_non_activity_message?.content || '').toLowerCase();
+      return contactName.includes(query) || id.includes(query) || lastMsg.includes(query);
+    });
+  }
+
+  return result;
 });
+
+const totalFilteredCount = computed(() => filteredConversations.value.length);
 
 // --- Local mutable arrays per column (vuedraggable requires mutability) ---
 const openConversations = ref([]);
@@ -241,13 +265,21 @@ onMounted(async () => {
   }
 });
 
-// --- Assignee / Sort change handlers ---
+// --- Assignee / Sort / Search / Inbox change handlers ---
 const onChangeAssignee = key => {
   assigneeTab.value = key;
 };
 
 const onChangeSort = key => {
   sortKey.value = key;
+};
+
+const onUpdateSearch = query => {
+  searchQuery.value = query;
+};
+
+const onChangeInbox = inboxId => {
+  selectedInboxId.value = inboxId;
 };
 </script>
 
@@ -256,8 +288,14 @@ const onChangeSort = key => {
     <KanbanHeader
       :active-assignee-tab="assigneeTab"
       :active-sort="sortKey"
+      :search-query="searchQuery"
+      :selected-inbox-id="selectedInboxId"
+      :inboxes="inboxes"
+      :total-count="totalFilteredCount"
       @change-assignee="onChangeAssignee"
       @change-sort="onChangeSort"
+      @update-search="onUpdateSearch"
+      @change-inbox="onChangeInbox"
     />
 
     <main class="flex-grow overflow-x-auto overflow-y-hidden">

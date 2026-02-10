@@ -380,7 +380,8 @@
     "DOCS": "Ler documentos",
     "SECURITY": "Segurança",
     "KANBAN": "Pipeline",
-    "CALENDAR": "Calendário"
+    "CALENDAR": "Calendário",
+    "DASHBOARD": "Painel"
   },
   "BILLING_SETTINGS": {
     "TITLE": "Cobrança",

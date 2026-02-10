@@ -383,7 +383,8 @@
     "CAPTAIN_AI": "Captain",
     "CONVERSATION_WORKFLOW": "Conversation Workflow",
     "KANBAN": "Pipeline",
-    "CALENDAR": "Calendar"
+    "CALENDAR": "Calendar",
+    "DASHBOARD": "Dashboard"
   },
   "CAPTAIN_SETTINGS": {
     "TITLE": "Captain Settings",
