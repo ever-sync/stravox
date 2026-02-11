@@ -72,6 +72,9 @@ export function usePolicy() {
     if (!checkPermissions(perms)) return false;
     if (!checkInstallationType(installation)) return false;
 
+    return true;
+
+    /*
     if (isACustomBrandedInstance.value) {
       // if this is a custom branded instance, we just use the feature flag as a reference
       return isFeatureFlagEnabled(flag);
@@ -102,9 +105,12 @@ export function usePolicy() {
 
     // default to true
     return true;
+    */
   };
 
   const shouldShowPaywall = featureFlag => {
+    return false;
+    /*
     const flag = unref(featureFlag);
     if (!flag) return false;
 
@@ -124,6 +130,7 @@ export function usePolicy() {
     }
 
     return false;
+    */
   };
 
   return {

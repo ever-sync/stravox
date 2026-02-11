@@ -4,18 +4,12 @@ set -euo pipefail
 # Script to build and push the custom Chatwoot image to GHCR (or Docker Hub)
 # Edit GHCR_USER and GHCR_PAT environment variables or pass them before running.
 
-REPO_URL="https://github.com/ever-sync/stravox.git"
-REPO_DIR="stravox"
+# REPO_URL="https://github.com/ever-sync/stravox.git"
+# REPO_DIR="stravox"
 IMAGE="ghcr.io/ever-sync/stravox:latest"
 DOCKERFILE_PATH="docker/Dockerfile"
 
-if [ ! -d "$REPO_DIR" ]; then
-  git clone "$REPO_URL" "$REPO_DIR"
-fi
-
-cd "$REPO_DIR"
-
-# Build
+# Build directly from the current directory (local improvements)
 docker build -t "$IMAGE" -f "$DOCKERFILE_PATH" .
 
 # Push to GHCR: set GHCR_USER and GHCR_PAT in environment
