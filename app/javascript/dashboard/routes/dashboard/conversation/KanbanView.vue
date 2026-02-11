@@ -3,8 +3,13 @@ import { ref, computed, watch, onMounted, provide } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore, useMapGetter } from 'dashboard/composables/store';
 import wootConstants from 'dashboard/constants/globals';
+import { emitter } from 'shared/helpers/mitt';
+import { BUS_EVENTS } from 'shared/constants/busEvents';
 import KanbanHeader from './kanban/KanbanHeader.vue';
 import KanbanColumn from './kanban/KanbanColumn.vue';
+import OutcomeDropZones from './kanban/OutcomeDropZones.vue';
+import OutcomeSummaryBar from './kanban/OutcomeSummaryBar.vue';
+import PipelineConfigModal from './kanban/PipelineConfigModal.vue';
 import ContextMenu from 'dashboard/components/ui/ContextMenu.vue';
 import ConversationContextMenu from 'dashboard/components/widgets/conversation/contextMenu/Index.vue';
 import SnoozeModal from './kanban/SnoozeModal.vue';
@@ -14,10 +19,60 @@ const { ASSIGNEE_TYPE, SORT_BY_TYPE, STATUS_TYPE } = wootConstants;
 const { t } = useI18n();
 const store = useStore();
 
+// --- Pipeline config persistence ---
+const accountId = useMapGetter('getCurrentAccountId');
+
+const STORAGE_KEY = computed(() => `cw-pipelines-${accountId.value}`);
+
+const DEFAULT_PIPELINE = {
+  id: 'default',
+  name: 'Pipeline de Vendas',
+  stages: [
+    { id: 'lead', name: 'Novo Lead', color: '#3B82F6' },
+    { id: 'contact', name: 'Contato Feito', color: '#8B5CF6' },
+    { id: 'qualified', name: 'Qualificado', color: '#F59E0B' },
+    { id: 'proposal', name: 'Proposta Enviada', color: '#EF4444' },
+    { id: 'negotiation', name: 'Negociacao', color: '#EC4899' },
+    { id: 'closing', name: 'Fechamento', color: '#10B981' },
+  ],
+};
+
+const loadPipelines = () => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY.value);
+    if (raw) {
+      const data = JSON.parse(raw);
+      if (data.pipelines?.length) return data;
+    }
+  } catch {
+    // ignore
+  }
+  return { pipelines: [DEFAULT_PIPELINE], activePipelineId: 'default' };
+};
+
+const savePipelines = (pipelines, activePipelineId) => {
+  localStorage.setItem(
+    STORAGE_KEY.value,
+    JSON.stringify({ pipelines, activePipelineId })
+  );
+};
+
 // --- Reactive state ---
+const pipelineData = ref(loadPipelines());
+const pipelines = computed(() => pipelineData.value.pipelines);
+const activePipelineId = ref(pipelineData.value.activePipelineId);
+
+const activePipeline = computed(
+  () => pipelines.value.find(p => p.id === activePipelineId.value) || pipelines.value[0]
+);
+
 const assigneeTab = ref(ASSIGNEE_TYPE.ME);
 const sortKey = ref(SORT_BY_TYPE.LAST_ACTIVITY_AT_DESC);
+const searchQuery = ref('');
+const selectedInboxId = ref('');
 const loading = ref(false);
+const isDragging = ref(false);
+const showConfigModal = ref(false);
 
 // Context menu state
 const showContextMenu = ref(false);
@@ -31,56 +86,75 @@ const pendingSnoozeConversation = ref(null);
 // --- Store getters ---
 const allConversations = useMapGetter('getAllConversations');
 const currentUser = useMapGetter('getCurrentUser');
+const inboxes = useMapGetter('inboxes/getInboxes');
 
-// --- Column definitions ---
-const columns = [
-  {
-    key: STATUS_TYPE.OPEN,
-    labelKey: 'CONVERSATION.KANBAN.STATUS_OPEN',
-    color: 'bg-n-teal-9',
-  },
-  {
-    key: STATUS_TYPE.PENDING,
-    labelKey: 'CONVERSATION.KANBAN.STATUS_PENDING',
-    color: 'bg-n-amber-9',
-  },
-  {
-    key: STATUS_TYPE.SNOOZED,
-    labelKey: 'CONVERSATION.KANBAN.STATUS_SNOOZED',
-    color: 'bg-n-violet-9',
-  },
-  {
-    key: STATUS_TYPE.RESOLVED,
-    labelKey: 'CONVERSATION.KANBAN.STATUS_RESOLVED',
-    color: 'bg-n-slate-9',
-  },
-];
+// --- Pipeline-filtered conversations ---
+const pipelineConversations = computed(() => {
+  let result = allConversations.value || [];
+  const pipelineId = activePipelineId.value;
 
-// --- Filtered conversations (by assignee) ---
-const filteredConversations = computed(() => {
-  const all = allConversations.value || [];
+  // Filter by pipeline_id in custom_attributes
+  result = result.filter(c => {
+    const attrs = c.custom_attributes || {};
+    // Include conversations assigned to this pipeline
+    // Also include conversations with no pipeline assigned (for "default" pipeline)
+    if (pipelineId === 'default') {
+      return !attrs.pipeline_id || attrs.pipeline_id === 'default';
+    }
+    return attrs.pipeline_id === pipelineId;
+  });
+
+  // Exclude archived/outcome conversations from board
+  result = result.filter(c => {
+    const outcome = c.custom_attributes?.outcome;
+    return !outcome;
+  });
+
+  // Filter by assignee
   if (assigneeTab.value === ASSIGNEE_TYPE.ME) {
     const userId = currentUser.value?.id;
-    return all.filter(c => c.meta?.assignee?.id === userId);
+    result = result.filter(c => c.meta?.assignee?.id === userId);
+  } else if (assigneeTab.value === ASSIGNEE_TYPE.UNASSIGNED) {
+    result = result.filter(c => !c.meta?.assignee);
   }
-  if (assigneeTab.value === ASSIGNEE_TYPE.UNASSIGNED) {
-    return all.filter(c => !c.meta?.assignee);
+
+  // Filter by inbox
+  if (selectedInboxId.value) {
+    const inboxId = Number(selectedInboxId.value);
+    result = result.filter(c => c.inbox_id === inboxId);
   }
-  return all;
+
+  // Filter by search query
+  if (searchQuery.value.trim()) {
+    const query = searchQuery.value.toLowerCase().trim();
+    result = result.filter(c => {
+      const contactName = (c.meta?.sender?.name || '').toLowerCase();
+      const id = String(c.id);
+      const lastMsg = (c.last_non_activity_message?.content || '').toLowerCase();
+      return contactName.includes(query) || id.includes(query) || lastMsg.includes(query);
+    });
+  }
+
+  return result;
 });
 
-// --- Local mutable arrays per column (vuedraggable requires mutability) ---
-const openConversations = ref([]);
-const pendingConversations = ref([]);
-const snoozedConversations = ref([]);
-const resolvedConversations = ref([]);
+// All conversations for pipeline metrics (including outcomes)
+const allPipelineConversations = computed(() => {
+  const result = allConversations.value || [];
+  const pipelineId = activePipelineId.value;
+  return result.filter(c => {
+    const attrs = c.custom_attributes || {};
+    if (pipelineId === 'default') {
+      return !attrs.pipeline_id || attrs.pipeline_id === 'default';
+    }
+    return attrs.pipeline_id === pipelineId;
+  });
+});
 
-const columnDataMap = {
-  [STATUS_TYPE.OPEN]: openConversations,
-  [STATUS_TYPE.PENDING]: pendingConversations,
-  [STATUS_TYPE.SNOOZED]: snoozedConversations,
-  [STATUS_TYPE.RESOLVED]: resolvedConversations,
-};
+const totalFilteredCount = computed(() => pipelineConversations.value.length);
+
+// --- Local mutable arrays per stage (vuedraggable requires mutability) ---
+const stageConversations = ref({});
 
 // Sort helper
 const sortComparator = (a, b) => {
@@ -91,61 +165,128 @@ const sortComparator = (a, b) => {
     const priorityOrder = { urgent: 4, high: 3, medium: 2, low: 1, none: 0 };
     return (priorityOrder[b.priority] || 0) - (priorityOrder[a.priority] || 0);
   }
-  // Default: last_activity_at_desc
   return (b.timestamp || b.last_activity_at || 0) - (a.timestamp || a.last_activity_at || 0);
 };
 
-// Sync store → local arrays
+// Sync store → local arrays grouped by stage
 const syncFromStore = () => {
-  const grouped = { open: [], pending: [], snoozed: [], resolved: [] };
-  filteredConversations.value.forEach(c => {
-    const status = c.status || 'open';
-    if (grouped[status]) grouped[status].push(c);
+  const stages = activePipeline.value?.stages || [];
+  const grouped = {};
+  stages.forEach(s => {
+    grouped[s.id] = [];
   });
-  openConversations.value = grouped.open.sort(sortComparator);
-  pendingConversations.value = grouped.pending.sort(sortComparator);
-  snoozedConversations.value = grouped.snoozed.sort(sortComparator);
-  resolvedConversations.value = grouped.resolved.sort(sortComparator);
+
+  pipelineConversations.value.forEach(c => {
+    const stageId = c.custom_attributes?.pipeline_stage || stages[0]?.id || 'lead';
+    if (grouped[stageId]) {
+      grouped[stageId].push(c);
+    } else {
+      // Conversation is in a stage that no longer exists — put in first stage
+      const firstStage = stages[0]?.id;
+      if (firstStage && grouped[firstStage]) {
+        grouped[firstStage].push(c);
+      }
+    }
+  });
+
+  // Sort each stage
+  Object.keys(grouped).forEach(key => {
+    grouped[key].sort(sortComparator);
+  });
+
+  stageConversations.value = grouped;
 };
 
 // Watch for store changes and re-sync
 watch(
-  () => [filteredConversations.value, sortKey.value],
+  () => [pipelineConversations.value, sortKey.value, activePipeline.value],
   () => syncFromStore(),
   { deep: true }
 );
 
-// --- Drag & drop handler ---
-const onColumnChange = async ({ conversation, newStatus }) => {
-  if (!conversation || conversation.status === newStatus) return;
+// --- Drag & drop handler (stage change) ---
+const onColumnChange = async ({ conversation, newStageId }) => {
+  if (!conversation) return;
+  const currentStage = conversation.custom_attributes?.pipeline_stage;
+  if (currentStage === newStageId) return;
 
-  // Snoozed requires a snooze duration
-  if (newStatus === STATUS_TYPE.SNOOZED) {
-    pendingSnoozeConversation.value = conversation;
-    showSnoozeModal.value = true;
-    // Revert optimistic move — will re-sync after modal action
-    syncFromStore();
-    return;
-  }
-
-  // Optimistic: already moved by vuedraggable
   try {
-    await store.dispatch('toggleStatus', {
+    await store.dispatch('updateCustomAttributes', {
       conversationId: conversation.id,
-      status: newStatus,
+      custom_attributes: {
+        pipeline_stage: newStageId,
+      },
     });
   } catch {
-    // Revert on failure
     syncFromStore();
   }
 };
 
-// Snooze confirmation
+// --- Outcome handler ---
+const onOutcome = async ({ conversation, outcome }) => {
+  if (!conversation) return;
+
+  const outcomeMessages = {
+    won: t('CONVERSATION.PIPELINE.OUTCOME_WON_MSG'),
+    lost: t('CONVERSATION.PIPELINE.OUTCOME_LOST_MSG'),
+    abandoned: t('CONVERSATION.PIPELINE.OUTCOME_ABANDONED_MSG'),
+  };
+
+  try {
+    await store.dispatch('updateCustomAttributes', {
+      conversationId: conversation.id,
+      custom_attributes: {
+        outcome,
+        outcome_at: new Date().toISOString(),
+        pipeline_stage: '__archived__',
+      },
+    });
+
+    emitter.emit(BUS_EVENTS.SHOW_TOAST, {
+      message: outcomeMessages[outcome] || `Deal: ${outcome}`,
+      action: { type: 'link' },
+    });
+  } catch {
+    syncFromStore();
+  }
+};
+
+// --- Drag state ---
+const onDragStart = () => {
+  isDragging.value = true;
+};
+
+const onDragEnd = () => {
+  isDragging.value = false;
+};
+
+// --- Pipeline config ---
+const onOpenConfig = () => {
+  showConfigModal.value = true;
+};
+
+const onCloseConfig = () => {
+  showConfigModal.value = false;
+};
+
+const onSaveConfig = (newPipelines, newActivePipelineId) => {
+  pipelineData.value = { pipelines: newPipelines, activePipelineId: newActivePipelineId };
+  activePipelineId.value = newActivePipelineId;
+  savePipelines(newPipelines, newActivePipelineId);
+  showConfigModal.value = false;
+  syncFromStore();
+};
+
+const onChangePipeline = id => {
+  activePipelineId.value = id;
+  savePipelines(pipelines.value, id);
+};
+
+// --- Snooze ---
 const onSnoozeConfirm = async snoozedUntil => {
   const conv = pendingSnoozeConversation.value;
   showSnoozeModal.value = false;
   if (!conv) return;
-
   try {
     await store.dispatch('toggleStatus', {
       conversationId: conv.id,
@@ -223,7 +364,7 @@ const onMarkAsRead = conversationId => {
   store.dispatch('markMessagesRead', { id: conversationId });
 };
 
-// Provide context menu actions for child components (matching ChatList pattern)
+// Provide context menu actions for child components
 provide('onAssignAgent', onAssignAgent);
 provide('onAssignLabel', onAssignLabel);
 provide('onAssignTeam', onAssignTeam);
@@ -241,13 +382,21 @@ onMounted(async () => {
   }
 });
 
-// --- Assignee / Sort change handlers ---
+// --- Handlers ---
 const onChangeAssignee = key => {
   assigneeTab.value = key;
 };
 
 const onChangeSort = key => {
   sortKey.value = key;
+};
+
+const onUpdateSearch = query => {
+  searchQuery.value = query;
+};
+
+const onChangeInbox = inboxId => {
+  selectedInboxId.value = inboxId;
 };
 </script>
 
@@ -256,26 +405,57 @@ const onChangeSort = key => {
     <KanbanHeader
       :active-assignee-tab="assigneeTab"
       :active-sort="sortKey"
+      :search-query="searchQuery"
+      :selected-inbox-id="selectedInboxId"
+      :inboxes="inboxes"
+      :total-count="totalFilteredCount"
+      :pipelines="pipelines"
+      :active-pipeline-id="activePipelineId"
       @change-assignee="onChangeAssignee"
       @change-sort="onChangeSort"
+      @update-search="onUpdateSearch"
+      @change-inbox="onChangeInbox"
+      @change-pipeline="onChangePipeline"
+      @open-config="onOpenConfig"
     />
 
+    <!-- Outcome summary bar -->
+    <OutcomeSummaryBar :conversations="allPipelineConversations" />
+
+    <!-- Pipeline columns -->
     <main class="flex-grow overflow-x-auto overflow-y-hidden">
       <div class="flex gap-4 h-full pb-4">
         <KanbanColumn
-          v-for="col in columns"
-          :key="col.key"
-          :title="t(col.labelKey)"
-          :status-key="col.key"
-          :conversations="columnDataMap[col.key].value"
+          v-for="stage in activePipeline?.stages || []"
+          :key="stage.id"
+          :title="stage.name"
+          :stage-id="stage.id"
+          :conversations="stageConversations[stage.id] || []"
           :loading="loading"
-          :color="col.color"
-          @update:conversations="val => (columnDataMap[col.key].value = val)"
+          :color="stage.color"
+          @update:conversations="val => (stageConversations[stage.id] = val)"
           @change="onColumnChange"
           @open-context-menu="openCardContextMenu"
+          @drag-start="onDragStart"
+          @drag-end="onDragEnd"
         />
       </div>
     </main>
+
+    <!-- Outcome drop zones (appear on drag) -->
+    <OutcomeDropZones
+      :visible="isDragging"
+      @outcome="onOutcome"
+    />
+
+    <!-- Pipeline config modal -->
+    <PipelineConfigModal
+      :show="showConfigModal"
+      :pipelines="pipelines"
+      :active-pipeline-id="activePipelineId"
+      @close="onCloseConfig"
+      @save="onSaveConfig"
+    />
 
     <!-- Context menu -->
     <ContextMenu

@@ -363,6 +363,9 @@
     "SLA": "SLA",
     "CUSTOM_ROLES": "Custom Roles",
     "BETA": "Beta",
+    "KANBAN": "Pipeline",
+    "CALENDAR": "Calendar",
+    "DASHBOARD": "Dashboard",
     "REPORTS_OVERVIEW": "Overview",
     "REAUTHORIZE": "Your inbox connection has expired, please reconnect\n to continue receiving and sending messages",
     "HELP_CENTER": {
@@ -383,7 +386,8 @@
     "CAPTAIN_AI": "Captain",
     "CONVERSATION_WORKFLOW": "Conversation Workflow",
     "KANBAN": "Pipeline",
-    "CALENDAR": "Calendar"
+    "CALENDAR": "Calendar",
+    "DASHBOARD": "Dashboard"
   },
   "CAPTAIN_SETTINGS": {
     "TITLE": "Captain Settings",

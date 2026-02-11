@@ -211,6 +211,13 @@ const reportRoutes = computed(() => newReportRoutes());
 const menuItems = computed(() => {
   return [
     {
+      name: 'Dashboard',
+      label: t('SIDEBAR.DASHBOARD') !== 'SIDEBAR.DASHBOARD' ? t('SIDEBAR.DASHBOARD') : 'Dashboard',
+      icon: 'i-lucide-layout-dashboard',
+      to: accountScopedRoute('overview_dashboard'),
+      activeOn: ['overview_dashboard'],
+    },
+    {
       name: 'Inbox',
       label: t('SIDEBAR.INBOX'),
       icon: 'i-lucide-inbox',
@@ -222,7 +229,7 @@ const menuItems = computed(() => {
     },
     {
       name: 'Kanban',
-      label: t('SIDEBAR.KANBAN'),
+      label: t('SIDEBAR.KANBAN') !== 'SIDEBAR.KANBAN' ? t('SIDEBAR.KANBAN') : 'Pipeline',
       icon: 'i-lucide-users',
       to: accountScopedRoute('kanban_view'),
       activeOn: ['kanban_view'],
@@ -311,7 +318,7 @@ const menuItems = computed(() => {
     },
     {
       name: 'Calendar',
-      label: t('SIDEBAR.CALENDAR'),
+      label: t('SIDEBAR.CALENDAR') !== 'SIDEBAR.CALENDAR' ? t('SIDEBAR.CALENDAR') : 'Calendário',
       icon: 'i-lucide-calendar',
       to: accountScopedRoute('calendar_view'),
       activeOn: ['calendar_view'],
