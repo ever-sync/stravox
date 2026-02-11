@@ -63,6 +63,9 @@ export default defineConfig({
     hmr: {
       overlay: true,
     },
+    host: '0.0.0.0',
+    cors: true,
+    allowedHosts: ['vite'],
   },
   // Optimize dependency pre-bundling
   optimizeDeps: {
