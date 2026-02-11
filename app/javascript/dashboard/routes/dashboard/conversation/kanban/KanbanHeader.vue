@@ -11,6 +11,8 @@ const props = defineProps({
   selectedInboxId: { type: [Number, String], default: '' },
   inboxes: { type: Array, default: () => [] },
   totalCount: { type: Number, default: 0 },
+  pipelines: { type: Array, default: () => [] },
+  activePipelineId: { type: String, default: 'default' },
 });
 
 const emit = defineEmits([
@@ -18,14 +20,16 @@ const emit = defineEmits([
   'changeSort',
   'updateSearch',
   'changeInbox',
+  'changePipeline',
+  'openConfig',
 ]);
 
 const { t } = useI18n();
 
 const assigneeTabs = [
-  { key: ASSIGNEE_TYPE.ME, label: 'CONVERSATION.KANBAN.FILTER_MINE' },
+  { key: ASSIGNEE_TYPE.ME, label: 'CONVERSATION.PIPELINE.FILTER_MINE' },
   { key: ASSIGNEE_TYPE.UNASSIGNED, label: 'CONVERSATION.KANBAN.FILTER_UNASSIGNED' },
-  { key: ASSIGNEE_TYPE.ALL, label: 'CONVERSATION.KANBAN.FILTER_ALL' },
+  { key: ASSIGNEE_TYPE.ALL, label: 'CONVERSATION.PIPELINE.FILTER_ALL' },
 ];
 
 const sortOptions = [
@@ -38,17 +42,52 @@ const onChangeAssignee = key => emit('changeAssignee', key);
 const onChangeSort = e => emit('changeSort', e.target.value);
 const onSearchInput = e => emit('updateSearch', e.target.value);
 const onChangeInbox = e => emit('changeInbox', e.target.value);
+const onChangePipeline = e => emit('changePipeline', e.target.value);
+const onOpenConfig = () => emit('openConfig');
 </script>
 
 <template>
   <header class="flex flex-col gap-3 mb-4">
-    <!-- Top row: Title + Controls -->
+    <!-- Top row: Title + Pipeline selector + Controls -->
     <div class="flex items-center justify-between gap-4 flex-wrap">
-      <!-- Title + Count -->
+      <!-- Title + Pipeline selector -->
       <div class="flex items-center gap-3">
         <h1 class="text-xl font-semibold text-n-slate-12">
-          {{ t('CONVERSATION.KANBAN.TITLE') }}
+          {{ t('CONVERSATION.PIPELINE.TITLE') }}
         </h1>
+
+        <!-- Pipeline selector -->
+        <div class="relative">
+          <select
+            :value="activePipelineId"
+            class="appearance-none bg-n-violet-3/20 border border-n-violet-7/30 rounded-lg pl-3 pr-8 py-1.5 text-xs font-semibold text-n-violet-11 cursor-pointer hover:bg-n-violet-3/40 focus:outline-none focus:ring-2 focus:ring-n-violet-7/30 transition-colors"
+            @change="onChangePipeline"
+          >
+            <option
+              v-for="p in pipelines"
+              :key="p.id"
+              :value="p.id"
+            >
+              {{ p.name }}
+            </option>
+          </select>
+          <fluent-icon
+            icon="chevron-down"
+            size="12"
+            class="absolute right-2 top-1/2 -translate-y-1/2 text-n-violet-10 pointer-events-none"
+          />
+        </div>
+
+        <!-- Config button -->
+        <button
+          class="flex items-center justify-center w-8 h-8 rounded-lg text-n-slate-10 hover:text-n-violet-11 hover:bg-n-violet-3/20 transition-colors"
+          :title="t('CONVERSATION.PIPELINE.CONFIGURE')"
+          @click="onOpenConfig"
+        >
+          <fluent-icon icon="settings" size="16" />
+        </button>
+
+        <!-- Total count -->
         <span
           v-if="totalCount > 0"
           class="text-sm font-medium text-n-slate-10 bg-n-alpha-2 rounded-full px-2.5 py-0.5"
@@ -69,7 +108,7 @@ const onChangeInbox = e => emit('changeInbox', e.target.value);
           <input
             type="text"
             :value="searchQuery"
-            :placeholder="t('CONVERSATION.KANBAN.SEARCH_PLACEHOLDER')"
+            :placeholder="t('CONVERSATION.PIPELINE.SEARCH')"
             class="bg-n-alpha-1 border border-n-weak rounded-lg pl-8 pr-3 py-1.5 text-xs font-medium text-n-slate-12 placeholder:text-n-slate-9 w-52 focus:outline-none focus:ring-2 focus:ring-n-violet-7/30 focus:border-n-violet-7 transition-all"
             @input="onSearchInput"
           />
