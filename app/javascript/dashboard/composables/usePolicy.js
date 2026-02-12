@@ -56,9 +56,9 @@ export function usePolicy() {
   };
 
   const hasPremiumEnterprise = computed(() => {
-    if (isEnterprise) return enterprisePlanName !== 'community';
-
-    return true;
+    return true; // Force premium enterprise
+    // if (isEnterprise) return enterprisePlanName !== 'community';
+    // return true;
   });
 
   const shouldShow = (featureFlag, permissions, installationTypes) => {

@@ -20,9 +20,6 @@ class ::StravoXHub
 
   def self.pricing_plan
     'enterprise'
-    # return 'community' unless ::StravoXApp.enterprise?
-
-    # InstallationConfig.find_by(name: 'INSTALLATION_PRICING_PLAN')&.value || 'community'
   end
 
   def self.pricing_plan_quantity

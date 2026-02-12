@@ -737,11 +737,11 @@ const menuItems = computed(() => {
             />
             <!-- Expand button below logo when collapsed -->
             <button
-              class="flex items-center justify-center size-7 rounded-lg text-n-slate-10 hover:text-n-violet-11 hover:bg-n-violet-4/30 transition-all duration-200 ease-out"
+              class="flex items-center justify-center size-9 rounded-lg text-n-slate-10 hover:text-n-violet-11 hover:bg-n-violet-4/30 transition-all duration-200 ease-out"
               :title="'Expand sidebar'"
               @click="snapToExpanded"
             >
-              <span class="i-lucide-panel-left-open size-3.5" />
+              <span class="i-lucide-chevron-right size-6" />
             </button>
           </div>
         </template>
@@ -757,11 +757,11 @@ const menuItems = computed(() => {
           </div>
           <!-- Collapse toggle button -->
           <button
-            class="flex-shrink-0 flex items-center justify-center size-7 rounded-lg text-n-slate-10 hover:text-n-slate-12 hover:bg-n-alpha-2 dark:hover:bg-n-slate-9/30 transition-all duration-200 ease-out opacity-0 group-hover/sidebar:opacity-100 focus:opacity-100"
+            class="flex-shrink-0 flex items-center justify-center size-9 rounded-lg text-n-slate-10 hover:text-n-slate-12 hover:bg-n-alpha-2 dark:hover:bg-n-slate-9/30 transition-all duration-200 ease-out focus:opacity-100"
             :title="'Collapse sidebar'"
             @click="snapToCollapsed"
           >
-            <span class="i-lucide-panel-left-close size-4" />
+            <span class="i-lucide-chevron-left size-6" />
           </button>
         </template>
       </div>

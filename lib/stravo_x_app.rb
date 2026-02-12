@@ -12,10 +12,9 @@ module ::StravoXApp
   end
 
   def self.enterprise?
-    return true
-    # return if ENV.fetch('DISABLE_ENTERPRISE', false)
+    return if ENV.fetch('DISABLE_ENTERPRISE', false)
 
-    # @enterprise ||= root.join('enterprise').exist?
+    @enterprise ||= root.join('enterprise').exist?
   end
 
   def self.stravox_cloud?
