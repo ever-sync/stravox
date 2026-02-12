@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { isSameMonth, isSameDay, format } from 'date-fns';
+import { isSameMonth } from 'date-fns';
 import CalendarEventCard from './CalendarEventCard.vue';
 
 const props = defineProps({
@@ -14,16 +14,18 @@ const props = defineProps({
 
 const emit = defineEmits(['select']);
 
-const { t } = useI18n();
+const { t: _t } = useI18n();
 
-const isCurrentMonth = computed(() => isSameMonth(props.day, props.currentMonth));
+const isCurrentMonth = computed(() =>
+  isSameMonth(props.day, props.currentMonth)
+);
 const dayNumber = computed(() => props.day.getDate());
 
 const statusCounts = computed(() => {
   const counts = { open: 0, pending: 0, snoozed: 0, resolved: 0 };
   props.conversations.forEach(c => {
     const s = c.status || 'open';
-    if (counts[s] !== undefined) counts[s]++;
+    if (counts[s] !== undefined) counts[s] += 1;
   });
   return counts;
 });
@@ -42,14 +44,12 @@ const moreCount = computed(
 
 const onSelect = () => emit('select', props.day);
 </script>
-
 <template>
   <div
-    class="flex flex-col border border-n-weak/50 p-1 min-h-[100px] cursor-pointer transition-colors duration-150"
+    class="flex flex-col border border-n-weak/50 p-1 min-h-[100px] cursor-pointer transition-colors duration-150 hover:bg-n-alpha-1"
     :class="[
       isCurrentMonth ? 'bg-n-background' : 'bg-n-alpha-1/30',
       selected ? 'ring-2 ring-n-violet-7 bg-n-violet-3/10' : '',
-      'hover:bg-n-alpha-1',
     ]"
     @click="onSelect"
   >
@@ -99,10 +99,7 @@ const onSelect = () => emit('select', props.day);
         :key="conv.id"
         :conversation="conv"
       />
-      <span
-        v-if="moreCount > 0"
-        class="text-xxs text-n-slate-10 pl-1"
-      >
+      <span v-if="moreCount > 0" class="text-xxs text-n-slate-10 pl-1">
         +{{ moreCount }}
       </span>
     </div>

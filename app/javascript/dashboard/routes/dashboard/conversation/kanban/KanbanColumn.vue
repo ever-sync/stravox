@@ -12,7 +12,13 @@ const props = defineProps({
   color: { type: String, default: '#6366F1' },
 });
 
-const emit = defineEmits(['update:conversations', 'change', 'openContextMenu', 'dragStart', 'dragEnd']);
+const emit = defineEmits([
+  'update:conversations',
+  'change',
+  'openContextMenu',
+  'dragStart',
+  'dragEnd',
+]);
 
 const { t } = useI18n();
 
@@ -62,21 +68,30 @@ const onOpenContextMenu = (event, chat) => {
 <template>
   <div class="flex flex-col flex-shrink-0 w-80 rounded-xl overflow-hidden">
     <!-- Column header -->
-    <div class="flex items-center gap-2.5 px-3 py-2.5 bg-n-alpha-1 border border-n-weak rounded-t-xl">
+    <div
+      class="flex items-center gap-2.5 px-3 py-2.5 bg-n-alpha-1 border border-n-weak rounded-t-xl"
+    >
       <span
         class="w-3 h-3 rounded-full flex-shrink-0 ring-2 ring-white shadow-sm"
         :style="{ backgroundColor: color }"
       />
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2">
-          <h3 class="font-semibold text-xs uppercase tracking-wider text-n-slate-11 truncate">
+          <h3
+            class="font-semibold text-xs uppercase tracking-wider text-n-slate-11 truncate"
+          >
             {{ title }}
           </h3>
-          <span class="text-xxs font-semibold text-n-slate-10 bg-n-alpha-2 rounded-full px-2 py-0.5 min-w-[1.5rem] text-center flex-shrink-0">
+          <span
+            class="text-xxs font-semibold text-n-slate-10 bg-n-alpha-2 rounded-full px-2 py-0.5 min-w-[1.5rem] text-center flex-shrink-0"
+          >
             {{ count }}
           </span>
         </div>
-        <p v-if="formattedTotalValue" class="text-xxs font-medium text-n-green-11 mt-0.5">
+        <p
+          v-if="formattedTotalValue"
+          class="text-xxs font-medium text-n-green-11 mt-0.5"
+        >
           {{ formattedTotalValue }}
           <span class="text-n-slate-10 font-normal">
             {{ t('CONVERSATION.PIPELINE.IN_DEALS', { count }) }}

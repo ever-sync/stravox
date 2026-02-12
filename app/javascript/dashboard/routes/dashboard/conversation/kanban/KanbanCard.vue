@@ -189,7 +189,7 @@ const onContextMenu = e => {
         v-if="lastMessageInChat"
         :message="lastMessageInChat"
         class="text-xs leading-5 text-n-slate-11 line-clamp-2"
-        :show-message-type="true"
+        show-message-type
       />
       <p v-else class="text-xs text-n-slate-10 italic">
         {{ t('CHAT_LIST.NO_MESSAGES') }}

@@ -63,7 +63,9 @@ const pipelines = computed(() => pipelineData.value.pipelines);
 const activePipelineId = ref(pipelineData.value.activePipelineId);
 
 const activePipeline = computed(
-  () => pipelines.value.find(p => p.id === activePipelineId.value) || pipelines.value[0]
+  () =>
+    pipelines.value.find(p => p.id === activePipelineId.value) ||
+    pipelines.value[0]
 );
 
 const assigneeTab = ref(ASSIGNEE_TYPE.ME);
@@ -130,8 +132,13 @@ const pipelineConversations = computed(() => {
     result = result.filter(c => {
       const contactName = (c.meta?.sender?.name || '').toLowerCase();
       const id = String(c.id);
-      const lastMsg = (c.last_non_activity_message?.content || '').toLowerCase();
-      return contactName.includes(query) || id.includes(query) || lastMsg.includes(query);
+      const lastMsg =
+        c.last_non_activity_message?.content || '';
+      return (
+        contactName.includes(query) ||
+        id.includes(query) ||
+        lastMsg.toLowerCase().includes(query)
+      );
     });
   }
 
@@ -165,7 +172,10 @@ const sortComparator = (a, b) => {
     const priorityOrder = { urgent: 4, high: 3, medium: 2, low: 1, none: 0 };
     return (priorityOrder[b.priority] || 0) - (priorityOrder[a.priority] || 0);
   }
-  return (b.timestamp || b.last_activity_at || 0) - (a.timestamp || a.last_activity_at || 0);
+  return (
+    (b.timestamp || b.last_activity_at || 0) -
+    (a.timestamp || a.last_activity_at || 0)
+  );
 };
 
 // Sync store → local arrays grouped by stage
@@ -270,7 +280,10 @@ const onCloseConfig = () => {
 };
 
 const onSaveConfig = (newPipelines, newActivePipelineId) => {
-  pipelineData.value = { pipelines: newPipelines, activePipelineId: newActivePipelineId };
+  pipelineData.value = {
+    pipelines: newPipelines,
+    activePipelineId: newActivePipelineId,
+  };
   activePipelineId.value = newActivePipelineId;
   savePipelines(newPipelines, newActivePipelineId);
   showConfigModal.value = false;

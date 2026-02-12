@@ -62,8 +62,6 @@ export const actions = {
       const response = await PipelinesAPI.create(pipelineObj);
       commit(types.default.ADD_PIPELINE, response.data);
       return response.data;
-    } catch (error) {
-      throw error;
     } finally {
       commit(types.default.SET_PIPELINES_UI_FLAG, { isCreating: false });
     }
@@ -75,8 +73,6 @@ export const actions = {
       const response = await PipelinesAPI.update(id, updateObj);
       commit(types.default.EDIT_PIPELINE, response.data);
       return response.data;
-    } catch (error) {
-      throw error;
     } finally {
       commit(types.default.SET_PIPELINES_UI_FLAG, { isUpdating: false });
     }
@@ -87,8 +83,6 @@ export const actions = {
     try {
       await PipelinesAPI.delete(id);
       commit(types.default.DELETE_PIPELINE, id);
-    } catch (error) {
-      throw error;
     } finally {
       commit(types.default.SET_PIPELINES_UI_FLAG, { isDeleting: false });
     }

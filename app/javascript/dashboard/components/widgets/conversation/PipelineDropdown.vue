@@ -1,21 +1,3 @@
-<template>
-  <div class="multiselect-wrap--small">
-    <ContactDetailsItem
-      compact
-      :title="$t('CONVERSATION_SIDEBAR.PIPELINE_LABEL')"
-    />
-    <MultiselectDropdown
-      :options="allStages"
-      :selected-item="selectedStage"
-      :multiselector-title="$t('CONVERSATION_SIDEBAR.PIPELINE_LABEL')"
-      :multiselector-placeholder="$t('CONVERSATION_SIDEBAR.SELECT_PIPELINE')"
-      :no-search-result="$t('CONVERSATION_SIDEBAR.NO_PIPELINE_RESULTS')"
-      :input-placeholder="$t('CONVERSATION_SIDEBAR.SEARCH_PIPELINE')"
-      @select="onPipelineStageChange"
-    />
-  </div>
-</template>
-
 <script>
 import { mapGetters } from 'vuex';
 import ContactDetailsItem from 'dashboard/routes/dashboard/conversation/ContactDetailsItem.vue';
@@ -36,6 +18,7 @@ export default {
       default: null,
     },
   },
+  emits: ['update'],
   computed: {
     ...mapGetters({
       allStages: 'pipelines/getAllStages',
@@ -66,3 +49,18 @@ export default {
   },
 };
 </script>
+
+<template>
+  <div class="multiselect-wrap--small">
+    <ContactDetailsItem compact :title="$t('CONVERSATION_SIDEBAR.PIPELINE_LABEL')" />
+    <MultiselectDropdown
+      :options="allStages"
+      :selected-item="selectedStage"
+      :multiselector-title="$t('CONVERSATION_SIDEBAR.PIPELINE_LABEL')"
+      :multiselector-placeholder="$t('CONVERSATION_SIDEBAR.SELECT_PIPELINE')"
+      :no-search-result="$t('CONVERSATION_SIDEBAR.NO_PIPELINE_RESULTS')"
+      :input-placeholder="$t('CONVERSATION_SIDEBAR.SEARCH_PIPELINE')"
+      @select="onPipelineStageChange"
+    />
+  </div>
+</template>

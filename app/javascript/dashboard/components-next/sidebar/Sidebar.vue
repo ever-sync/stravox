@@ -212,7 +212,10 @@ const menuItems = computed(() => {
   return [
     {
       name: 'Dashboard',
-      label: t('SIDEBAR.DASHBOARD') !== 'SIDEBAR.DASHBOARD' ? t('SIDEBAR.DASHBOARD') : 'Dashboard',
+      label:
+        t('SIDEBAR.DASHBOARD') !== 'SIDEBAR.DASHBOARD'
+          ? t('SIDEBAR.DASHBOARD')
+          : 'Dashboard',
       icon: 'i-lucide-layout-dashboard',
       to: accountScopedRoute('overview_dashboard'),
       activeOn: ['overview_dashboard'],
@@ -229,7 +232,10 @@ const menuItems = computed(() => {
     },
     {
       name: 'Kanban',
-      label: t('SIDEBAR.KANBAN') !== 'SIDEBAR.KANBAN' ? t('SIDEBAR.KANBAN') : 'Pipeline',
+      label:
+        t('SIDEBAR.KANBAN') !== 'SIDEBAR.KANBAN'
+          ? t('SIDEBAR.KANBAN')
+          : 'Pipeline',
       icon: 'i-lucide-users',
       to: accountScopedRoute('kanban_view'),
       activeOn: ['kanban_view'],
@@ -318,7 +324,10 @@ const menuItems = computed(() => {
     },
     {
       name: 'Calendar',
-      label: t('SIDEBAR.CALENDAR') !== 'SIDEBAR.CALENDAR' ? t('SIDEBAR.CALENDAR') : 'Calendário',
+      label:
+        t('SIDEBAR.CALENDAR') !== 'SIDEBAR.CALENDAR'
+          ? t('SIDEBAR.CALENDAR')
+          : 'Calendário',
       icon: 'i-lucide-calendar',
       to: accountScopedRoute('calendar_view'),
       activeOn: ['calendar_view'],
@@ -720,7 +729,9 @@ const menuItems = computed(() => {
   >
     <section
       class="grid"
-      :class="isEffectivelyCollapsed ? 'mt-3 mb-4 gap-3' : 'mt-1.5 mb-3 gap-2.5'"
+      :class="
+        isEffectivelyCollapsed ? 'mt-3 mb-4 gap-3' : 'mt-1.5 mb-3 gap-2.5'
+      "
     >
       <div
         class="flex gap-2 items-center min-w-0"
@@ -738,7 +749,7 @@ const menuItems = computed(() => {
             <!-- Expand button below logo when collapsed -->
             <button
               class="flex items-center justify-center size-9 rounded-lg text-n-slate-10 hover:text-n-violet-11 hover:bg-n-violet-4/30 transition-all duration-200 ease-out"
-              :title="'Expand sidebar'"
+              title="Expand sidebar"
               @click="snapToExpanded"
             >
               <span class="i-lucide-chevron-right size-6" />
@@ -747,7 +758,9 @@ const menuItems = computed(() => {
         </template>
         <template v-else>
           <div class="flex items-center gap-2.5 flex-grow min-w-0">
-            <div class="grid flex-shrink-0 place-content-center size-8 rounded-xl bg-gradient-to-br from-violet-500/15 to-indigo-500/15">
+            <div
+              class="grid flex-shrink-0 place-content-center size-8 rounded-xl bg-gradient-to-br from-violet-500/15 to-indigo-500/15"
+            >
               <Logo class="size-5" />
             </div>
             <SidebarAccountSwitcher
@@ -758,7 +771,7 @@ const menuItems = computed(() => {
           <!-- Collapse toggle button -->
           <button
             class="flex-shrink-0 flex items-center justify-center size-9 rounded-lg text-n-slate-10 hover:text-n-slate-12 hover:bg-n-alpha-2 dark:hover:bg-n-slate-9/30 transition-all duration-200 ease-out focus:opacity-100"
-            :title="'Collapse sidebar'"
+            title="Collapse sidebar"
             @click="snapToCollapsed"
           >
             <span class="i-lucide-chevron-left size-6" />
@@ -774,7 +787,9 @@ const menuItems = computed(() => {
           :to="{ name: 'search' }"
           class="flex gap-2 items-center px-2.5 py-1.5 w-full h-8 rounded-xl outline outline-1 outline-n-violet-7/20 bg-n-solid-2/60 backdrop-blur-sm transition-all duration-200 ease-out hover:outline-n-violet-8/40 hover:bg-n-solid-3/80 hover:shadow-sm focus:outline-n-violet-9 focus:shadow-sm"
         >
-          <span class="flex-shrink-0 i-lucide-search size-3.5 text-n-violet-11/70" />
+          <span
+            class="flex-shrink-0 i-lucide-search size-3.5 text-n-violet-11/70"
+          />
           <span class="flex-grow text-start text-n-slate-10 text-xs">
             {{ t('COMBOBOX.SEARCH_PLACEHOLDER') }}
           </span>
