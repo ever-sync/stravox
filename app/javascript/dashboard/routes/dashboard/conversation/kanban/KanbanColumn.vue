@@ -101,7 +101,9 @@ const onOpenContextMenu = (event, chat) => {
     </div>
 
     <!-- Draggable area -->
-    <div class="flex-1 overflow-y-auto bg-n-alpha-1/50 border-x border-b border-n-weak rounded-b-xl p-2 min-h-[200px]">
+    <div
+      class="flex-1 overflow-y-auto bg-n-alpha-1/50 border-x border-b border-n-weak rounded-b-xl p-2 min-h-[200px]"
+    >
       <!-- Loading state -->
       <div v-if="loading" class="flex flex-col gap-2">
         <div

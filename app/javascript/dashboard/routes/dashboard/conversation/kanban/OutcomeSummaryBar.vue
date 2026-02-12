@@ -18,28 +18,20 @@ const formatCurrency = value => {
   }).format(value);
 };
 
-const activeCount = computed(() =>
-  props.conversations.filter(
-    c => !c.custom_attributes?.outcome
-  ).length
+const activeCount = computed(
+  () => props.conversations.filter(c => !c.custom_attributes?.outcome).length
 );
 
 const wonDeals = computed(() =>
-  props.conversations.filter(
-    c => c.custom_attributes?.outcome === 'won'
-  )
+  props.conversations.filter(c => c.custom_attributes?.outcome === 'won')
 );
 
 const lostDeals = computed(() =>
-  props.conversations.filter(
-    c => c.custom_attributes?.outcome === 'lost'
-  )
+  props.conversations.filter(c => c.custom_attributes?.outcome === 'lost')
 );
 
 const abandonedDeals = computed(() =>
-  props.conversations.filter(
-    c => c.custom_attributes?.outcome === 'abandoned'
-  )
+  props.conversations.filter(c => c.custom_attributes?.outcome === 'abandoned')
 );
 
 const wonTotal = computed(() =>
@@ -52,10 +44,7 @@ const wonTotal = computed(() =>
 const activeTotal = computed(() =>
   props.conversations
     .filter(c => !c.custom_attributes?.outcome)
-    .reduce(
-      (sum, c) => sum + (c.custom_attributes?.deal_value || 0),
-      0
-    )
+    .reduce((sum, c) => sum + (c.custom_attributes?.deal_value || 0), 0)
 );
 
 const metrics = computed(() => [

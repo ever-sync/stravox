@@ -53,13 +53,15 @@ const onOutcomeDrop = (outcome, evt) => {
       <div
         v-if="visible"
         class="fixed bottom-0 left-0 right-0 z-40 flex items-stretch justify-center gap-4 px-6 pb-6 pt-3"
-        style="background: linear-gradient(to top, rgba(0,0,0,0.15) 0%, transparent 100%)"
+        style="
+          background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.15) 0%,
+            transparent 100%
+          );
+        "
       >
-        <div
-          v-for="zone in zones"
-          :key="zone.key"
-          class="flex-1 max-w-xs"
-        >
+        <div v-for="zone in zones" :key="zone.key" class="flex-1 max-w-xs">
           <Draggable
             :list="[]"
             group="pipeline"
@@ -72,6 +74,7 @@ const onOutcomeDrop = (outcome, evt) => {
             <template #header>
               <span :class="[zone.icon, zone.iconColor]" class="text-2xl" />
               <span class="text-sm font-semibold" :class="zone.iconColor">
+                <!-- eslint-disable-next-line @intlify/vue-i18n/no-dynamic-keys -->
                 {{ t(zone.labelKey) }}
               </span>
             </template>

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Api::V1::Accounts::PipelinesController < Api::V1::Accounts::BaseController
   before_action :fetch_pipeline, only: [:show, :update, :destroy]
   

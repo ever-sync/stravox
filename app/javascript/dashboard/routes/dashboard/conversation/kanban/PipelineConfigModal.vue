@@ -1,8 +1,6 @@
 <script setup>
 import { ref, computed, watch, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useMapGetter } from 'dashboard/composables/store';
-import ColorPicker from 'dashboard/components/widgets/ColorPicker.vue';
 import Draggable from 'vuedraggable';
 
 const props = defineProps({
@@ -39,7 +37,16 @@ const generateId = () => `stage_${Date.now()}_${Math.random().toString(36).slice
 
 const addStage = () => {
   if (!selectedPipeline.value) return;
-  const colors = ['#3B82F6', '#8B5CF6', '#F59E0B', '#EF4444', '#EC4899', '#10B981', '#06B6D4', '#F97316'];
+  const colors = [
+    '#3B82F6',
+    '#8B5CF6',
+    '#F59E0B',
+    '#EF4444',
+    '#EC4899',
+    '#10B981',
+    '#06B6D4',
+    '#F97316',
+  ];
   const color = colors[selectedPipeline.value.stages.length % colors.length];
   selectedPipeline.value.stages.push({
     id: generateId(),
@@ -82,7 +89,9 @@ const deletePipeline = () => {
     confirmDelete.value = true;
     return;
   }
-  const idx = localPipelines.value.findIndex(p => p.id === selectedPipelineId.value);
+  const idx = localPipelines.value.findIndex(
+    p => p.id === selectedPipelineId.value
+  );
   if (idx !== -1) {
     localPipelines.value.splice(idx, 1);
     selectedPipelineId.value = localPipelines.value[0]?.id || '';
@@ -107,12 +116,20 @@ const onClose = () => emit('close');
 
 <template>
   <teleport to="body">
-    <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center">
+    <div
+      v-if="show"
+      class="fixed inset-0 z-50 flex items-center justify-center"
+    >
       <!-- Overlay -->
-      <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="onClose" />
+      <div
+        class="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        @click="onClose"
+      />
 
       <!-- Modal -->
-      <div class="relative bg-n-background border border-n-weak rounded-2xl shadow-2xl w-[720px] max-w-[95vw] max-h-[85vh] flex overflow-hidden z-10">
+      <div
+        class="relative bg-n-background border border-n-weak rounded-2xl shadow-2xl w-[720px] max-w-[95vw] max-h-[85vh] flex overflow-hidden z-10"
+      >
         <!-- Sidebar: Pipeline list -->
         <div class="w-52 border-r border-n-weak bg-n-alpha-1/50 flex flex-col">
           <div class="px-3 py-3 border-b border-n-weak">
@@ -130,7 +147,10 @@ const onClose = () => emit('close');
                   ? 'bg-n-violet-3/30 text-n-violet-11 border border-n-violet-7/30'
                   : 'text-n-slate-11 hover:bg-n-alpha-2'
               "
-              @click="selectedPipelineId = p.id; confirmDelete = false"
+              @click="
+                selectedPipelineId = p.id;
+                confirmDelete = false;
+              "
             >
               {{ p.name || 'Sem nome' }}
               <span class="block text-xxs text-n-slate-9 mt-0.5">
@@ -161,7 +181,7 @@ const onClose = () => emit('close');
                 v-model="selectedPipeline.name"
                 type="text"
                 class="pipeline-name-input w-full bg-n-alpha-1 border border-n-weak rounded-lg px-3 py-2 text-sm text-n-slate-12 placeholder:text-n-slate-9 focus:outline-none focus:ring-2 focus:ring-n-violet-7/30 focus:border-n-violet-7"
-                placeholder="Ex: Pipeline de Vendas"
+                :placeholder="t('CONVERSATION.PIPELINE.CONFIG_NAME_PLACEHOLDER')"
               />
             </div>
 
@@ -180,7 +200,9 @@ const onClose = () => emit('close');
                 <template #item="{ element, index }">
                   <div class="flex items-center gap-2 p-2 bg-n-alpha-1 rounded-lg border border-n-weak group">
                     <!-- Drag handle -->
-                    <div class="drag-handle cursor-grab active:cursor-grabbing text-n-slate-9 hover:text-n-slate-11">
+                    <div
+                      class="drag-handle cursor-grab active:cursor-grabbing text-n-slate-9 hover:text-n-slate-11"
+                    >
                       <fluent-icon icon="re-order-dots-vertical" size="16" />
                     </div>
 
@@ -228,7 +250,10 @@ const onClose = () => emit('close');
             </div>
 
             <!-- Delete pipeline -->
-            <div v-if="localPipelines.length > 1" class="mt-6 pt-4 border-t border-n-weak">
+            <div
+              v-if="localPipelines.length > 1"
+              class="mt-6 pt-4 border-t border-n-weak"
+            >
               <button
                 class="px-3 py-2 text-xs font-medium rounded-lg transition-all"
                 :class="
@@ -238,13 +263,19 @@ const onClose = () => emit('close');
                 "
                 @click="deletePipeline"
               >
-                {{ confirmDelete ? 'Confirmar exclusão?' : t('CONVERSATION.PIPELINE.CONFIG_DELETE') }}
+                {{
+                  confirmDelete
+                    ? t('CONVERSATION.PIPELINE.CONFIG_DELETE_CONFIRM')
+                    : t('CONVERSATION.PIPELINE.CONFIG_DELETE')
+                }}
               </button>
             </div>
           </div>
 
           <!-- Footer -->
-          <div class="flex items-center justify-end gap-2 px-5 py-3 border-t border-n-weak">
+          <div
+            class="flex items-center justify-end gap-2 px-5 py-3 border-t border-n-weak"
+          >
             <button
               class="px-4 py-2 text-sm font-medium text-n-slate-11 bg-n-alpha-1 border border-n-weak rounded-lg hover:bg-n-alpha-2 transition-colors"
               @click="onClose"

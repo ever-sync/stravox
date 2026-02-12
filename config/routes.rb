@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   # AUTH STARTS
   mount_devise_token_auth_for 'User', at: 'auth', controllers: {

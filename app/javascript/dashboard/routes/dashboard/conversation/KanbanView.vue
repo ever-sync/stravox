@@ -132,8 +132,7 @@ const pipelineConversations = computed(() => {
     result = result.filter(c => {
       const contactName = (c.meta?.sender?.name || '').toLowerCase();
       const id = String(c.id);
-      const lastMsg =
-        c.last_non_activity_message?.content || '';
+      const lastMsg = c.last_non_activity_message?.content || '';
       return (
         contactName.includes(query) ||
         id.includes(query) ||
@@ -187,7 +186,8 @@ const syncFromStore = () => {
   });
 
   pipelineConversations.value.forEach(c => {
-    const stageId = c.custom_attributes?.pipeline_stage || stages[0]?.id || 'lead';
+    const stageId =
+      c.custom_attributes?.pipeline_stage || stages[0]?.id || 'lead';
     if (grouped[stageId]) {
       grouped[stageId].push(c);
     } else {
@@ -456,10 +456,7 @@ const onChangeInbox = inboxId => {
     </main>
 
     <!-- Outcome drop zones (appear on drag) -->
-    <OutcomeDropZones
-      :visible="isDragging"
-      @outcome="onOutcome"
-    />
+    <OutcomeDropZones :visible="isDragging" @outcome="onOutcome" />
 
     <!-- Pipeline config modal -->
     <PipelineConfigModal

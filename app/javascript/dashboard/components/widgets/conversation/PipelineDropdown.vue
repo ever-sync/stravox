@@ -52,7 +52,10 @@ export default {
 
 <template>
   <div class="multiselect-wrap--small">
-    <ContactDetailsItem compact :title="$t('CONVERSATION_SIDEBAR.PIPELINE_LABEL')" />
+    <ContactDetailsItem
+      compact
+      :title="$t('CONVERSATION_SIDEBAR.PIPELINE_LABEL')"
+    />
     <MultiselectDropdown
       :options="allStages"
       :selected-item="selectedStage"

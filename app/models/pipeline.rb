@@ -6,7 +6,7 @@
 #  name        :string           not null
 #  description :text
 #  position    :integer          default(0), not null
-#  color       :string           default("#1f93ff")
+#  color       :string           default('#1f93ff')
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  account_id  :bigint           not null
@@ -17,6 +17,8 @@
 #  index_pipelines_on_account_id_and_name  (account_id,name) UNIQUE
 #  index_pipelines_on_position             (position)
 #
+
+# frozen_string_literal: true
 
 class Pipeline < ApplicationRecord
   belongs_to :account

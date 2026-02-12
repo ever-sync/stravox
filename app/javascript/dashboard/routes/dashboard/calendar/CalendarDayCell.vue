@@ -14,11 +14,8 @@ const props = defineProps({
 
 const emit = defineEmits(['select']);
 
-const { t: _t } = useI18n();
 
-const isCurrentMonth = computed(() =>
-  isSameMonth(props.day, props.currentMonth)
-);
+const isCurrentMonth = computed(() => isSameMonth(props.day, props.currentMonth));
 const dayNumber = computed(() => props.day.getDate());
 
 const statusCounts = computed(() => {
@@ -30,17 +27,11 @@ const statusCounts = computed(() => {
   return counts;
 });
 
-const hasDots = computed(
-  () => props.conversations.length > 0
-);
+const hasDots = computed(() => props.conversations.length > 0);
 
-const visibleConversations = computed(
-  () => props.conversations.slice(0, 3)
-);
+const visibleConversations = computed(() => props.conversations.slice(0, 3));
 
-const moreCount = computed(
-  () => Math.max(0, props.conversations.length - 3)
-);
+const moreCount = computed(() => Math.max(0, props.conversations.length - 3));
 
 const onSelect = () => emit('select', props.day);
 </script>

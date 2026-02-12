@@ -5,7 +5,7 @@
 #  id          :bigint           not null, primary key
 #  name        :string           not null
 #  position    :integer          default(0), not null
-#  color       :string           default("#1f93ff")
+#  color       :string           default('#1f93ff')
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  pipeline_id :bigint           not null
@@ -15,6 +15,8 @@
 #  index_pipeline_stages_on_pipeline_id               (pipeline_id)
 #  index_pipeline_stages_on_pipeline_id_and_position  (pipeline_id,position)
 #
+
+# frozen_string_literal: true
 
 class PipelineStage < ApplicationRecord
   belongs_to :pipeline

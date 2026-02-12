@@ -235,8 +235,10 @@ watch(
           type="button"
           class="flex items-center justify-center size-10 rounded-xl transition-all duration-200"
           :class="{
-            'bg-gradient-to-br from-n-violet-7 to-n-iris-8 text-white shadow-lg shadow-n-violet-9/40': isActive || hasActiveChild,
-            'text-n-slate-11 hover:bg-n-violet-4/50 hover:text-n-violet-11 bg-n-violet-3/30': !isActive && !hasActiveChild,
+            'bg-gradient-to-br from-n-violet-7 to-n-iris-8 text-white shadow-lg shadow-n-violet-9/40':
+              isActive || hasActiveChild,
+            'text-n-slate-11 hover:bg-n-violet-4/50 hover:text-n-violet-11 bg-n-violet-3/30':
+              !isActive && !hasActiveChild,
           }"
           :title="label"
           @click="hasChildren ? handleCollapsedClick() : undefined"
@@ -258,10 +260,10 @@ watch(
     <!-- Expanded State -->
     <template v-else>
       <SidebarGroupHeader
-        :icon
-        :name
-        :label
-        :to
+        :icon="icon"
+        :name="name"
+        :label="label"
+        :to="to"
         :getter-keys="getterKeys"
         :is-active="isActive"
         :has-active-child="hasActiveChild"
@@ -305,7 +307,11 @@ watch(
   width: 0.125rem;
   /* 0.5px */
   height: 100%;
-  background: linear-gradient(180deg, rgba(135, 105, 230, 0.3) 0%, rgba(135, 105, 230, 0.1) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(135, 105, 230, 0.3) 0%,
+    rgba(135, 105, 230, 0.1) 100%
+  );
 }
 
 .sidebar-group-children .child-item:first-child::before {

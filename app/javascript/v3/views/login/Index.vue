@@ -229,8 +229,7 @@ export default {
   <main class="flex min-h-screen bg-n-slate-1">
     <!-- Left Panel - Testimonial with woman image -->
     <section
-      class="hidden lg:flex lg:w-1/2 relative overflow-hidden"
-      style="background: linear-gradient(135deg, #4338ca 0%, #6366f1 50%, #818cf8 100%);"
+      class="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-indigo-700 via-indigo-500 to-indigo-400"
     >
       <!-- Woman background image -->
       <img
@@ -296,8 +295,22 @@ export default {
           <div class="flex items-center justify-center w-9 h-9 bg-gradient-to-br from-violet-500/15 to-indigo-500/15 rounded-xl">
             <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
               <defs>
-                <linearGradient id="vt-m1" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#4F46E5"/>
+                <linearGradient
+                  id="vt-m1"
+                  x1="0"
+                  y1="0"
+                  x2="32"
+                  y2="32"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop
+                    offset="0%"
+                    stop-color="#7C3AED"
+                  />
+                  <stop
+                    offset="100%"
+                    stop-color="#4F46E5"
+                  />
                 </linearGradient>
               </defs>
               <circle cx="16" cy="16" r="16" fill="url(#vt-m1)"/>
@@ -399,7 +412,10 @@ export default {
 
           <!-- Social Login -->
           <div class="flex flex-col gap-3">
-            <div v-if="showGoogleOAuth" class="[&>div>a]:!rounded-xl [&>div>a]:!border-n-slate-3 [&>div>a]:!shadow-sm [&>div>a]:hover:!bg-slate-50">
+            <div
+              v-if="showGoogleOAuth"
+              class="[&>div>a]:!rounded-xl [&>div>a]:!border-n-slate-3 [&>div>a]:!shadow-sm [&>div>a]:hover:!bg-slate-50"
+            >
               <GoogleOAuthButton />
             </div>
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # TODO: lets use HTTParty instead of RestClient
 class ::StravoXHub
   BASE_URL = ENV.fetch('STRAVOX_HUB_URL', 'https://hub.2.stravox.com')

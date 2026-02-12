@@ -162,6 +162,7 @@ onMounted(async () => {
             "
             @click="viewMode = mode"
           >
+            <!-- eslint-disable-next-line @intlify/vue-i18n/no-dynamic-keys -->
             {{ t(`CONVERSATION.CALENDAR.${mode.toUpperCase()}`) }}
           </button>
         </div>

@@ -32,9 +32,11 @@ const count = computed(() =>
     :to="to"
     :title="label"
     :class="{
-      'text-n-slate-12 bg-gradient-to-r from-n-violet-5/60 via-n-violet-4/40 to-transparent font-medium shadow-[inset_0_0_0_1px_rgba(135,105,230,0.25)]': isActive && !hasActiveChild,
+      'text-n-slate-12 bg-gradient-to-r from-n-violet-5/60 via-n-violet-4/40 to-transparent font-medium shadow-[inset_0_0_0_1px_rgba(135,105,230,0.25)]':
+        isActive && !hasActiveChild,
       'text-n-slate-12 font-medium': hasActiveChild,
-      'text-n-slate-11 hover:bg-gradient-to-r hover:from-n-violet-4/40 hover:via-n-violet-3/30 hover:to-transparent': !isActive && !hasActiveChild,
+      'text-n-slate-11 hover:bg-gradient-to-r hover:from-n-violet-4/40 hover:via-n-violet-3/30 hover:to-transparent':
+        !isActive && !hasActiveChild,
     }"
     @click.stop="emit('toggle')"
   >
@@ -42,8 +44,10 @@ const count = computed(() =>
       <div 
         class="flex items-center justify-center size-6 rounded-md transition-all duration-200"
         :class="{
-          'bg-gradient-to-br from-n-violet-8 to-n-iris-9 text-white shadow-md shadow-n-violet-9/30': isActive || hasActiveChild,
-          'bg-n-violet-4/40 text-n-violet-11 group-hover:bg-n-violet-5/50': !isActive && !hasActiveChild,
+          'bg-gradient-to-br from-n-violet-8 to-n-iris-9 text-white shadow-md shadow-n-violet-9/30':
+            isActive || hasActiveChild,
+          'bg-n-violet-4/40 text-n-violet-11 group-hover:bg-n-violet-5/50':
+            !isActive && !hasActiveChild,
         }"
       >
         <Icon :icon="icon" class="size-3.5" />

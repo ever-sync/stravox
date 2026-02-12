@@ -51,6 +51,8 @@
 #  index_conversations_on_waiting_since               (waiting_since)
 #
 
+# frozen_string_literal: true
+
 class Conversation < ApplicationRecord
   include Labelable
   include LlmFormattable

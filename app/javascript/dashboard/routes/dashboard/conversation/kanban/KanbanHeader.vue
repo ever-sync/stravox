@@ -44,7 +44,10 @@ const sortOptions = [
     key: SORT_BY_TYPE.CREATED_AT_DESC,
     label: 'CONVERSATION.KANBAN.SORT_CREATED',
   },
-  { key: SORT_BY_TYPE.PRIORITY_DESC, label: 'CONVERSATION.KANBAN.SORT_PRIORITY' },
+  {
+    key: SORT_BY_TYPE.PRIORITY_DESC,
+    label: 'CONVERSATION.KANBAN.SORT_PRIORITY',
+  },
 ];
 
 const onChangeAssignee = key => emit('changeAssignee', key);
@@ -72,11 +75,7 @@ const onOpenConfig = () => emit('openConfig');
             class="appearance-none bg-n-violet-3/20 border border-n-violet-7/30 rounded-lg pl-3 pr-8 py-1.5 text-xs font-semibold text-n-violet-11 cursor-pointer hover:bg-n-violet-3/40 focus:outline-none focus:ring-2 focus:ring-n-violet-7/30 transition-colors"
             @change="onChangePipeline"
           >
-            <option
-              v-for="p in pipelines"
-              :key="p.id"
-              :value="p.id"
-            >
+            <option v-for="p in pipelines" :key="p.id" :value="p.id">
               {{ p.name }}
             </option>
           </select>
@@ -133,11 +132,7 @@ const onOpenConfig = () => emit('openConfig');
             <option value="">
               {{ t('CONVERSATION.KANBAN.FILTER_INBOX') }}
             </option>
-            <option
-              v-for="inbox in inboxes"
-              :key="inbox.id"
-              :value="inbox.id"
-            >
+            <option v-for="inbox in inboxes" :key="inbox.id" :value="inbox.id">
               {{ inbox.name }}
             </option>
           </select>
@@ -149,7 +144,9 @@ const onOpenConfig = () => emit('openConfig');
         </div>
 
         <!-- Assignee tabs -->
-        <div class="flex items-center bg-n-alpha-1 rounded-lg border border-n-weak p-0.5">
+        <div
+          class="flex items-center bg-n-alpha-1 rounded-lg border border-n-weak p-0.5"
+        >
           <button
             v-for="tab in assigneeTabs"
             :key="tab.key"
@@ -161,6 +158,7 @@ const onOpenConfig = () => emit('openConfig');
             "
             @click="onChangeAssignee(tab.key)"
           >
+            <!-- eslint-disable-next-line @intlify/vue-i18n/no-dynamic-keys -->
             {{ t(tab.label) }}
           </button>
         </div>
@@ -172,11 +170,8 @@ const onOpenConfig = () => emit('openConfig');
             class="appearance-none bg-n-alpha-1 border border-n-weak rounded-lg pl-3 pr-8 py-1.5 text-xs font-medium text-n-slate-11 cursor-pointer hover:border-n-slate-7 focus:outline-none focus:ring-2 focus:ring-n-violet-7/30"
             @change="onChangeSort"
           >
-            <option
-              v-for="opt in sortOptions"
-              :key="opt.key"
-              :value="opt.key"
-            >
+            <option v-for="opt in sortOptions" :key="opt.key" :value="opt.key">
+              <!-- eslint-disable-next-line @intlify/vue-i18n/no-dynamic-keys -->
               {{ t(opt.label) }}
             </option>
           </select>
