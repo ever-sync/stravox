@@ -41,7 +41,7 @@ const count = computed(() =>
     @click.stop="emit('toggle')"
   >
     <div v-if="icon" class="relative flex items-center gap-2">
-      <div 
+      <div
         class="flex items-center justify-center size-6 rounded-md transition-all duration-200"
         :class="{
           'bg-gradient-to-br from-n-violet-8 to-n-iris-9 text-white shadow-md shadow-n-violet-9/30':
@@ -71,7 +71,8 @@ const count = computed(() =>
         v-if="dynamicCount && !expandable"
         class="rounded-md capitalize text-xs leading-5 font-semibold text-center px-1.5 flex-shrink-0 bg-n-violet-5/50 text-n-violet-11"
         :class="{
-          'bg-gradient-to-r from-n-violet-6/60 to-n-violet-5/40 text-n-slate-12': isActive,
+          'bg-gradient-to-r from-n-violet-6/60 to-n-violet-5/40 text-n-slate-12':
+            isActive,
         }"
       >
         {{ count }}

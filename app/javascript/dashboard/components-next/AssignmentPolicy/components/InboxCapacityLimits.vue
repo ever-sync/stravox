@@ -77,6 +77,7 @@ const getInboxName = inboxId => {
   <div class="py-4 flex-col flex gap-3">
     <div class="flex items-center w-full gap-8 justify-between pt-1 pb-3">
       <label class="text-sm font-medium text-n-slate-12">
+        <!-- eslint-disable-next-line @intlify/vue-i18n/no-dynamic-keys -->
         {{ t(`${BASE_KEY}.FORM.INBOX_CAPACITY_LIMIT.LABEL`) }}
       </label>
 
@@ -102,6 +103,7 @@ const getInboxName = inboxId => {
       class="custom-dashed-border flex items-center justify-center py-6 w-full"
     >
       <span class="text-sm text-n-slate-11">
+        <!-- eslint-disable-next-line @intlify/vue-i18n/no-dynamic-keys -->
         {{ t(`${BASE_KEY}.FORM.INBOX_CAPACITY_LIMIT.EMPTY_STATE`) }}
       </span>
     </div>
@@ -132,12 +134,14 @@ const getInboxName = inboxId => {
               class="text-sm text-n-slate-12 ltr:pr-2 rtl:pl-2 truncate min-w-0 flex-shrink"
               :title="
                 t(
+                  // eslint-disable-next-line @intlify/vue-i18n/no-dynamic-keys
                   `${BASE_KEY}.FORM.INBOX_CAPACITY_LIMIT.FIELD.MAX_CONVERSATIONS`
                 )
               "
             >
               {{
                 t(
+                  // eslint-disable-next-line @intlify/vue-i18n/no-dynamic-keys
                   `${BASE_KEY}.FORM.INBOX_CAPACITY_LIMIT.FIELD.MAX_CONVERSATIONS`
                 )
               }}
@@ -157,6 +161,7 @@ const getInboxName = inboxId => {
                   : 'placeholder:text-n-slate-10 text-n-slate-12',
               ]"
               :placeholder="
+                // eslint-disable-next-line @intlify/vue-i18n/no-dynamic-keys
                 t(`${BASE_KEY}.FORM.INBOX_CAPACITY_LIMIT.FIELD.SET_LIMIT`)
               "
               @blur="handleLimitChange(limit)"
