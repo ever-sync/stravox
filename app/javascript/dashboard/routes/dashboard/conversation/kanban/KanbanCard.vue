@@ -216,10 +216,7 @@ const onContextMenu = e => {
           temperatureConfig.borderColor,
         ]"
       >
-        <span
-          :class="temperatureConfig.icon"
-          class="text-xs"
-        />
+        <span :class="temperatureConfig.icon" class="text-xs" />
         {{ temperatureConfig.label }}
       </div>
       <div v-else />

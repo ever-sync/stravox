@@ -141,7 +141,9 @@ onMounted(async () => {
 <template>
   <div class="flex flex-col h-full overflow-hidden bg-n-background">
     <!-- Header -->
-    <header class="flex items-center justify-between gap-4 px-4 py-3 border-b border-n-weak flex-wrap">
+    <header
+      class="flex items-center justify-between gap-4 px-4 py-3 border-b border-n-weak flex-wrap"
+    >
       <div class="flex items-center gap-3">
         <h1 class="text-xl font-semibold text-n-slate-12">
           {{ t('CONVERSATION.CALENDAR.TITLE') }}
@@ -150,7 +152,9 @@ onMounted(async () => {
 
       <div class="flex items-center gap-2">
         <!-- View mode tabs -->
-        <div class="flex items-center bg-n-alpha-1 rounded-lg border border-n-weak p-0.5">
+        <div
+          class="flex items-center bg-n-alpha-1 rounded-lg border border-n-weak p-0.5"
+        >
           <button
             v-for="mode in ['month', 'week', 'day']"
             :key="mode"
@@ -228,7 +232,9 @@ onMounted(async () => {
               </p>
               <p
                 class="text-lg font-semibold"
-                :class="isDateToday(day) ? 'text-n-violet-9' : 'text-n-slate-12'"
+                :class="
+                  isDateToday(day) ? 'text-n-violet-9' : 'text-n-slate-12'
+                "
               >
                 {{ format(day, 'd') }}
               </p>
@@ -252,7 +258,10 @@ onMounted(async () => {
 
       <!-- Day view -->
       <div v-else-if="viewMode === 'day'" class="flex-1 overflow-y-auto p-4">
-        <div v-if="selectedDayConversations.length === 0" class="flex flex-col items-center justify-center py-16">
+        <div
+          v-if="selectedDayConversations.length === 0"
+          class="flex flex-col items-center justify-center py-16"
+        >
           <fluent-icon icon="calendar" size="48" class="text-n-slate-8 mb-3" />
           <p class="text-sm text-n-slate-10">
             {{ t('CONVERSATION.CALENDAR.NO_EVENTS') }}
@@ -273,7 +282,9 @@ onMounted(async () => {
           v-if="viewMode === 'month' && selectedDay"
           class="w-80 border-l border-n-weak bg-n-background flex flex-col overflow-hidden flex-shrink-0"
         >
-          <div class="flex items-center justify-between px-3 py-2.5 border-b border-n-weak">
+          <div
+            class="flex items-center justify-between px-3 py-2.5 border-b border-n-weak"
+          >
             <div>
               <p class="text-sm font-semibold text-n-slate-12">
                 {{ format(selectedDay, 'EEEE') }}
@@ -294,7 +305,11 @@ onMounted(async () => {
               v-if="selectedDayConversations.length === 0"
               class="flex flex-col items-center justify-center py-8 text-center"
             >
-              <fluent-icon icon="calendar" size="32" class="text-n-slate-8 mb-2" />
+              <fluent-icon
+                icon="calendar"
+                size="32"
+                class="text-n-slate-8 mb-2"
+              />
               <p class="text-xs text-n-slate-10">
                 {{ t('CONVERSATION.CALENDAR.NO_EVENTS') }}
               </p>
@@ -310,7 +325,11 @@ onMounted(async () => {
           <div class="px-3 py-2 border-t border-n-weak text-center">
             <span class="text-xxs text-n-slate-10">
               {{ selectedDayConversations.length }}
-              {{ selectedDayConversations.length === 1 ? 'conversation' : 'conversations' }}
+              {{
+                selectedDayConversations.length === 1
+                  ? 'conversation'
+                  : 'conversations'
+              }}
             </span>
           </div>
         </div>

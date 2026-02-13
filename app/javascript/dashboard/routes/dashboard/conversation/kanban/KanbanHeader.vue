@@ -2,8 +2,6 @@
 import { useI18n } from 'vue-i18n';
 import wootConstants from 'dashboard/constants/globals';
 
-const { ASSIGNEE_TYPE, SORT_BY_TYPE } = wootConstants;
-
 const props = defineProps({
   activeAssigneeTab: { type: String, default: 'me' },
   activeSort: { type: String, default: 'last_activity_at_desc' },
@@ -23,6 +21,8 @@ const emit = defineEmits([
   'changePipeline',
   'openConfig',
 ]);
+
+const { ASSIGNEE_TYPE, SORT_BY_TYPE } = wootConstants;
 
 const { t } = useI18n();
 

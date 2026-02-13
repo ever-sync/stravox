@@ -75,9 +75,7 @@ describe('useBranding', () => {
 
     it('should be case-sensitive for "StravoX"', () => {
       const { replaceInstallationName } = useBranding();
-      const result = replaceInstallationName(
-        'Welcome to stravox and STRAVOX'
-      );
+      const result = replaceInstallationName('Welcome to stravox and STRAVOX');
 
       expect(result).toBe('Welcome to stravox and STRAVOX');
     });

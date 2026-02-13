@@ -10,8 +10,7 @@ describe('#MessageFormatter', () => {
       );
     });
     it('should format correctly', () => {
-      const message =
-        'StravoX is an opensource tool. https://www.stravox.com';
+      const message = 'StravoX is an opensource tool. https://www.stravox.com';
       expect(new MessageFormatter(message).formattedMessage).toMatch(
         '<p>StravoX is an opensource tool. <a href="https://www.stravox.com" class="link" rel="noreferrer noopener nofollow" target="_blank">https://www.stravox.com</a></p>'
       );

@@ -1,6 +1,5 @@
 <script setup>
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { isSameMonth } from 'date-fns';
 import CalendarEventCard from './CalendarEventCard.vue';
 
@@ -14,8 +13,9 @@ const props = defineProps({
 
 const emit = defineEmits(['select']);
 
-
-const isCurrentMonth = computed(() => isSameMonth(props.day, props.currentMonth));
+const isCurrentMonth = computed(() =>
+  isSameMonth(props.day, props.currentMonth)
+);
 const dayNumber = computed(() => props.day.getDate());
 
 const statusCounts = computed(() => {
@@ -35,6 +35,7 @@ const moreCount = computed(() => Math.max(0, props.conversations.length - 3));
 
 const onSelect = () => emit('select', props.day);
 </script>
+
 <template>
   <div
     class="flex flex-col border border-n-weak/50 p-1 min-h-[100px] cursor-pointer transition-colors duration-150 hover:bg-n-alpha-1"
@@ -91,7 +92,7 @@ const onSelect = () => emit('select', props.day);
         :conversation="conv"
       />
       <span v-if="moreCount > 0" class="text-xxs text-n-slate-10 pl-1">
-        +{{ moreCount }}
+        {{ $t('COMMON.PLUS') }}{{ moreCount }}
       </span>
     </div>
   </div>

@@ -3,14 +3,12 @@ import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import wootConstants from 'dashboard/constants/globals';
 
-const { SNOOZE_OPTIONS } = wootConstants;
-import { findSnoozeTime } from 'dashboard/helper/snoozeHelpers';
-
 defineProps({
   show: { type: Boolean, default: false },
 });
-
 const emit = defineEmits(['confirm', 'cancel']);
+const { SNOOZE_OPTIONS } = wootConstants;
+import { findSnoozeTime } from 'dashboard/helper/snoozeHelpers';
 
 const { t } = useI18n();
 

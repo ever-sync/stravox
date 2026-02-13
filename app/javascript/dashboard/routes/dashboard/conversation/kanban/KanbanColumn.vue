@@ -143,21 +143,14 @@ const onOpenContextMenu = (event, chat) => {
         @end="onDragEnd"
       >
         <template #item="{ element }">
-          <KanbanCard
-            :chat="element"
-            @open-context-menu="onOpenContextMenu"
-          />
+          <KanbanCard :chat="element" @open-context-menu="onOpenContextMenu" />
         </template>
         <template #footer>
           <div
             v-if="!count && !loading"
             class="flex flex-col items-center justify-center py-8 text-center"
           >
-            <fluent-icon
-              icon="chat"
-              size="32"
-              class="text-n-slate-8 mb-2"
-            />
+            <fluent-icon icon="chat" size="32" class="text-n-slate-8 mb-2" />
             <p class="text-xs text-n-slate-10">
               {{ t('CONVERSATION.PIPELINE.EMPTY_STAGE') }}
             </p>

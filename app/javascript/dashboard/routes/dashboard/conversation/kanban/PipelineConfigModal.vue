@@ -22,7 +22,8 @@ watch(
   show => {
     if (show) {
       localPipelines.value = JSON.parse(JSON.stringify(props.pipelines));
-      selectedPipelineId.value = props.activePipelineId || localPipelines.value[0]?.id || '';
+      selectedPipelineId.value =
+        props.activePipelineId || localPipelines.value[0]?.id || '';
       confirmDelete.value = false;
     }
   },
@@ -33,7 +34,8 @@ const selectedPipeline = computed(() =>
   localPipelines.value.find(p => p.id === selectedPipelineId.value)
 );
 
-const generateId = () => `stage_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+const generateId = () =>
+  `stage_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
 
 const addStage = () => {
   if (!selectedPipeline.value) return;
@@ -154,7 +156,8 @@ const onClose = () => emit('close');
             >
               {{ p.name || 'Sem nome' }}
               <span class="block text-xxs text-n-slate-9 mt-0.5">
-                {{ p.stages.length }} {{ t('CONVERSATION.PIPELINE.CONFIG_STAGES').toLowerCase() }}
+                {{ p.stages.length }}
+                {{ t('CONVERSATION.PIPELINE.CONFIG_STAGES').toLowerCase() }}
               </span>
             </button>
           </div>
@@ -181,7 +184,9 @@ const onClose = () => emit('close');
                 v-model="selectedPipeline.name"
                 type="text"
                 class="pipeline-name-input w-full bg-n-alpha-1 border border-n-weak rounded-lg px-3 py-2 text-sm text-n-slate-12 placeholder:text-n-slate-9 focus:outline-none focus:ring-2 focus:ring-n-violet-7/30 focus:border-n-violet-7"
-                :placeholder="t('CONVERSATION.PIPELINE.CONFIG_NAME_PLACEHOLDER')"
+                :placeholder="
+                  t('CONVERSATION.PIPELINE.CONFIG_NAME_PLACEHOLDER')
+                "
               />
             </div>
 
@@ -198,7 +203,9 @@ const onClose = () => emit('close');
                 class="space-y-2"
               >
                 <template #item="{ element, index }">
-                  <div class="flex items-center gap-2 p-2 bg-n-alpha-1 rounded-lg border border-n-weak group">
+                  <div
+                    class="flex items-center gap-2 p-2 bg-n-alpha-1 rounded-lg border border-n-weak group"
+                  >
                     <!-- Drag handle -->
                     <div
                       class="drag-handle cursor-grab active:cursor-grabbing text-n-slate-9 hover:text-n-slate-11"
