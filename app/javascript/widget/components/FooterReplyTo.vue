@@ -18,6 +18,7 @@ export default {
       }
 
       const [{ file_type: fileType } = {}] = this.inReplyTo.attachments;
+      // eslint-disable-next-line @intlify/vue-i18n/no-dynamic-keys
       return this.$t(`ATTACHMENTS.${fileType}.CONTENT`);
     },
   },

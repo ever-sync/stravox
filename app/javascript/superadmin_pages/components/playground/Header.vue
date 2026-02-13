@@ -17,6 +17,7 @@ defineProps({
     role="banner"
   >
     <a :href="responseSourcePath" class="text-woot-500 hover:underline mr-4">
+      <!-- eslint-disable-next-line @intlify/vue-i18n/no-raw-text -->
       {{ 'Back' }}
     </a>
     <div
@@ -26,13 +27,16 @@ defineProps({
     </div>
     <div class="flex flex-col h-14 justify-center">
       <h1 id="page-title" class="text-base font-medium text-slate-900">
+        <!-- eslint-disable-next-line @intlify/vue-i18n/no-raw-text -->
         {{ 'Robin AI playground' }}
       </h1>
       <p class="text-sm text-slate-600">
+        <!-- eslint-disable-next-line @intlify/vue-i18n/no-raw-text -->
         {{ 'Chat with the source' }}
         <span class="font-medium">
           {{ responseSourceName }}
         </span>
+        <!-- eslint-disable-next-line @intlify/vue-i18n/no-raw-text -->
         {{ 'and evaluate it’s efficiency.' }}
       </p>
     </div>

@@ -42,7 +42,7 @@ Style/SymbolArray:
 Style/OpenStructUse:
   Enabled: false
 
-StravoX/AttachmentDownload:
+Chatwoot/AttachmentDownload:
   Enabled: true
   Exclude:
     - 'spec/**/*'

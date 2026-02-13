@@ -14,11 +14,8 @@ export function usePolicy() {
   const user = useMapGetter('getCurrentUser');
   const isFeatureEnabled = useMapGetter('accounts/isFeatureEnabledonAccount');
   const isOnStravoXCloud = useMapGetter('globalConfig/isOnStravoXCloud');
-  const isACustomBrandedInstance = useMapGetter(
-    'globalConfig/isACustomBrandedInstance'
-  );
 
-  const { isEnterprise, enterprisePlanName } = useConfig();
+  const { isEnterprise } = useConfig();
   const { accountId } = useAccount();
 
   const getUserPermissionsForAccount = () => {
@@ -50,19 +47,7 @@ export function usePolicy() {
     return true;
   };
 
-  const isPremiumFeature = featureFlag => {
-    if (!featureFlag) return true;
-    return PREMIUM_FEATURES.includes(featureFlag);
-  };
-
-  const hasPremiumEnterprise = computed(() => {
-    return true; // Force premium enterprise
-    // if (isEnterprise) return enterprisePlanName !== 'community';
-    // return true;
-  });
-
-  const shouldShow = (featureFlag, permissions, installationTypes) => {
-    const flag = unref(featureFlag);
+  const shouldShow = (_featureFlag, permissions, installationTypes) => {
     const perms = unref(permissions);
     const installation = unref(installationTypes);
 
@@ -108,7 +93,7 @@ export function usePolicy() {
     */
   };
 
-  const shouldShowPaywall = featureFlag => {
+  const shouldShowPaywall = () => {
     return false;
     /*
     const flag = unref(featureFlag);

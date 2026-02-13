@@ -59,6 +59,7 @@ const allDayClosed = computed(() => {
 
 const replyTimeMessage = computed(() => {
   const replyTimeKey = `REPLY_TIME.${props.replyTime.toUpperCase()}`;
+  // eslint-disable-next-line @intlify/vue-i18n/no-dynamic-keys
   return t(replyTimeKey);
 });
 

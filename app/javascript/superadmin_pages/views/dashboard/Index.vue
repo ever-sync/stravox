@@ -41,6 +41,7 @@ const { accountsCount, usersCount, inboxesCount, conversationsCount } =
   <div class="w-full h-full">
     <header class="main-content__header" role="banner">
       <h1 id="page-title" class="main-content__page-title">
+        <!-- eslint-disable-next-line @intlify/vue-i18n/no-raw-text -->
         {{ 'Admin Dashboard' }}
       </h1>
     </header>
@@ -49,18 +50,22 @@ const { accountsCount, usersCount, inboxesCount, conversationsCount } =
       <div class="report--list">
         <div class="report-card">
           <div class="metric">{{ accountsCount }}</div>
+          <!-- eslint-disable-next-line @intlify/vue-i18n/no-raw-text -->
           <div>{{ 'Accounts' }}</div>
         </div>
         <div class="report-card">
           <div class="metric">{{ usersCount }}</div>
+          <!-- eslint-disable-next-line @intlify/vue-i18n/no-raw-text -->
           <div>{{ 'Users' }}</div>
         </div>
         <div class="report-card">
           <div class="metric">{{ inboxesCount }}</div>
+          <!-- eslint-disable-next-line @intlify/vue-i18n/no-raw-text -->
           <div>{{ 'Inboxes' }}</div>
         </div>
         <div class="report-card">
           <div class="metric">{{ conversationsCount }}</div>
+          <!-- eslint-disable-next-line @intlify/vue-i18n/no-raw-text -->
           <div>{{ 'Conversations' }}</div>
         </div>
       </div>
