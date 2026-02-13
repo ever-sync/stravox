@@ -2,7 +2,7 @@
 import { useI18n } from 'vue-i18n';
 import wootConstants from 'dashboard/constants/globals';
 
-const props = defineProps({
+defineProps({
   activeAssigneeTab: { type: String, default: 'me' },
   activeSort: { type: String, default: 'last_activity_at_desc' },
   searchQuery: { type: String, default: '' },

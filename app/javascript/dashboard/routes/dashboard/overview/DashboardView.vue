@@ -2,7 +2,6 @@
 import { ref, computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore, useMapGetter } from 'dashboard/composables/store';
-import { format } from 'date-fns';
 import Avatar from 'next/avatar/Avatar.vue';
 
 const { t } = useI18n();

@@ -52,14 +52,7 @@ const onOutcomeDrop = (outcome, evt) => {
     <transition name="slide-up">
       <div
         v-if="visible"
-        class="fixed bottom-0 left-0 right-0 z-40 flex items-stretch justify-center gap-4 px-6 pb-6 pt-3"
-        style="
-          background: linear-gradient(
-            to top,
-            rgba(0, 0, 0, 0.15) 0%,
-            transparent 100%
-          );
-        "
+        class="fixed bottom-0 left-0 right-0 z-40 flex items-stretch justify-center gap-4 px-6 pb-6 pt-3 drop-zones-gradient"
       >
         <div v-for="zone in zones" :key="zone.key" class="flex-1 max-w-xs">
           <Draggable
@@ -89,6 +82,10 @@ const onOutcomeDrop = (outcome, evt) => {
 </template>
 
 <style scoped>
+.drop-zones-gradient {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.15) 0%, transparent 100%);
+}
+
 .slide-up-enter-active,
 .slide-up-leave-active {
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);

@@ -1,4 +1,4 @@
-import { computed, unref } from 'vue';
+import { unref } from 'vue';
 import { useMapGetter } from 'dashboard/composables/store';
 import { useAccount } from 'dashboard/composables/useAccount';
 import { useConfig } from 'dashboard/composables/useConfig';
@@ -6,7 +6,6 @@ import {
   getUserPermissions,
   hasPermissions,
 } from 'dashboard/helper/permissionsHelper';
-import { PREMIUM_FEATURES } from 'dashboard/featureFlags';
 
 import { INSTALLATION_TYPES } from 'dashboard/constants/installationTypes';
 
