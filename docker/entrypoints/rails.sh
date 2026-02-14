@@ -11,6 +11,15 @@ fi
 rm -rf /app/tmp/pids/server.pid
 rm -rf /app/tmp/cache/*
 
+# Restore compiled assets (Vite manifest + JS/CSS) when /app/public is a volume mount.
+# The Docker volume overwrites /app/public from the image, so we restore from backup.
+if [ -d "/app/public-assets-backup/vite" ]; then
+  echo "Restoring compiled Vite assets to /app/public..."
+  cp -rf /app/public-assets-backup/vite /app/public/vite
+  cp -rf /app/public-assets-backup/assets /app/public/assets 2>/dev/null || true
+  echo "Vite assets restored."
+fi
+
 echo "Waiting for postgres to become ready...."
 
 # Let DATABASE_URL env take presedence over individual connection params.
