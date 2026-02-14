@@ -1,4 +1,0 @@
-C:\Users\rapha\OneDrive\Documentos\chatwoot\app\javascript\dashboard\routes\dashboard\conversation\kanban\KanbanHeader.vue
-  5:7 'props' is assigned a value but never used. (no-unused-vars)
-C:\Users\rapha\OneDrive\Documentos\chatwoot\app\javascript\dashboard\routes\dashboard\conversation\kanban\OutcomeDropZones.vue
-  56:9 `style` attributes are forbidden. (vue/no-static-inline-styles)
