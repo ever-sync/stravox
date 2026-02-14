@@ -1,10 +1,7 @@
 import { addClasses, removeClasses, toggleClass } from './DOMHelpers';
 import { IFrameHelper } from './IFrameHelper';
 import { isExpandedView } from './settingsHelper';
-import {
-  STRAVOX_CLOSED,
-  STRAVOX_OPENED,
-} from '../widget/constants/sdkEvents';
+import { STRAVOX_CLOSED, STRAVOX_OPENED } from '../widget/constants/sdkEvents';
 import { dispatchWindowEvent } from 'shared/helpers/CustomEventHelper';
 
 export const bubbleSVG =

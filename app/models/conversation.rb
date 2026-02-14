@@ -51,6 +51,8 @@
 #  index_conversations_on_waiting_since               (waiting_since)
 #
 
+# frozen_string_literal: true
+
 class Conversation < ApplicationRecord
   include Labelable
   include LlmFormattable
@@ -66,6 +68,7 @@ class Conversation < ApplicationRecord
   validates :inbox_id, presence: true
   validates :contact_id, presence: true
   before_validation :validate_additional_attributes
+  before_validation :validate_custom_attributes
   before_validation :reset_agent_bot_when_assignee_present
   validates :additional_attributes, jsonb_attributes_length: true
   validates :custom_attributes, jsonb_attributes_length: true
@@ -105,6 +108,7 @@ class Conversation < ApplicationRecord
   belongs_to :contact_inbox
   belongs_to :team, optional: true
   belongs_to :campaign, optional: true
+  belongs_to :pipeline_stage, optional: true, class_name: 'PipelineStage'
 
   has_many :mentions, dependent: :destroy_async
   has_many :messages, dependent: :destroy_async, autosave: true
@@ -245,6 +249,10 @@ class Conversation < ApplicationRecord
     self.additional_attributes = {} unless additional_attributes.is_a?(Hash)
   end
 
+  def validate_custom_attributes
+    self.custom_attributes = {} unless custom_attributes.is_a?(Hash)
+  end
+
   def reset_agent_bot_when_assignee_present
     return if assignee_id.blank?
 
@@ -277,7 +285,7 @@ class Conversation < ApplicationRecord
 
   def list_of_keys
     %w[team_id assignee_id assignee_agent_bot_id status snoozed_until custom_attributes label_list waiting_since
-       first_reply_created_at priority]
+       first_reply_created_at priority pipeline_stage_id]
   end
 
   def allowed_keys?

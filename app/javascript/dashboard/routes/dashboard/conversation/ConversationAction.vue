@@ -6,6 +6,7 @@ import { useAgentsList } from 'dashboard/composables/useAgentsList';
 import ContactDetailsItem from './ContactDetailsItem.vue';
 import MultiselectDropdown from 'shared/components/ui/MultiselectDropdown.vue';
 import ConversationLabels from './labels/LabelBox.vue';
+import PipelineDropdown from 'dashboard/components/widgets/conversation/PipelineDropdown.vue';
 import { CONVERSATION_PRIORITY } from '../../../../shared/constants/messages';
 import { CONVERSATION_EVENTS } from '../../../helper/AnalyticsHelper/events';
 import { useTrack } from 'dashboard/composables';
@@ -17,6 +18,7 @@ export default {
     MultiselectDropdown,
     ConversationLabels,
     NextButton,
+    PipelineDropdown,
   },
   props: {
     conversationId: {
@@ -276,6 +278,10 @@ export default {
         @select="onClickAssignPriority"
       />
     </div>
+    <PipelineDropdown
+      :conversation-id="conversationId"
+      :pipeline-stage-id="currentChat.pipeline_stage_id"
+    />
     <ContactDetailsItem
       compact
       :title="$t('CONVERSATION_SIDEBAR.ACCORDION.CONVERSATION_LABELS')"

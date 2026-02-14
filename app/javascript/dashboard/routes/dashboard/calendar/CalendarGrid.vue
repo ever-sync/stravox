@@ -22,7 +22,7 @@ const props = defineProps({
 
 const emit = defineEmits(['selectDay']);
 
-const { t } = useI18n();
+useI18n();
 
 const weekDays = computed(() => {
   const days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];

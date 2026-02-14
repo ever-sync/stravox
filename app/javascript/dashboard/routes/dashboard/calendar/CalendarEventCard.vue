@@ -72,6 +72,9 @@ const onClick = e => {
         {{ contact.name || `#${conversation.id}` }}
       </p>
     </div>
-    <InboxName :inbox="inbox" class="text-xxs hidden group-hover:block flex-shrink-0" />
+    <InboxName
+      :inbox="inbox"
+      class="text-xxs hidden group-hover:block flex-shrink-0"
+    />
   </div>
 </template>

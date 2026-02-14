@@ -2,7 +2,6 @@
 import { ref, computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore, useMapGetter } from 'dashboard/composables/store';
-import { subDays, getUnixTime, startOfDay, endOfDay, format } from 'date-fns';
 import Avatar from 'next/avatar/Avatar.vue';
 
 const { t } = useI18n();
@@ -12,7 +11,6 @@ const store = useStore();
 const loading = ref(true);
 
 // --- Store getters ---
-const accountSummary = useMapGetter('reports/getAccountSummary');
 const accountConversationMetric = useMapGetter('getAccountConversationMetric');
 const agentConversationMetric = useMapGetter('getAgentConversationMetric');
 const allConversations = useMapGetter('getAllConversations');
@@ -56,14 +54,14 @@ const kpiCards = computed(() => {
       bgColor: 'bg-n-green-3/30',
     },
     {
-      label: 'Pending',
+      label: t('CONVERSATION.DASHBOARD.PENDING'),
       value: metric.pending || pendingCount,
       icon: 'i-lucide-clock',
       color: 'text-n-amber-9',
       bgColor: 'bg-n-amber-3/30',
     },
     {
-      label: 'Snoozed',
+      label: t('CONVERSATION.DASHBOARD.SNOOZED'),
       value: metric.snoozed || snoozedCount,
       icon: 'i-lucide-bell-off',
       color: 'text-n-violet-9',
@@ -80,7 +78,7 @@ const conversationsByInbox = computed(() => {
     const inboxId = c.inbox_id;
     if (!inboxId) return;
     if (!inboxMap[inboxId]) inboxMap[inboxId] = { count: 0, inbox: null };
-    inboxMap[inboxId].count++;
+    inboxMap[inboxId].count += 1;
   });
 
   // Merge with inbox info
@@ -128,18 +126,40 @@ const statusBreakdown = computed(() => {
   const counts = { open: 0, pending: 0, snoozed: 0, resolved: 0 };
   conversations.forEach(c => {
     const s = c.status || 'open';
-    if (counts[s] !== undefined) counts[s]++;
+    if (counts[s] !== undefined) counts[s] += 1;
   });
   const total = conversations.length || 1;
   return [
-    { label: 'Open', count: counts.open, pct: Math.round((counts.open / total) * 100), color: 'bg-n-teal-9' },
-    { label: 'Pending', count: counts.pending, pct: Math.round((counts.pending / total) * 100), color: 'bg-n-amber-9' },
-    { label: 'Snoozed', count: counts.snoozed, pct: Math.round((counts.snoozed / total) * 100), color: 'bg-n-violet-9' },
-    { label: 'Resolved', count: counts.resolved, pct: Math.round((counts.resolved / total) * 100), color: 'bg-n-slate-9' },
+    {
+      label: t('CONVERSATION.DASHBOARD.OPEN'),
+      count: counts.open,
+      pct: Math.round((counts.open / total) * 100),
+      color: 'bg-n-teal-9',
+    },
+    {
+      label: t('CONVERSATION.DASHBOARD.PENDING'),
+      count: counts.pending,
+      pct: Math.round((counts.pending / total) * 100),
+      color: 'bg-n-amber-9',
+    },
+    {
+      label: t('CONVERSATION.DASHBOARD.SNOOZED'),
+      count: counts.snoozed,
+      pct: Math.round((counts.snoozed / total) * 100),
+      color: 'bg-n-violet-9',
+    },
+    {
+      label: t('CONVERSATION.DASHBOARD.RESOLVED'),
+      count: counts.resolved,
+      pct: Math.round((counts.resolved / total) * 100),
+      color: 'bg-n-slate-9',
+    },
   ];
 });
 
-const totalConversations = computed(() => (allConversations.value || []).length);
+const totalConversations = computed(
+  () => (allConversations.value || []).length
+);
 
 // --- Fetch data ---
 onMounted(async () => {
@@ -183,7 +203,9 @@ onMounted(async () => {
         <div>
           <p class="text-2xl font-bold text-n-slate-12 leading-tight">
             <template v-if="loading">
-              <span class="inline-block w-8 h-6 bg-n-alpha-3 rounded animate-pulse" />
+              <span
+                class="inline-block w-8 h-6 bg-n-alpha-3 rounded animate-pulse"
+              />
             </template>
             <template v-else>{{ card.value }}</template>
           </p>
@@ -195,10 +217,17 @@ onMounted(async () => {
     <!-- Status breakdown bar -->
     <section class="rounded-xl border border-n-weak bg-n-background p-4">
       <h2 class="text-sm font-semibold text-n-slate-12 mb-3">
-        Status ({{ totalConversations }})
+        {{
+          t('CONVERSATION.DASHBOARD.STATUS_WITH_COUNT', {
+            count: totalConversations,
+          })
+        }}
       </h2>
       <!-- Stacked bar -->
-      <div v-if="!loading" class="flex h-3 rounded-full overflow-hidden bg-n-alpha-2 mb-3">
+      <div
+        v-if="!loading"
+        class="flex h-3 rounded-full overflow-hidden bg-n-alpha-2 mb-3"
+      >
         <div
           v-for="s in statusBreakdown"
           :key="s.label"
@@ -218,7 +247,9 @@ onMounted(async () => {
         >
           <span :class="s.color" class="w-2.5 h-2.5 rounded-full" />
           <span class="text-xs text-n-slate-11">{{ s.label }}</span>
-          <span class="text-xs font-semibold text-n-slate-12">{{ s.count }}</span>
+          <span class="text-xs font-semibold text-n-slate-12">{{
+            s.count
+          }}</span>
           <span class="text-xxs text-n-slate-9">({{ s.pct }}%)</span>
         </div>
       </div>
@@ -236,18 +267,24 @@ onMounted(async () => {
             <div class="h-5 bg-n-alpha-3 rounded w-full" />
           </div>
         </div>
-        <div v-else-if="conversationsByInbox.length === 0" class="flex flex-col items-center py-8">
+        <div
+          v-else-if="conversationsByInbox.length === 0"
+          class="flex flex-col items-center py-8"
+        >
           <fluent-icon icon="inbox" size="32" class="text-n-slate-8 mb-2" />
-          <p class="text-xs text-n-slate-10">{{ t('CONVERSATION.DASHBOARD.NO_DATA') }}</p>
+          <p class="text-xs text-n-slate-10">
+            {{ t('CONVERSATION.DASHBOARD.NO_DATA') }}
+          </p>
         </div>
         <div v-else class="space-y-3">
-          <div
-            v-for="inbox in conversationsByInbox"
-            :key="inbox.id"
-          >
+          <div v-for="inbox in conversationsByInbox" :key="inbox.id">
             <div class="flex items-center justify-between mb-1">
-              <span class="text-xs text-n-slate-11 truncate">{{ inbox.name }}</span>
-              <span class="text-xs font-semibold text-n-slate-12">{{ inbox.count }}</span>
+              <span class="text-xs text-n-slate-11 truncate">{{
+                inbox.name
+              }}</span>
+              <span class="text-xs font-semibold text-n-slate-12">{{
+                inbox.count
+              }}</span>
             </div>
             <div class="h-2 bg-n-alpha-2 rounded-full overflow-hidden">
               <div
@@ -265,7 +302,11 @@ onMounted(async () => {
           {{ t('CONVERSATION.DASHBOARD.AGENT_PERFORMANCE') }}
         </h2>
         <div v-if="loading" class="space-y-3">
-          <div v-for="i in 4" :key="i" class="animate-pulse flex items-center gap-3">
+          <div
+            v-for="i in 4"
+            :key="i"
+            class="animate-pulse flex items-center gap-3"
+          >
             <div class="w-8 h-8 rounded-full bg-n-alpha-3" />
             <div class="flex-1">
               <div class="h-3 bg-n-alpha-3 rounded w-1/2 mb-1" />
@@ -273,21 +314,32 @@ onMounted(async () => {
             </div>
           </div>
         </div>
-        <div v-else-if="agentMetrics.length === 0" class="flex flex-col items-center py-8">
+        <div
+          v-else-if="agentMetrics.length === 0"
+          class="flex flex-col items-center py-8"
+        >
           <fluent-icon icon="people" size="32" class="text-n-slate-8 mb-2" />
-          <p class="text-xs text-n-slate-10">{{ t('CONVERSATION.DASHBOARD.NO_DATA') }}</p>
+          <p class="text-xs text-n-slate-10">
+            {{ t('CONVERSATION.DASHBOARD.NO_DATA') }}
+          </p>
         </div>
         <div v-else class="space-y-2">
           <!-- Table header -->
           <div class="grid grid-cols-4 gap-2 px-2 pb-2 border-b border-n-weak">
-            <span class="text-xxs font-semibold text-n-slate-10 uppercase col-span-2">
+            <span
+              class="text-xxs font-semibold text-n-slate-10 uppercase col-span-2"
+            >
               {{ t('CONVERSATION.DASHBOARD.AGENT') }}
             </span>
-            <span class="text-xxs font-semibold text-n-slate-10 uppercase text-center">
+            <span
+              class="text-xxs font-semibold text-n-slate-10 uppercase text-center"
+            >
               {{ t('CONVERSATION.DASHBOARD.ACTIVE_CHATS') }}
             </span>
-            <span class="text-xxs font-semibold text-n-slate-10 uppercase text-center">
-              Status
+            <span
+              class="text-xxs font-semibold text-n-slate-10 uppercase text-center"
+            >
+              {{ t('COMMON.STATUS') }}
             </span>
           </div>
           <!-- Agent rows -->
@@ -304,7 +356,9 @@ onMounted(async () => {
                 :status="agent.availabilityStatus"
                 rounded-full
               />
-              <span class="text-xs text-n-slate-12 truncate">{{ agent.name }}</span>
+              <span class="text-xs text-n-slate-12 truncate">{{
+                agent.name
+              }}</span>
             </div>
             <span class="text-sm font-semibold text-n-slate-12 text-center">
               {{ agent.metric?.open || 0 }}

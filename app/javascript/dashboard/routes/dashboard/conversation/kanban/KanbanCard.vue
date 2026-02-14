@@ -46,9 +46,7 @@ const inbox = computed(() => {
   return inboxId ? store.getters['inboxes/getInbox'](inboxId) : {};
 });
 
-const showLabelsSection = computed(
-  () => props.chat.labels?.length > 0
-);
+const showLabelsSection = computed(() => props.chat.labels?.length > 0);
 
 // --- CRM Pipeline fields ---
 const customAttrs = computed(() => props.chat.custom_attributes || {});
@@ -164,7 +162,7 @@ const onContextMenu = e => {
             {{ currentContact.name }}
           </h4>
           <span class="text-xxs text-n-slate-10 leading-tight">
-            #{{ chat.id }}
+            {{ `#${chat.id}` }}
           </span>
         </div>
       </div>
@@ -178,7 +176,7 @@ const onContextMenu = e => {
           v-if="hasUnread"
           class="rounded-full text-xxs font-semibold h-4 leading-4 min-w-[1rem] px-1 text-center text-white bg-gradient-to-r from-n-teal-9 to-n-teal-8 shadow-sm"
         >
-          {{ unreadCount > 9 ? '9+' : unreadCount }}
+          {{ unreadCount > 9 ? $t('CONVERSATION.KANBAN.PLUS_9') : unreadCount }}
         </span>
       </div>
     </div>
@@ -189,7 +187,7 @@ const onContextMenu = e => {
         v-if="lastMessageInChat"
         :message="lastMessageInChat"
         class="text-xs leading-5 text-n-slate-11 line-clamp-2"
-        :show-message-type="true"
+        show-message-type
       />
       <p v-else class="text-xs text-n-slate-10 italic">
         {{ t('CHAT_LIST.NO_MESSAGES') }}
@@ -212,7 +210,11 @@ const onContextMenu = e => {
       <div
         v-if="temperatureConfig"
         class="flex items-center gap-1 px-2 py-0.5 rounded-full text-xxs font-semibold border"
-        :class="[temperatureConfig.bgColor, temperatureConfig.textColor, temperatureConfig.borderColor]"
+        :class="[
+          temperatureConfig.bgColor,
+          temperatureConfig.textColor,
+          temperatureConfig.borderColor,
+        ]"
       >
         <span :class="temperatureConfig.icon" class="text-xs" />
         {{ temperatureConfig.label }}
@@ -229,14 +231,20 @@ const onContextMenu = e => {
     </div>
 
     <!-- Footer: Inbox + Assignee + Priority -->
-    <div class="flex items-center justify-between gap-1 pt-1.5 border-t border-n-weak/50">
+    <div
+      class="flex items-center justify-between gap-1 pt-1.5 border-t border-n-weak/50"
+    >
       <div class="flex items-center gap-2 min-w-0 flex-1">
         <InboxName :inbox="inbox" class="text-xxs min-w-0 truncate" />
         <div
           v-if="showAssignee && assignee.name"
           class="flex items-center gap-0.5 text-xxs text-n-slate-11 truncate"
         >
-          <fluent-icon icon="person" size="10" class="text-n-slate-10 flex-shrink-0" />
+          <fluent-icon
+            icon="person"
+            size="10"
+            class="text-n-slate-10 flex-shrink-0"
+          />
           <span class="truncate">{{ assignee.name }}</span>
         </div>
       </div>

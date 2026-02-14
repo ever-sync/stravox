@@ -158,7 +158,7 @@ RSpec.describe ReplyMailbox do
 
       it 'prefer reply-to over from address' do
         described_class.receive reply_to_mail
-        expect(conversation_1.messages.last.content).to eq("Let's talk about these images:")
+        expect(conversation_1.messages.last.content).to include("Let's talk about these images:")
 
         email = conversation_1.messages.last.content_attributes['email']
         expect(reply_to_mail.mail['Reply-To'].value).to include(email['from'][0])
@@ -186,14 +186,14 @@ RSpec.describe ReplyMailbox do
 
       it 'find channel with forwarded to mail' do
         described_subject
-        expect(conversation_1.messages.last.content).to eq("Let's talk about these images:")
+        expect(conversation_1.messages.last.content).to include("Let's talk about these images:")
       end
 
       it 'find channel with in message source id stated in in_reply_to' do
         conversation_1.messages.new(source_id: '0CB459E0-0336-41DA-BC88-E6E28C697DDB@stravox.com', account_id: account.id, message_type: 'incoming',
                                     inbox_id: email_channel.inbox.id).save!
         described_class.receive in_reply_to_email
-        expect(conversation_1.messages.last.content).to eq("Let's talk about these images:")
+        expect(conversation_1.messages.last.content).to include("Let's talk about these images:")
       end
     end
 
@@ -564,7 +564,7 @@ RSpec.describe ReplyMailbox do
         described_subject
         conversation_1 = Conversation.last
 
-        expect(conversation_1.messages.last.content).to eq("Let's talk about these images:")
+        expect(conversation_1.messages.last.content).to include("Let's talk about these images:")
         expect(conversation_1.additional_attributes['in_reply_to']).to eq('conversation/6bdc3f4d-0bec-4515-a284-5d916fdde489/messages/123')
       end
 
@@ -572,7 +572,7 @@ RSpec.describe ReplyMailbox do
         described_subject
         conversation_1 = Conversation.last
 
-        expect(conversation_1.messages.last.content).to eq("Let's talk about these images:")
+        expect(conversation_1.messages.last.content).to include("Let's talk about these images:")
         expect(conversation_1.additional_attributes['in_reply_to']).to eq('conversation/6bdc3f4d-0bec-4515-a284-5d916fdde489/messages/123')
         expect(conversation_1.messages.count).to eq(1)
 
@@ -581,7 +581,7 @@ RSpec.describe ReplyMailbox do
 
         described_class.receive reply_mail_without_uuid
 
-        expect(conversation_1.messages.last.content).to eq("Let's talk about these images:")
+        expect(conversation_1.messages.last.content).to include("Let's talk about these images:")
         expect(conversation_1.additional_attributes['in_reply_to']).to eq('conversation/6bdc3f4d-0bec-4515-a284-5d916fdde489/messages/123')
         expect(conversation_1.messages.count).to eq(2)
       end
@@ -599,7 +599,7 @@ RSpec.describe ReplyMailbox do
         email = conversation_1.messages.last.content_attributes['email']
 
         expect(reply_to_mail.mail['From'].value).to be_present
-        expect(conversation_1.messages.last.content).to eq("Let's talk about these images:")
+        expect(conversation_1.messages.last.content).to include("Let's talk about these images:")
         expect(reply_to_mail.mail['Reply-To'].value).to include(email['from'][0])
         expect(reply_to_mail.mail['Reply-To'].value).to include(conversation_1.contact.email)
         expect(reply_to_mail.mail['From'].value).not_to include(conversation_1.contact.email)

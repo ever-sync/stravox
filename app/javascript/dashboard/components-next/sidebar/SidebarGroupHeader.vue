@@ -32,18 +32,22 @@ const count = computed(() =>
     :to="to"
     :title="label"
     :class="{
-      'text-n-slate-12 bg-gradient-to-r from-n-violet-5/60 via-n-violet-4/40 to-transparent font-medium shadow-[inset_0_0_0_1px_rgba(135,105,230,0.25)]': isActive && !hasActiveChild,
+      'text-n-slate-12 bg-gradient-to-r from-n-violet-5/60 via-n-violet-4/40 to-transparent font-medium shadow-[inset_0_0_0_1px_rgba(135,105,230,0.25)]':
+        isActive && !hasActiveChild,
       'text-n-slate-12 font-medium': hasActiveChild,
-      'text-n-slate-11 hover:bg-gradient-to-r hover:from-n-violet-4/40 hover:via-n-violet-3/30 hover:to-transparent': !isActive && !hasActiveChild,
+      'text-n-slate-11 hover:bg-gradient-to-r hover:from-n-violet-4/40 hover:via-n-violet-3/30 hover:to-transparent':
+        !isActive && !hasActiveChild,
     }"
     @click.stop="emit('toggle')"
   >
     <div v-if="icon" class="relative flex items-center gap-2">
-      <div 
+      <div
         class="flex items-center justify-center size-6 rounded-md transition-all duration-200"
         :class="{
-          'bg-gradient-to-br from-n-violet-8 to-n-iris-9 text-white shadow-md shadow-n-violet-9/30': isActive || hasActiveChild,
-          'bg-n-violet-4/40 text-n-violet-11 group-hover:bg-n-violet-5/50': !isActive && !hasActiveChild,
+          'bg-gradient-to-br from-n-violet-8 to-n-iris-9 text-white shadow-md shadow-n-violet-9/30':
+            isActive || hasActiveChild,
+          'bg-n-violet-4/40 text-n-violet-11 group-hover:bg-n-violet-5/50':
+            !isActive && !hasActiveChild,
         }"
       >
         <Icon :icon="icon" class="size-3.5" />
@@ -67,7 +71,8 @@ const count = computed(() =>
         v-if="dynamicCount && !expandable"
         class="rounded-md capitalize text-xs leading-5 font-semibold text-center px-1.5 flex-shrink-0 bg-n-violet-5/50 text-n-violet-11"
         :class="{
-          'bg-gradient-to-r from-n-violet-6/60 to-n-violet-5/40 text-n-slate-12': isActive,
+          'bg-gradient-to-r from-n-violet-6/60 to-n-violet-5/40 text-n-slate-12':
+            isActive,
         }"
       >
         {{ count }}

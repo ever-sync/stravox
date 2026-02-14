@@ -27,7 +27,8 @@ export function useConfig() {
    * Indicates whether the current instance is an enterprise version.
    * @type {boolean}
    */
-  const isEnterprise = true; // config.isEnterprise === 'true';
+  const isEnterprise =
+    config.isEnterprise === 'true' || config.isEnterprise === true;
 
   /**
    * The name of the enterprise plan, if applicable.

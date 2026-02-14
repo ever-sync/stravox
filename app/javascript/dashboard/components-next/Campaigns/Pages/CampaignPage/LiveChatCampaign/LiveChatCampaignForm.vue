@@ -98,6 +98,7 @@ const sendersAndBotList = computed(() => [
 
 const getErrorMessage = (field, errorKey) => {
   const baseKey = 'CAMPAIGN.LIVE_CHAT.CREATE.FORM';
+  // eslint-disable-next-line @intlify/vue-i18n/no-dynamic-keys
   return v$.value[field].$error ? t(`${baseKey}.${errorKey}.ERROR`) : '';
 };
 
@@ -312,6 +313,7 @@ defineExpose({ prepareCampaignDetails, isSubmitDisabled });
       <Button
         type="submit"
         :label="
+          // eslint-disable-next-line @intlify/vue-i18n/no-dynamic-keys
           t(`CAMPAIGN.LIVE_CHAT.CREATE.FORM.BUTTONS.${mode.toUpperCase()}`)
         "
         class="w-full"

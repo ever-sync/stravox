@@ -23,16 +23,37 @@ const globalConfig = useMapGetter('globalConfig/get');
     xmlns="http://www.w3.org/2000/svg"
   >
     <defs>
-      <linearGradient id="vortex-grad-1" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+      <linearGradient
+        id="vortex-grad-1"
+        x1="0"
+        y1="0"
+        x2="32"
+        y2="32"
+        gradientUnits="userSpaceOnUse"
+      >
         <stop offset="0%" stop-color="#7C3AED" />
         <stop offset="50%" stop-color="#6D28D9" />
         <stop offset="100%" stop-color="#4F46E5" />
       </linearGradient>
-      <linearGradient id="vortex-grad-2" x1="16" y1="4" x2="16" y2="28" gradientUnits="userSpaceOnUse">
+      <linearGradient
+        id="vortex-grad-2"
+        x1="16"
+        y1="4"
+        x2="16"
+        y2="28"
+        gradientUnits="userSpaceOnUse"
+      >
         <stop offset="0%" stop-color="#A78BFA" />
         <stop offset="100%" stop-color="#818CF8" />
       </linearGradient>
-      <linearGradient id="vortex-grad-3" x1="10" y1="8" x2="22" y2="24" gradientUnits="userSpaceOnUse">
+      <linearGradient
+        id="vortex-grad-3"
+        x1="10"
+        y1="8"
+        x2="22"
+        y2="24"
+        gradientUnits="userSpaceOnUse"
+      >
         <stop offset="0%" stop-color="#C4B5FD" />
         <stop offset="100%" stop-color="#A78BFA" />
       </linearGradient>

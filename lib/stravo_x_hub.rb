@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # TODO: lets use HTTParty instead of RestClient
 class ::StravoXHub
   BASE_URL = ENV.fetch('STRAVOX_HUB_URL', 'https://hub.2.stravox.com')
@@ -20,9 +22,6 @@ class ::StravoXHub
 
   def self.pricing_plan
     'enterprise'
-    # return 'community' unless ::StravoXApp.enterprise?
-
-    # InstallationConfig.find_by(name: 'INSTALLATION_PRICING_PLAN')&.value || 'community'
   end
 
   def self.pricing_plan_quantity

@@ -10,7 +10,6 @@ import SessionStorage from 'shared/helpers/sessionStorage';
 import { useBranding } from 'shared/composables/useBranding';
 
 // components
-import SimpleDivider from '../../components/Divider/SimpleDivider.vue';
 import FormInput from '../../components/Form/Input.vue';
 import GoogleOAuthButton from '../../components/GoogleOauth/Button.vue';
 import Spinner from 'shared/components/Spinner.vue';
@@ -33,7 +32,6 @@ export default {
     GoogleOAuthButton,
     Spinner,
     NextButton,
-    SimpleDivider,
     MfaVerification,
     Icon,
   },
@@ -229,8 +227,7 @@ export default {
   <main class="flex min-h-screen bg-n-slate-1">
     <!-- Left Panel - Testimonial with woman image -->
     <section
-      class="hidden lg:flex lg:w-1/2 relative overflow-hidden"
-      style="background: linear-gradient(135deg, #4338ca 0%, #6366f1 50%, #818cf8 100%);"
+      class="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-indigo-700 via-indigo-500 to-indigo-400"
     >
       <!-- Woman background image -->
       <img
@@ -239,49 +236,117 @@ export default {
         class="absolute inset-0 w-full h-full object-cover object-center mix-blend-overlay opacity-40"
       />
       <!-- Dark gradient overlay for text readability -->
-      <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-indigo-900/30 to-transparent" />
+      <div
+        class="absolute inset-0 bg-gradient-to-t from-black/70 via-indigo-900/30 to-transparent"
+      />
 
       <!-- Content -->
-      <div class="relative z-10 flex flex-col justify-between p-12 w-full h-full">
+      <div
+        class="relative z-10 flex flex-col justify-between p-12 w-full h-full"
+      >
         <!-- Logo (vortex SVG inline + name) -->
         <div class="flex items-center gap-3">
-          <div class="flex items-center justify-center w-10 h-10 bg-white/15 rounded-xl backdrop-blur-md border border-white/20">
-            <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="16" cy="16" r="16" fill="rgba(255,255,255,0.2)"/>
-              <path d="M16 4C9.373 4 4 9.373 4 16c0 2.761.935 5.305 2.506 7.328" stroke="rgba(255,255,255,0.7)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-              <path d="M16 8C11.582 8 8 11.582 8 16c0 1.85.63 3.553 1.685 4.907" stroke="rgba(255,255,255,0.8)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
-              <path d="M16 12c-2.21 0-4 1.79-4 4c0 .92.312 1.767.836 2.443" stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-              <path d="M16 28c6.627 0 12-5.373 12-12c0-2.761-.935-5.305-2.506-7.328" stroke="rgba(255,255,255,0.7)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-              <path d="M16 24c4.418 0 8-3.582 8-8c0-1.85-.63-3.553-1.685-4.907" stroke="rgba(255,255,255,0.8)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
-              <path d="M16 20c2.21 0 4-1.79 4-4c0-.92-.312-1.767-.836-2.443" stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-              <circle cx="16" cy="16" r="2" fill="white" opacity="0.95"/>
+          <div
+            class="flex items-center justify-center w-10 h-10 bg-white/15 rounded-xl backdrop-blur-md border border-white/20"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 32 32"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="16" cy="16" r="16" fill="rgba(255,255,255,0.2)" />
+              <path
+                d="M16 4C9.373 4 4 9.373 4 16c0 2.761.935 5.305 2.506 7.328"
+                stroke="rgba(255,255,255,0.7)"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                fill="none"
+              />
+              <path
+                d="M16 8C11.582 8 8 11.582 8 16c0 1.85.63 3.553 1.685 4.907"
+                stroke="rgba(255,255,255,0.8)"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                fill="none"
+              />
+              <path
+                d="M16 12c-2.21 0-4 1.79-4 4c0 .92.312 1.767.836 2.443"
+                stroke="white"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                fill="none"
+              />
+              <path
+                d="M16 28c6.627 0 12-5.373 12-12c0-2.761-.935-5.305-2.506-7.328"
+                stroke="rgba(255,255,255,0.7)"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                fill="none"
+              />
+              <path
+                d="M16 24c4.418 0 8-3.582 8-8c0-1.85-.63-3.553-1.685-4.907"
+                stroke="rgba(255,255,255,0.8)"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                fill="none"
+              />
+              <path
+                d="M16 20c2.21 0 4-1.79 4-4c0-.92-.312-1.767-.836-2.443"
+                stroke="white"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                fill="none"
+              />
+              <circle cx="16" cy="16" r="2" fill="white" opacity="0.95" />
             </svg>
           </div>
-          <span class="text-white font-bold text-xl tracking-tight">{{ globalConfig.installationName }}</span>
+          <span class="text-white font-bold text-xl tracking-tight">
+            {{ globalConfig.installationName }}
+          </span>
         </div>
 
         <!-- Testimonial Card at bottom -->
         <div class="mt-auto">
           <!-- Quote icon -->
-          <div class="w-11 h-11 flex items-center justify-center bg-white/10 rounded-xl mb-5 backdrop-blur-md border border-white/10">
-            <svg class="w-5 h-5 text-white/80" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+          <div
+            class="w-11 h-11 flex items-center justify-center bg-white/10 rounded-xl mb-5 backdrop-blur-md border border-white/10"
+          >
+            <svg
+              class="w-5 h-5 text-white/80"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"
+              />
             </svg>
           </div>
 
           <!-- Quote text -->
-          <blockquote class="text-white text-2xl font-medium leading-relaxed mb-8 drop-shadow-lg">
-            "{{ $t('LOGIN.TESTIMONIAL.QUOTE') }}"
+          <blockquote
+            class="text-white text-2xl font-medium leading-relaxed mb-8 drop-shadow-lg"
+          >
+            {{ $t('LOGIN.TESTIMONIAL.QUOTE_START') }}
+            {{ $t('LOGIN.TESTIMONIAL.QUOTE') }}
+            {{ $t('LOGIN.TESTIMONIAL.QUOTE_END') }}
           </blockquote>
 
           <!-- Author -->
           <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-white font-semibold text-lg backdrop-blur-md border border-white/20">
+            <div
+              class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-white font-semibold text-lg backdrop-blur-md border border-white/20"
+            >
               {{ $t('LOGIN.TESTIMONIAL.AUTHOR').charAt(0) }}
             </div>
             <div>
-              <div class="text-white font-semibold text-base">{{ $t('LOGIN.TESTIMONIAL.AUTHOR') }}</div>
-              <div class="text-white/70 text-sm">{{ $t('LOGIN.TESTIMONIAL.ROLE') }}</div>
+              <div class="text-white font-semibold text-base">
+                {{ $t('LOGIN.TESTIMONIAL.AUTHOR') }}
+              </div>
+              <div class="text-white/70 text-sm">
+                {{ $t('LOGIN.TESTIMONIAL.ROLE') }}
+              </div>
             </div>
           </div>
         </div>
@@ -293,24 +358,80 @@ export default {
       <div class="w-full max-w-md">
         <!-- Mobile Logo -->
         <div class="flex items-center justify-center gap-3 mb-8 lg:hidden">
-          <div class="flex items-center justify-center w-9 h-9 bg-gradient-to-br from-violet-500/15 to-indigo-500/15 rounded-xl">
-            <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <div
+            class="flex items-center justify-center w-9 h-9 bg-gradient-to-br from-violet-500/15 to-indigo-500/15 rounded-xl"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 32 32"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <defs>
-                <linearGradient id="vt-m1" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#4F46E5"/>
+                <linearGradient
+                  id="vt-m1"
+                  x1="0"
+                  y1="0"
+                  x2="32"
+                  y2="32"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop offset="0%" stop-color="#7C3AED" />
+                  <stop offset="100%" stop-color="#4F46E5" />
                 </linearGradient>
               </defs>
-              <circle cx="16" cy="16" r="16" fill="url(#vt-m1)"/>
-              <path d="M16 4C9.373 4 4 9.373 4 16c0 2.761.935 5.305 2.506 7.328" stroke="#A78BFA" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.9"/>
-              <path d="M16 8C11.582 8 8 11.582 8 16c0 1.85.63 3.553 1.685 4.907" stroke="#C4B5FD" stroke-width="2.2" stroke-linecap="round" fill="none"/>
-              <path d="M16 12c-2.21 0-4 1.79-4 4c0 .92.312 1.767.836 2.443" stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-              <path d="M16 28c6.627 0 12-5.373 12-12c0-2.761-.935-5.305-2.506-7.328" stroke="#A78BFA" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.9"/>
-              <path d="M16 24c4.418 0 8-3.582 8-8c0-1.85-.63-3.553-1.685-4.907" stroke="#C4B5FD" stroke-width="2.2" stroke-linecap="round" fill="none"/>
-              <path d="M16 20c2.21 0 4-1.79 4-4c0-.92-.312-1.767-.836-2.443" stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-              <circle cx="16" cy="16" r="2" fill="white" opacity="0.95"/>
+              <circle cx="16" cy="16" r="16" fill="url(#vt-m1)" />
+              <path
+                d="M16 4C9.373 4 4 9.373 4 16c0 2.761.935 5.305 2.506 7.328"
+                stroke="#A78BFA"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                fill="none"
+                opacity="0.9"
+              />
+              <path
+                d="M16 8C11.582 8 8 11.582 8 16c0 1.85.63 3.553 1.685 4.907"
+                stroke="#C4B5FD"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                fill="none"
+              />
+              <path
+                d="M16 12c-2.21 0-4 1.79-4 4c0 .92.312 1.767.836 2.443"
+                stroke="white"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                fill="none"
+              />
+              <path
+                d="M16 28c6.627 0 12-5.373 12-12c0-2.761-.935-5.305-2.506-7.328"
+                stroke="#A78BFA"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                fill="none"
+                opacity="0.9"
+              />
+              <path
+                d="M16 24c4.418 0 8-3.582 8-8c0-1.85-.63-3.553-1.685-4.907"
+                stroke="#C4B5FD"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                fill="none"
+              />
+              <path
+                d="M16 20c2.21 0 4-1.79 4-4c0-.92-.312-1.767-.836-2.443"
+                stroke="white"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                fill="none"
+              />
+              <circle cx="16" cy="16" r="2" fill="white" opacity="0.95" />
             </svg>
           </div>
-          <span class="text-n-slate-12 font-bold text-xl tracking-tight">{{ globalConfig.installationName }}</span>
+          <span class="text-n-slate-12 font-bold text-xl tracking-tight">
+            {{ globalConfig.installationName }}
+          </span>
         </div>
 
         <!-- Header -->
@@ -363,7 +484,10 @@ export default {
             />
 
             <!-- Forgot password below password field -->
-            <div v-if="!globalConfig.disableUserProfileUpdate" class="flex justify-end -mt-2">
+            <div
+              v-if="!globalConfig.disableUserProfileUpdate"
+              class="flex justify-end -mt-2"
+            >
               <router-link
                 to="auth/reset/password"
                 class="text-xs text-n-slate-10 hover:text-indigo-600 transition-colors font-medium"
@@ -390,16 +514,23 @@ export default {
           <!-- Divider -->
           <div v-if="showGoogleOAuth || showSamlLogin" class="relative my-8">
             <div class="absolute inset-0 flex items-center" aria-hidden="true">
-              <div class="w-full border-t border-n-slate-3"></div>
+              <div class="w-full border-t border-n-slate-3" />
             </div>
             <div class="relative flex justify-center">
-              <span class="bg-n-slate-1 px-3 text-xs uppercase text-n-slate-10 tracking-wider font-medium">{{ $t('COMMON.OR') }}</span>
+              <span
+                class="bg-n-slate-1 px-3 text-xs uppercase text-n-slate-10 tracking-wider font-medium"
+              >
+                {{ $t('COMMON.OR') }}
+              </span>
             </div>
           </div>
 
           <!-- Social Login -->
           <div class="flex flex-col gap-3">
-            <div v-if="showGoogleOAuth" class="[&>div>a]:!rounded-xl [&>div>a]:!border-n-slate-3 [&>div>a]:!shadow-sm [&>div>a]:hover:!bg-slate-50">
+            <div
+              v-if="showGoogleOAuth"
+              class="[&>div>a]:!rounded-xl [&>div>a]:!border-n-slate-3 [&>div>a]:!shadow-sm [&>div>a]:hover:!bg-slate-50"
+            >
               <GoogleOAuthButton />
             </div>
 
@@ -419,9 +550,15 @@ export default {
           </div>
 
           <!-- Signup Link -->
-          <p v-if="showSignupLink" class="mt-8 text-center text-sm text-n-slate-11">
+          <p
+            v-if="showSignupLink"
+            class="mt-8 text-center text-sm text-n-slate-11"
+          >
             {{ $t('LOGIN.SIGNUP_QUESTION') }}
-            <router-link to="auth/signup" class="text-indigo-600 hover:text-indigo-700 font-semibold transition-colors ml-1">
+            <router-link
+              to="auth/signup"
+              class="text-indigo-600 hover:text-indigo-700 font-semibold transition-colors ml-1"
+            >
               {{ $t('LOGIN.CREATE_NEW_ACCOUNT') }}
             </router-link>
           </p>

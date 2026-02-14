@@ -3,24 +3,32 @@ import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import wootConstants from 'dashboard/constants/globals';
 
-const { SNOOZE_OPTIONS } = wootConstants;
-import {
-  findSnoozeTime,
-} from 'dashboard/helper/snoozeHelpers';
-
 defineProps({
   show: { type: Boolean, default: false },
 });
-
 const emit = defineEmits(['confirm', 'cancel']);
+const { SNOOZE_OPTIONS } = wootConstants;
+import { findSnoozeTime } from 'dashboard/helper/snoozeHelpers';
 
 const { t } = useI18n();
 
 const snoozeOptions = [
-  { key: SNOOZE_OPTIONS.AN_HOUR_FROM_NOW, label: 'CONVERSATION.KANBAN.SNOOZE_1H' },
-  { key: SNOOZE_OPTIONS.UNTIL_TOMORROW, label: 'CONVERSATION.KANBAN.SNOOZE_TOMORROW' },
-  { key: SNOOZE_OPTIONS.UNTIL_NEXT_WEEK, label: 'CONVERSATION.KANBAN.SNOOZE_NEXT_WEEK' },
-  { key: SNOOZE_OPTIONS.UNTIL_NEXT_MONTH, label: 'CONVERSATION.KANBAN.SNOOZE_NEXT_MONTH' },
+  {
+    key: SNOOZE_OPTIONS.AN_HOUR_FROM_NOW,
+    label: 'CONVERSATION.KANBAN.SNOOZE_1H',
+  },
+  {
+    key: SNOOZE_OPTIONS.UNTIL_TOMORROW,
+    label: 'CONVERSATION.KANBAN.SNOOZE_TOMORROW',
+  },
+  {
+    key: SNOOZE_OPTIONS.UNTIL_NEXT_WEEK,
+    label: 'CONVERSATION.KANBAN.SNOOZE_NEXT_WEEK',
+  },
+  {
+    key: SNOOZE_OPTIONS.UNTIL_NEXT_MONTH,
+    label: 'CONVERSATION.KANBAN.SNOOZE_NEXT_MONTH',
+  },
 ];
 
 const selectedOption = ref(SNOOZE_OPTIONS.UNTIL_TOMORROW);
@@ -48,7 +56,9 @@ const onCancel = () => {
       />
 
       <!-- Modal -->
-      <div class="relative bg-n-background border border-n-weak rounded-xl shadow-2xl p-6 w-96 max-w-[90vw] z-10">
+      <div
+        class="relative bg-n-background border border-n-weak rounded-xl shadow-2xl p-6 w-96 max-w-[90vw] z-10"
+      >
         <h3 class="text-lg font-semibold text-n-slate-12 mb-1">
           {{ t('CONVERSATION.KANBAN.SNOOZE_TITLE') }}
         </h3>
@@ -73,7 +83,10 @@ const onCancel = () => {
               :value="opt.key"
               class="accent-n-violet-9"
             />
-            <span class="text-sm text-n-slate-12">{{ t(opt.label) }}</span>
+            <span class="text-sm text-n-slate-12">
+              <!-- eslint-disable-next-line @intlify/vue-i18n/no-dynamic-keys -->
+              {{ t(opt.label) }}
+            </span>
           </label>
         </div>
 

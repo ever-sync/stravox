@@ -33,15 +33,16 @@ const shouldRenderComponent = computed(() => {
       :title="label"
       class="flex h-8 items-center gap-2 px-2 py-1 rounded-xl hover:bg-gradient-to-r from-n-violet-3/40 via-n-violet-4/30 to-transparent transition-all duration-200 ease-out group min-w-0"
       :class="{
-        'text-n-slate-12 bg-gradient-to-r from-n-violet-5/50 via-n-violet-4/40 to-transparent active shadow-[inset_0_0_0_1px_rgba(135,105,230,0.15)]': active,
+        'text-n-slate-12 bg-gradient-to-r from-n-violet-5/50 via-n-violet-4/40 to-transparent active shadow-[inset_0_0_0_1px_rgba(135,105,230,0.15)]':
+          active,
       }"
     >
       <component
         :is="component"
         v-if="shouldRenderComponent"
-        :label
-        :icon
-        :active
+        :label="label"
+        :icon="icon"
+        :active="active"
       />
       <template v-else>
         <Icon v-if="icon" :icon="icon" class="size-4 inline-block" />
