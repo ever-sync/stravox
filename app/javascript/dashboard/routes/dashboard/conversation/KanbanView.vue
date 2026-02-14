@@ -436,8 +436,8 @@ const onChangeInbox = inboxId => {
     <OutcomeSummaryBar :conversations="allPipelineConversations" />
 
     <!-- Pipeline columns -->
-    <main class="flex-grow overflow-x-auto overflow-y-hidden">
-      <div class="flex gap-4 h-full pb-4">
+    <main class="flex-1 overflow-x-auto overflow-y-hidden">
+      <div class="flex gap-3 h-full pb-4 min-w-fit">
         <KanbanColumn
           v-for="stage in activePipeline?.stages || []"
           :key="stage.id"

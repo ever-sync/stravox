@@ -82,11 +82,13 @@ const metrics = computed(() => [
 </script>
 
 <template>
-  <div class="flex items-center gap-4 px-1 py-2 flex-wrap">
+  <div
+    class="flex items-center gap-3 px-4 py-3 flex-wrap border-b border-n-weak mb-2"
+  >
     <div
       v-for="metric in metrics"
       :key="metric.label"
-      class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-n-weak bg-n-background"
+      class="flex items-center gap-2 px-4 py-2 rounded-lg border border-n-weak bg-n-background flex-1 min-w-[140px]"
     >
       <div
         class="flex items-center justify-center w-7 h-7 rounded-md"

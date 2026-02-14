@@ -320,7 +320,15 @@
       "WEEK": "Semana",
       "DAY": "Dia",
       "NO_EVENTS": "Nenhuma conversa neste dia",
-      "SNOOZED_UNTIL": "Adiado até {date}"
+      "SNOOZED_UNTIL": "Adiado até {date}",
+      "MON": "Seg",
+      "TUE": "Ter",
+      "WED": "Qua",
+      "THU": "Qui",
+      "FRI": "Sex",
+      "SAT": "Sáb",
+      "SUN": "Dom",
+      "CONVERSATIONS_COUNT": "{count} conversa | {count} conversas"
     },
     "DASHBOARD": {
       "TITLE": "Painel",
@@ -334,7 +342,13 @@
       "NO_DATA": "Sem dados disponíveis",
       "AGENT": "Agente",
       "ACTIVE_CHATS": "Chats ativos",
-      "RESPONSE_TIME": "Tempo de resposta"
+      "RESPONSE_TIME": "Tempo de resposta",
+      "OPEN": "Aberto",
+      "PENDING": "Pendente",
+      "SNOOZED": "Adiado",
+      "RESOLVED": "Resolvido",
+      "STATUS_WITH_COUNT": "Status ({count} conversas)",
+      "STATUS": "Status"
     },
     "PIPELINE": {
       "TITLE": "Pipeline",

@@ -38,7 +38,7 @@ const onSelect = () => emit('select', props.day);
 
 <template>
   <div
-    class="flex flex-col border border-n-weak/50 p-1 min-h-[100px] cursor-pointer transition-colors duration-150 hover:bg-n-alpha-1"
+    class="flex flex-col border border-n-weak/50 p-2 min-h-[120px] cursor-pointer transition-colors duration-150 hover:bg-n-alpha-1"
     :class="[
       isCurrentMonth ? 'bg-n-background' : 'bg-n-alpha-1/30',
       selected ? 'ring-2 ring-n-violet-7 bg-n-violet-3/10' : '',

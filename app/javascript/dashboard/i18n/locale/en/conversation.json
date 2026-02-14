@@ -321,7 +321,15 @@
       "WEEK": "Week",
       "DAY": "Day",
       "NO_EVENTS": "No conversations this day",
-      "SNOOZED_UNTIL": "Snoozed until {date}"
+      "SNOOZED_UNTIL": "Snoozed until {date}",
+      "MON": "Mon",
+      "TUE": "Tue",
+      "WED": "Wed",
+      "THU": "Thu",
+      "FRI": "Fri",
+      "SAT": "Sat",
+      "SUN": "Sun",
+      "CONVERSATIONS_COUNT": "{count} conversation | {count} conversations"
     },
     "DASHBOARD": {
       "TITLE": "Dashboard",
@@ -335,7 +343,13 @@
       "NO_DATA": "No data available",
       "AGENT": "Agent",
       "ACTIVE_CHATS": "Active chats",
-      "RESPONSE_TIME": "Response time"
+      "RESPONSE_TIME": "Response time",
+      "OPEN": "Open",
+      "PENDING": "Pending",
+      "SNOOZED": "Snoozed",
+      "RESOLVED": "Resolved",
+      "STATUS_WITH_COUNT": "Status ({count} conversations)",
+      "STATUS": "Status"
     },
     "PIPELINE": {
       "TITLE": "Pipeline",

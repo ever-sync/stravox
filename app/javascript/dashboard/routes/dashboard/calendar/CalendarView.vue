@@ -15,6 +15,7 @@ import {
   eachDayOfInterval,
   isToday as isDateToday,
 } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import CalendarGrid from './CalendarGrid.vue';
 import CalendarEventCard from './CalendarEventCard.vue';
 
@@ -31,16 +32,18 @@ const loading = ref(false);
 const allConversations = useMapGetter('getAllConversations');
 
 // --- Date navigation ---
+const dateLocale = { locale: ptBR };
+
 const headerTitle = computed(() => {
   if (viewMode.value === 'day' && selectedDay.value) {
-    return format(selectedDay.value, 'EEEE, MMMM d, yyyy');
+    return format(selectedDay.value, 'EEEE, d MMMM yyyy', dateLocale);
   }
   if (viewMode.value === 'week') {
     const weekStart = startOfWeek(currentDate.value, { weekStartsOn: 1 });
     const weekEnd = endOfWeek(currentDate.value, { weekStartsOn: 1 });
-    return `${format(weekStart, 'MMM d')} - ${format(weekEnd, 'MMM d, yyyy')}`;
+    return `${format(weekStart, 'd MMM', dateLocale)} - ${format(weekEnd, 'd MMM yyyy', dateLocale)}`;
   }
-  return format(currentDate.value, 'MMMM yyyy');
+  return format(currentDate.value, 'MMMM yyyy', dateLocale);
 });
 
 const goToToday = () => {
@@ -228,7 +231,7 @@ onMounted(async () => {
               :class="isDateToday(day) ? 'bg-n-violet-3/20' : 'bg-n-alpha-1'"
             >
               <p class="text-xs font-medium text-n-slate-10 uppercase">
-                {{ format(day, 'EEE') }}
+                {{ format(day, 'EEE', dateLocale) }}
               </p>
               <p
                 class="text-lg font-semibold"
@@ -287,10 +290,10 @@ onMounted(async () => {
           >
             <div>
               <p class="text-sm font-semibold text-n-slate-12">
-                {{ format(selectedDay, 'EEEE') }}
+                {{ format(selectedDay, 'EEEE', dateLocale) }}
               </p>
               <p class="text-xs text-n-slate-10">
-                {{ format(selectedDay, 'MMMM d, yyyy') }}
+                {{ format(selectedDay, 'd MMMM yyyy', dateLocale) }}
               </p>
             </div>
             <button
@@ -324,11 +327,10 @@ onMounted(async () => {
           </div>
           <div class="px-3 py-2 border-t border-n-weak text-center">
             <span class="text-xxs text-n-slate-10">
-              {{ selectedDayConversations.length }}
               {{
-                selectedDayConversations.length === 1
-                  ? 'conversation'
-                  : 'conversations'
+                t('CONVERSATION.CALENDAR.CONVERSATIONS_COUNT', {
+                  count: selectedDayConversations.length,
+                })
               }}
             </span>
           </div>
