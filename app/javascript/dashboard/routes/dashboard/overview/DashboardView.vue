@@ -179,7 +179,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex flex-col h-full overflow-y-auto bg-n-background p-6 gap-6">
+  <div
+    class="flex flex-col min-h-full overflow-y-auto bg-n-background p-6 gap-6"
+  >
     <!-- Header -->
     <header class="flex items-center justify-between">
       <h1 class="text-xl font-semibold text-n-slate-12">
@@ -192,7 +194,7 @@ onMounted(async () => {
       <div
         v-for="(card, idx) in kpiCards"
         :key="idx"
-        class="flex items-center gap-3 p-4 rounded-xl border border-n-weak bg-n-background transition-all duration-200 hover:shadow-md"
+        class="flex items-center gap-3 p-4 rounded-xl border border-n-weak bg-n-background transition-all duration-200 hover:shadow-md min-h-[90px]"
       >
         <div
           class="flex items-center justify-center w-10 h-10 rounded-lg"
@@ -257,7 +259,9 @@ onMounted(async () => {
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Conversations by Inbox -->
-      <section class="rounded-xl border border-n-weak bg-n-background p-4">
+      <section
+        class="rounded-xl border border-n-weak bg-n-background p-4 min-h-[300px]"
+      >
         <h2 class="text-sm font-semibold text-n-slate-12 mb-4">
           {{ t('CONVERSATION.DASHBOARD.BY_INBOX') }}
         </h2>
@@ -297,7 +301,9 @@ onMounted(async () => {
       </section>
 
       <!-- Agent Performance -->
-      <section class="rounded-xl border border-n-weak bg-n-background p-4">
+      <section
+        class="rounded-xl border border-n-weak bg-n-background p-4 min-h-[300px]"
+      >
         <h2 class="text-sm font-semibold text-n-slate-12 mb-4">
           {{ t('CONVERSATION.DASHBOARD.AGENT_PERFORMANCE') }}
         </h2>
@@ -339,7 +345,7 @@ onMounted(async () => {
             <span
               class="text-xxs font-semibold text-n-slate-10 uppercase text-center"
             >
-              {{ t('COMMON.STATUS') }}
+              {{ t('CONVERSATION.DASHBOARD.STATUS') }}
             </span>
           </div>
           <!-- Agent rows -->

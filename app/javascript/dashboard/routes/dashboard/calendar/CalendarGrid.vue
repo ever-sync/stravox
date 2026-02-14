@@ -22,12 +22,17 @@ const props = defineProps({
 
 const emit = defineEmits(['selectDay']);
 
-useI18n();
+const { t } = useI18n();
 
-const weekDays = computed(() => {
-  const days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
-  return days;
-});
+const weekDays = computed(() => [
+  t('CONVERSATION.CALENDAR.MON'),
+  t('CONVERSATION.CALENDAR.TUE'),
+  t('CONVERSATION.CALENDAR.WED'),
+  t('CONVERSATION.CALENDAR.THU'),
+  t('CONVERSATION.CALENDAR.FRI'),
+  t('CONVERSATION.CALENDAR.SAT'),
+  t('CONVERSATION.CALENDAR.SUN'),
+]);
 
 const calendarDays = computed(() => {
   const monthStart = startOfMonth(props.currentDate);
@@ -76,7 +81,7 @@ const onSelectDay = day => emit('selectDay', day);
       <div
         v-for="i in 35"
         :key="i"
-        class="border border-n-weak/50 p-2 min-h-[100px]"
+        class="border border-n-weak/50 p-2 min-h-[120px]"
       >
         <div class="animate-pulse">
           <div class="w-6 h-6 rounded-full bg-n-alpha-3 mb-2" />

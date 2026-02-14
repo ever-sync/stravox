@@ -66,7 +66,9 @@ const onOpenContextMenu = (event, chat) => {
 </script>
 
 <template>
-  <div class="flex flex-col flex-shrink-0 w-80 rounded-xl overflow-hidden">
+  <div
+    class="flex flex-col flex-shrink-0 w-72 min-w-[260px] rounded-xl overflow-hidden"
+  >
     <!-- Column header -->
     <div
       class="flex items-center gap-2.5 px-3 py-2.5 bg-n-alpha-1 border border-n-weak rounded-t-xl"
@@ -102,7 +104,7 @@ const onOpenContextMenu = (event, chat) => {
 
     <!-- Draggable area -->
     <div
-      class="flex-1 overflow-y-auto bg-n-alpha-1/50 border-x border-b border-n-weak rounded-b-xl p-2 min-h-[200px]"
+      class="flex-1 overflow-y-auto bg-n-alpha-1/50 border-x border-b border-n-weak rounded-b-xl p-2"
     >
       <!-- Loading state -->
       <div v-if="loading" class="flex flex-col gap-2">
