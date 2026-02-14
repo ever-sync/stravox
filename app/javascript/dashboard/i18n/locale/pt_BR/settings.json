@@ -293,6 +293,8 @@
     }
   },
   "SIDEBAR": {
+    "SECTION_CRM": "CRM",
+    "SECTION_MANAGEMENT": "GESTÃO",
     "NO_ITEMS": "Nenhum item",
     "CURRENTLY_VIEWING_ACCOUNT": "Visualização atual:",
     "SWITCH": "Trocar",

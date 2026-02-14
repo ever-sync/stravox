@@ -26,7 +26,7 @@ function openNotificationPanel() {
 
 <template>
   <button
-    class="size-8 rounded-lg hover:bg-n-alpha-1 flex-shrink-0 grid place-content-center relative"
+    class="size-8 rounded-lg hover:bg-white/[0.06] text-white/60 hover:text-white flex-shrink-0 grid place-content-center relative transition-colors duration-150"
     @click="openNotificationPanel"
   >
     <span class="i-lucide-bell size-4" />

@@ -236,7 +236,7 @@ const menuItems = computed(() => {
         t('SIDEBAR.KANBAN') !== 'SIDEBAR.KANBAN'
           ? t('SIDEBAR.KANBAN')
           : 'Pipeline',
-      icon: 'i-lucide-users',
+      icon: 'i-lucide-kanban',
       to: accountScopedRoute('kanban_view'),
       activeOn: ['kanban_view'],
     },
@@ -328,7 +328,7 @@ const menuItems = computed(() => {
         t('SIDEBAR.CALENDAR') !== 'SIDEBAR.CALENDAR'
           ? t('SIDEBAR.CALENDAR')
           : 'Calendário',
-      icon: 'i-lucide-calendar',
+      icon: 'i-lucide-calendar-days',
       to: accountScopedRoute('calendar_view'),
       activeOn: ['calendar_view'],
     },
@@ -486,7 +486,7 @@ const menuItems = computed(() => {
     {
       name: 'Reports',
       label: t('SIDEBAR.REPORTS'),
-      icon: 'i-lucide-chart-spline',
+      icon: 'i-lucide-bar-chart-3',
       children: [
         {
           name: 'Report Overview',
@@ -541,7 +541,7 @@ const menuItems = computed(() => {
     {
       name: 'Portals',
       label: t('SIDEBAR.HELP_CENTER.TITLE'),
-      icon: 'i-lucide-library-big',
+      icon: 'i-lucide-book-open',
       children: [
         {
           name: 'Articles',
@@ -588,7 +588,7 @@ const menuItems = computed(() => {
     {
       name: 'Settings',
       label: t('SIDEBAR.SETTINGS'),
-      icon: 'i-lucide-bolt',
+      icon: 'i-lucide-settings',
       children: [
         {
           name: 'Settings Account Settings',
@@ -708,6 +708,22 @@ const menuItems = computed(() => {
     },
   ];
 });
+
+const mainItems = computed(() =>
+  menuItems.value.filter(i =>
+    ['Dashboard', 'Inbox', 'Conversation'].includes(i.name)
+  )
+);
+const crmItems = computed(() =>
+  menuItems.value.filter(i =>
+    ['Kanban', 'Calendar', 'Contacts', 'Companies'].includes(i.name)
+  )
+);
+const managementItems = computed(() =>
+  menuItems.value.filter(i =>
+    ['Captain', 'Campaigns', 'Reports', 'Portals', 'Settings'].includes(i.name)
+  )
+);
 </script>
 
 <template>
@@ -716,10 +732,11 @@ const menuItems = computed(() => {
       closeMobileSidebar,
       { ignore: ['#mobile-sidebar-launcher'] },
     ]"
-    class="group/sidebar bg-gradient-to-b from-n-slate-1 via-n-slate-1/95 to-n-slate-2/90 flex flex-col text-sm pb-0.5 fixed top-0 ltr:left-0 rtl:right-0 h-full z-40 w-[200px] md:w-auto md:relative md:flex-shrink-0 md:ltr:translate-x-0 md:rtl:translate-x-0 ltr:border-r rtl:border-l border-n-violet-7/10 backdrop-blur-xl"
+    class="group/sidebar bg-[#0c0c12] flex flex-col text-sm pb-0.5 fixed top-0 ltr:left-0 rtl:right-0 h-full z-40 w-[220px] md:w-auto md:relative md:flex-shrink-0 md:ltr:translate-x-0 md:rtl:translate-x-0 ltr:border-r rtl:border-l border-white/[0.06] backdrop-blur-2xl shadow-[4px_0_24px_-4px_rgba(0,0,0,0.4)]"
     :class="[
       {
-        'shadow-lg shadow-n-violet-9/10 md:shadow-none': isMobileSidebarOpen,
+        'shadow-2xl shadow-black/50 md:shadow-[4px_0_24px_-4px_rgba(0,0,0,0.4)]':
+          isMobileSidebarOpen,
         'ltr:-translate-x-full rtl:translate-x-full': !isMobileSidebarOpen,
         'transition-transform duration-200 ease-out md:transition-[width]':
           !isResizing,
@@ -748,7 +765,7 @@ const menuItems = computed(() => {
             />
             <!-- Expand button below logo when collapsed -->
             <button
-              class="flex items-center justify-center size-7 rounded-lg text-n-slate-10 hover:text-n-violet-11 hover:bg-n-violet-4/30 transition-all duration-200 ease-out"
+              class="flex items-center justify-center size-7 rounded-lg text-white/40 hover:text-violet-300 hover:bg-white/[0.06] transition-all duration-200 ease-out"
               :title="t('SIDEBAR.EXPAND')"
               @click="snapToExpanded"
             >
@@ -759,7 +776,7 @@ const menuItems = computed(() => {
         <template v-else>
           <div class="flex items-center gap-2.5 flex-grow min-w-0">
             <div
-              class="grid flex-shrink-0 place-content-center size-8 rounded-xl bg-gradient-to-br from-violet-500/15 to-indigo-500/15"
+              class="grid flex-shrink-0 place-content-center size-8 rounded-xl bg-violet-500/10 shadow-[0_0_20px_rgba(139,92,246,0.12)]"
             >
               <Logo class="size-5" />
             </div>
@@ -770,7 +787,7 @@ const menuItems = computed(() => {
           </div>
           <!-- Collapse toggle button -->
           <button
-            class="flex-shrink-0 flex items-center justify-center size-7 rounded-lg text-n-slate-10 hover:text-n-slate-12 hover:bg-n-alpha-2 dark:hover:bg-n-slate-9/30 transition-all duration-200 ease-out opacity-0 group-hover/sidebar:opacity-100 focus:opacity-100"
+            class="flex-shrink-0 flex items-center justify-center size-7 rounded-lg text-white/40 hover:text-violet-300 hover:bg-white/[0.06] transition-all duration-200 ease-out opacity-0 group-hover/sidebar:opacity-100 focus:opacity-100"
             :title="t('SIDEBAR.COLLAPSE')"
             @click="snapToCollapsed"
           >
@@ -785,12 +802,10 @@ const menuItems = computed(() => {
         <RouterLink
           v-if="!isEffectivelyCollapsed"
           :to="{ name: 'search' }"
-          class="flex gap-2 items-center px-2.5 py-1.5 w-full h-8 rounded-xl outline outline-1 outline-n-violet-7/20 bg-n-solid-2/60 backdrop-blur-sm transition-all duration-200 ease-out hover:outline-n-violet-8/40 hover:bg-n-solid-3/80 hover:shadow-sm focus:outline-n-violet-9 focus:shadow-sm"
+          class="flex gap-2 items-center px-2.5 py-1.5 w-full h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] transition-all duration-200 ease-out hover:bg-white/[0.06] hover:border-white/[0.12] focus:ring-1 focus:ring-violet-500/30"
         >
-          <span
-            class="flex-shrink-0 i-lucide-search size-3.5 text-n-violet-11/70"
-          />
-          <span class="flex-grow text-start text-n-slate-10 text-xs">
+          <span class="flex-shrink-0 i-lucide-search size-3.5 text-white/30" />
+          <span class="flex-grow text-start text-white/30 text-xs">
             {{ t('COMBOBOX.SEARCH_PLACEHOLDER') }}
           </span>
           <span
@@ -802,10 +817,10 @@ const menuItems = computed(() => {
         <RouterLink
           v-else
           :to="{ name: 'search' }"
-          class="flex items-center justify-center size-9 rounded-xl outline outline-1 outline-n-weak/50 bg-n-button-color/80 transition-all duration-200 ease-out hover:bg-n-alpha-2 dark:hover:bg-n-slate-9/30 hover:shadow-sm"
+          class="flex items-center justify-center size-9 rounded-xl bg-white/[0.04] border border-white/[0.08] transition-all duration-200 ease-out hover:bg-white/[0.06]"
           :title="t('COMBOBOX.SEARCH_PLACEHOLDER')"
         >
-          <span class="i-lucide-search size-3.5 text-n-slate-11" />
+          <span class="i-lucide-search size-3.5 text-white/50" />
         </RouterLink>
         <ComposeConversation align-position="right" @close="onComposeClose">
           <template #trigger="{ toggle, isOpen }">
@@ -813,12 +828,12 @@ const menuItems = computed(() => {
               icon="i-lucide-pen-line"
               color="slate"
               size="sm"
-              class="dark:hover:!bg-n-slate-9/30 !rounded-xl"
+              class="hover:!bg-white/[0.06] !rounded-xl"
               :class="[
                 isEffectivelyCollapsed
-                  ? '!size-9 !outline-n-weak/50 !text-n-slate-11'
-                  : '!h-8 !outline-n-weak/50 !text-n-slate-11',
-                { '!bg-n-alpha-2 dark:!bg-n-slate-9/30': isOpen },
+                  ? '!size-9 !border-white/[0.08] !text-white/50'
+                  : '!h-8 !border-white/[0.08] !text-white/50',
+                { '!bg-white/[0.06]': isOpen },
               ]"
               @click="onComposeOpen(toggle)"
             />
@@ -827,15 +842,48 @@ const menuItems = computed(() => {
       </div>
     </section>
     <nav
-      class="grid overflow-y-scroll flex-grow gap-1.5 pb-5 no-scrollbar min-w-0"
+      class="grid overflow-y-scroll flex-grow gap-1 pb-5 no-scrollbar min-w-0"
       :class="isEffectivelyCollapsed ? 'px-1' : 'px-2'"
     >
+      <!-- Principal -->
       <ul
         class="flex flex-col gap-0.5 m-0 list-none min-w-0"
         :class="{ 'items-center': isEffectivelyCollapsed }"
       >
         <SidebarGroup
-          v-for="item in menuItems"
+          v-for="item in mainItems"
+          :key="item.name"
+          v-bind="item"
+        />
+      </ul>
+      <!-- CRM Section -->
+      <div
+        v-if="!isEffectivelyCollapsed"
+        class="text-[10px] uppercase tracking-[0.15em] text-violet-400/30 font-semibold px-3 py-2 mt-1"
+      >
+        {{ t('SIDEBAR.SECTION_CRM') }}
+      </div>
+      <div v-else class="mx-auto my-1 w-5 border-t border-white/[0.08]" />
+      <ul
+        class="flex flex-col gap-0.5 m-0 list-none min-w-0"
+        :class="{ 'items-center': isEffectivelyCollapsed }"
+      >
+        <SidebarGroup v-for="item in crmItems" :key="item.name" v-bind="item" />
+      </ul>
+      <!-- Gestao Section -->
+      <div
+        v-if="!isEffectivelyCollapsed"
+        class="text-[10px] uppercase tracking-[0.15em] text-violet-400/30 font-semibold px-3 py-2 mt-1"
+      >
+        {{ t('SIDEBAR.SECTION_MANAGEMENT') }}
+      </div>
+      <div v-else class="mx-auto my-1 w-5 border-t border-white/[0.08]" />
+      <ul
+        class="flex flex-col gap-0.5 m-0 list-none min-w-0"
+        :class="{ 'items-center': isEffectivelyCollapsed }"
+      >
+        <SidebarGroup
+          v-for="item in managementItems"
           :key="item.name"
           v-bind="item"
         />
@@ -845,7 +893,7 @@ const menuItems = computed(() => {
       class="flex relative flex-col flex-shrink-0 gap-1 justify-between items-center"
     >
       <div
-        class="pointer-events-none absolute inset-x-0 -top-[2.5rem] h-10 bg-gradient-to-t from-n-slate-2/90 to-transparent"
+        class="pointer-events-none absolute inset-x-0 -top-[2.5rem] h-10 bg-gradient-to-t from-[#0c0c12] to-transparent"
       />
       <SidebarChangelogCard
         v-if="
@@ -862,7 +910,7 @@ const menuItems = computed(() => {
         "
       />
       <div
-        class="p-1.5 flex-shrink-0 flex w-full z-50 gap-2 items-center border-t border-n-violet-7/10 bg-n-solid-1/40 backdrop-blur-md"
+        class="p-1.5 flex-shrink-0 flex w-full z-50 gap-2 items-center border-t border-white/[0.06] bg-white/[0.02]"
         :class="isEffectivelyCollapsed ? 'justify-center' : 'justify-between'"
       >
         <SidebarProfileMenu
@@ -879,8 +927,8 @@ const menuItems = computed(() => {
       @dblclick="onResizeHandleDoubleClick"
     >
       <div
-        class="absolute top-0 h-full w-0.5 ltr:right-0 rtl:left-0 bg-transparent group-hover/resize:bg-violet-500/50 transition-all duration-200 rounded-full"
-        :class="{ '!bg-violet-500/70 !w-1': isResizing }"
+        class="absolute top-0 h-full w-0.5 ltr:right-0 rtl:left-0 bg-transparent group-hover/resize:bg-violet-400/40 transition-all duration-200 rounded-full"
+        :class="{ '!bg-violet-400/60 !w-1': isResizing }"
       />
     </div>
   </aside>

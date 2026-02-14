@@ -235,9 +235,9 @@ watch(
           type="button"
           class="flex items-center justify-center size-10 rounded-xl transition-all duration-200"
           :class="{
-            'bg-gradient-to-br from-n-violet-7 to-n-iris-8 text-white shadow-lg shadow-n-violet-9/40':
+            'bg-violet-500/20 text-violet-300 shadow-[0_0_16px_rgba(139,92,246,0.2)]':
               isActive || hasActiveChild,
-            'text-n-slate-11 hover:bg-n-violet-4/50 hover:text-n-violet-11 bg-n-violet-3/30':
+            'bg-white/[0.06] text-white/50 hover:bg-white/10 hover:text-violet-300':
               !isActive && !hasActiveChild,
           }"
           :title="label"
@@ -309,8 +309,8 @@ watch(
   height: 100%;
   background: linear-gradient(
     180deg,
-    rgba(135, 105, 230, 0.3) 0%,
-    rgba(135, 105, 230, 0.1) 100%
+    rgba(139, 92, 246, 0.15) 0%,
+    rgba(139, 92, 246, 0.05) 100%
   );
 }
 
@@ -344,7 +344,7 @@ watch(
   border-top-width: 0px;
   border-radius: 0 0 0 4px;
   left: 0;
-  border-color: rgba(135, 105, 230, 0.3);
+  border-color: rgba(139, 92, 246, 0.15);
 }
 
 #app[dir='rtl'] .sidebar-group-children > .child-item:last-child::after,

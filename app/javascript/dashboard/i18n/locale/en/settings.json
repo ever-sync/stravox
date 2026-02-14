@@ -294,6 +294,8 @@
     }
   },
   "SIDEBAR": {
+    "SECTION_CRM": "CRM",
+    "SECTION_MANAGEMENT": "MANAGEMENT",
     "NO_ITEMS": "No items",
     "CURRENTLY_VIEWING_ACCOUNT": "Currently viewing:",
     "SWITCH": "Switch",

@@ -131,9 +131,9 @@ const allowedMenuItems = computed(() => {
   >
     <template #trigger="{ toggle, isOpen }">
       <button
-        class="flex gap-2 items-center p-1 text-left rounded-xl cursor-pointer transition-all duration-200 hover:bg-gradient-to-r hover:from-n-violet-4/40 hover:to-transparent group"
+        class="flex gap-2 items-center p-1 text-left rounded-xl cursor-pointer transition-all duration-200 hover:bg-white/[0.04] group"
         :class="[
-          { 'bg-gradient-to-r from-n-violet-5/50 to-transparent': isOpen },
+          { 'bg-white/[0.06]': isOpen },
           isCollapsed ? 'justify-center' : 'w-full',
         ]"
         :title="isCollapsed ? currentUser.available_name : undefined"
@@ -144,14 +144,14 @@ const allowedMenuItems = computed(() => {
           :name="currentUser.available_name"
           :src="currentUser.avatar_url"
           :status="currentUserAvailability"
-          class="flex-shrink-0 ring-2 ring-n-violet-6/30 group-hover:ring-n-violet-7/50 transition-all duration-200"
+          class="flex-shrink-0 ring-2 ring-violet-500/20 group-hover:ring-violet-500/30 transition-all duration-200"
           rounded-full
         />
         <div v-if="!isCollapsed" class="min-w-0">
-          <div class="text-sm font-medium leading-4 truncate text-n-slate-12">
+          <div class="text-sm font-medium leading-4 truncate text-white">
             {{ currentUser.available_name }}
           </div>
-          <div class="text-xs truncate text-n-slate-10">
+          <div class="text-xs truncate text-white/50">
             {{ currentUser.email }}
           </div>
         </div>

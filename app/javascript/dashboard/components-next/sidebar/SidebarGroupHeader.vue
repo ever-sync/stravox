@@ -26,54 +26,49 @@ const count = computed(() =>
 <template>
   <component
     :is="to ? 'router-link' : 'div'"
-    class="flex items-center gap-2 px-1.5 py-1 rounded-xl h-8 min-w-0 transition-all duration-200 ease-out"
+    class="flex items-center gap-2 px-1.5 py-1 rounded-xl h-9 min-w-0 transition-all duration-200 ease-out"
     role="button"
     draggable="false"
     :to="to"
     :title="label"
     :class="{
-      'text-n-slate-12 bg-gradient-to-r from-n-violet-5/60 via-n-violet-4/40 to-transparent font-medium shadow-[inset_0_0_0_1px_rgba(135,105,230,0.25)]':
+      'text-white bg-white/[0.07] font-medium shadow-[inset_0_0_0_1px_rgba(139,92,246,0.15)]':
         isActive && !hasActiveChild,
-      'text-n-slate-12 font-medium': hasActiveChild,
-      'text-n-slate-11 hover:bg-gradient-to-r hover:from-n-violet-4/40 hover:via-n-violet-3/30 hover:to-transparent':
+      'text-white font-medium': hasActiveChild,
+      'text-white/60 hover:bg-white/[0.04] hover:text-white':
         !isActive && !hasActiveChild,
     }"
     @click.stop="emit('toggle')"
   >
     <div v-if="icon" class="relative flex items-center gap-2">
       <div
-        class="flex items-center justify-center size-6 rounded-md transition-all duration-200"
+        class="flex items-center justify-center size-7 rounded-lg transition-all duration-200"
         :class="{
-          'bg-gradient-to-br from-n-violet-8 to-n-iris-9 text-white shadow-md shadow-n-violet-9/30':
+          'bg-violet-500/20 text-violet-300 shadow-[0_0_12px_rgba(139,92,246,0.3)]':
             isActive || hasActiveChild,
-          'bg-n-violet-4/40 text-n-violet-11 group-hover:bg-n-violet-5/50':
-            !isActive && !hasActiveChild,
+          'bg-white/[0.06] text-white/50': !isActive && !hasActiveChild,
         }"
       >
-        <Icon :icon="icon" class="size-3.5" />
+        <Icon :icon="icon" class="size-4" />
       </div>
       <span
         v-if="showBadge"
-        class="size-2.5 -top-0.5 ltr:-right-0.5 rtl:-left-0.5 bg-gradient-to-br from-n-ruby-9 to-n-ruby-10 absolute rounded-full border-2 border-n-solid-2 animate-pulse"
+        class="size-2.5 -top-0.5 ltr:-right-0.5 rtl:-left-0.5 bg-gradient-to-br from-n-ruby-9 to-n-ruby-10 absolute rounded-full border-2 border-[#0c0c12] animate-pulse"
       />
     </div>
     <div class="flex items-center gap-1.5 flex-grow min-w-0 flex-1">
       <span
-        class="truncate"
+        class="truncate text-[13px]"
         :class="{
-          'text-body-main': !isActive,
-          'font-medium text-sm': isActive || hasActiveChild,
+          '': !isActive,
+          'font-medium': isActive || hasActiveChild,
         }"
       >
         {{ label }}
       </span>
       <span
         v-if="dynamicCount && !expandable"
-        class="rounded-md capitalize text-xs leading-5 font-semibold text-center px-1.5 flex-shrink-0 bg-n-violet-5/50 text-n-violet-11"
-        :class="{
-          'bg-gradient-to-r from-n-violet-6/60 to-n-violet-5/40 text-n-slate-12':
-            isActive,
-        }"
+        class="rounded-md capitalize text-xs leading-5 font-semibold text-center px-1.5 flex-shrink-0 bg-violet-500/20 text-violet-300"
       >
         {{ count }}
       </span>
@@ -81,7 +76,7 @@ const count = computed(() =>
     <span
       v-if="expandable"
       v-show="isExpanded"
-      class="i-lucide-chevron-up size-3"
+      class="i-lucide-chevron-up size-3 text-white/30"
       @click.stop="emit('toggle')"
     />
   </component>
