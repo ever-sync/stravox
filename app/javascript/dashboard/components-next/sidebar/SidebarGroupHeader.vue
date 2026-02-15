@@ -75,8 +75,8 @@ const count = computed(() =>
     </div>
     <span
       v-if="expandable"
-      v-show="isExpanded"
-      class="i-lucide-chevron-up size-3 text-white/30"
+      class="i-lucide-chevron-down size-4 text-white/40 transition-transform duration-200 flex-shrink-0"
+      :class="{ 'rotate-180': isExpanded }"
       @click.stop="emit('toggle')"
     />
   </component>

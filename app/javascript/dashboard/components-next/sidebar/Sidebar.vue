@@ -746,9 +746,7 @@ const managementItems = computed(() =>
   >
     <section
       class="grid"
-      :class="
-        isEffectivelyCollapsed ? 'mt-3 mb-4 gap-3' : 'mt-1.5 mb-3 gap-2.5'
-      "
+      :class="isEffectivelyCollapsed ? 'mt-2 mb-3 gap-2' : 'mt-1.5 mb-2 gap-2'"
     >
       <div
         class="flex gap-2 items-center min-w-0"
@@ -765,11 +763,11 @@ const managementItems = computed(() =>
             />
             <!-- Expand button below logo when collapsed -->
             <button
-              class="flex items-center justify-center size-7 rounded-lg text-white/40 hover:text-violet-300 hover:bg-white/[0.06] transition-all duration-200 ease-out"
+              class="flex items-center justify-center size-8 rounded-lg text-white/40 hover:text-violet-300 hover:bg-white/[0.06] transition-all duration-200 ease-out"
               :title="t('SIDEBAR.EXPAND')"
               @click="snapToExpanded"
             >
-              <span class="i-lucide-panel-left-open size-3.5" />
+              <span class="i-lucide-panel-left-open size-4.5" />
             </button>
           </div>
         </template>
@@ -787,11 +785,11 @@ const managementItems = computed(() =>
           </div>
           <!-- Collapse toggle button -->
           <button
-            class="flex-shrink-0 flex items-center justify-center size-7 rounded-lg text-white/40 hover:text-violet-300 hover:bg-white/[0.06] transition-all duration-200 ease-out opacity-0 group-hover/sidebar:opacity-100 focus:opacity-100"
+            class="flex-shrink-0 flex items-center justify-center size-8 rounded-lg text-white/40 hover:text-violet-300 hover:bg-white/[0.06] transition-all duration-200 ease-out"
             :title="t('SIDEBAR.COLLAPSE')"
             @click="snapToCollapsed"
           >
-            <span class="i-lucide-panel-left-close size-4" />
+            <span class="i-lucide-panel-left-close size-5" />
           </button>
         </template>
       </div>
@@ -842,7 +840,7 @@ const managementItems = computed(() =>
       </div>
     </section>
     <nav
-      class="grid overflow-y-scroll flex-grow gap-1 pb-5 no-scrollbar min-w-0"
+      class="grid overflow-y-scroll flex-grow gap-0.5 pb-3 no-scrollbar min-w-0"
       :class="isEffectivelyCollapsed ? 'px-1' : 'px-2'"
     >
       <!-- Principal -->
@@ -859,7 +857,7 @@ const managementItems = computed(() =>
       <!-- CRM Section -->
       <div
         v-if="!isEffectivelyCollapsed"
-        class="text-[10px] uppercase tracking-[0.15em] text-violet-400/30 font-semibold px-3 py-2 mt-1"
+        class="text-[10px] uppercase tracking-[0.15em] text-violet-400/30 font-semibold px-3 py-1.5 mt-0.5"
       >
         {{ t('SIDEBAR.SECTION_CRM') }}
       </div>
@@ -873,7 +871,7 @@ const managementItems = computed(() =>
       <!-- Gestao Section -->
       <div
         v-if="!isEffectivelyCollapsed"
-        class="text-[10px] uppercase tracking-[0.15em] text-violet-400/30 font-semibold px-3 py-2 mt-1"
+        class="text-[10px] uppercase tracking-[0.15em] text-violet-400/30 font-semibold px-3 py-1.5 mt-0.5"
       >
         {{ t('SIDEBAR.SECTION_MANAGEMENT') }}
       </div>

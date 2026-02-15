@@ -233,7 +233,7 @@ watch(
           ref="triggerRef"
           :to="to && !hasChildren ? to : undefined"
           type="button"
-          class="flex items-center justify-center size-10 rounded-xl transition-all duration-200"
+          class="flex items-center justify-center size-9 rounded-xl transition-all duration-200"
           :class="{
             'bg-violet-500/20 text-violet-300 shadow-[0_0_16px_rgba(139,92,246,0.2)]':
               isActive || hasActiveChild,
