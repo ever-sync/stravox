@@ -732,7 +732,7 @@ const managementItems = computed(() =>
       closeMobileSidebar,
       { ignore: ['#mobile-sidebar-launcher'] },
     ]"
-    class="group/sidebar bg-[#0c0c12] flex flex-col text-sm pb-0.5 fixed top-0 ltr:left-0 rtl:right-0 h-full z-40 w-[220px] md:w-auto md:relative md:flex-shrink-0 md:ltr:translate-x-0 md:rtl:translate-x-0 ltr:border-r rtl:border-l border-white/[0.06] backdrop-blur-2xl shadow-[4px_0_24px_-4px_rgba(0,0,0,0.4)]"
+    class="dark group/sidebar bg-[#0c0c12] flex flex-col text-sm pb-0.5 fixed top-0 ltr:left-0 rtl:right-0 h-full z-40 w-[220px] md:w-auto md:relative md:flex-shrink-0 md:ltr:translate-x-0 md:rtl:translate-x-0 ltr:border-r rtl:border-l border-white/[0.06] backdrop-blur-2xl shadow-[4px_0_24px_-4px_rgba(0,0,0,0.4)]"
     :class="[
       {
         'shadow-2xl shadow-black/50 md:shadow-[4px_0_24px_-4px_rgba(0,0,0,0.4)]':
@@ -767,7 +767,7 @@ const managementItems = computed(() =>
               :title="t('SIDEBAR.EXPAND')"
               @click="snapToExpanded"
             >
-              <span class="i-lucide-panel-left-open size-4.5" />
+              <span class="i-lucide-chevron-right size-5" />
             </button>
           </div>
         </template>
@@ -789,7 +789,7 @@ const managementItems = computed(() =>
             :title="t('SIDEBAR.COLLAPSE')"
             @click="snapToCollapsed"
           >
-            <span class="i-lucide-panel-left-close size-5" />
+            <span class="i-lucide-chevron-left size-5" />
           </button>
         </template>
       </div>
