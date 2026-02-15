@@ -27,7 +27,7 @@ export default function useAutomationValues() {
   const labels = useMapGetter('labels/getLabels');
   const teams = useMapGetter('teams/getTeams');
   const slaPolicies = useMapGetter('sla/getSLA');
-  const pipelineStages = useMapGetter('pipelines/getAllStages');
+  const accountId = useMapGetter('getCurrentAccountId');
 
   const booleanFilterOptions = computed(() => [
     { id: true, name: t('FILTER.ATTRIBUTE_LABELS.TRUE') },
@@ -127,10 +127,23 @@ export default function useAutomationValues() {
       labels: labels.value,
       teams: teams.value,
       slaPolicies: slaPolicies.value,
-      pipelineStages: (pipelineStages.value || []).map(s => ({
-        id: s.id,
-        name: s.full_name || s.name,
-      })),
+      pipelineStages: (() => {
+        try {
+          const key = `cw-pipelines-${accountId.value}`;
+          const raw = localStorage.getItem(key);
+          if (!raw) return [];
+          const data = JSON.parse(raw);
+          const stages = [];
+          (data.pipelines || []).forEach(p => {
+            (p.stages || []).forEach(s => {
+              stages.push({ id: s.id, name: `${p.name} - ${s.name}` });
+            });
+          });
+          return stages;
+        } catch {
+          return [];
+        }
+      })(),
       languages,
       type,
       addNoneToListFn: addNoneToList,

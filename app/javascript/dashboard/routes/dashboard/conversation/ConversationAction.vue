@@ -278,10 +278,7 @@ export default {
         @select="onClickAssignPriority"
       />
     </div>
-    <PipelineDropdown
-      :conversation-id="conversationId"
-      :pipeline-stage-id="currentChat.pipeline_stage_id"
-    />
+    <PipelineDropdown :conversation-id="conversationId" />
     <ContactDetailsItem
       compact
       :title="$t('CONVERSATION_SIDEBAR.ACCORDION.CONVERSATION_LABELS')"
