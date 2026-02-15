@@ -22,6 +22,7 @@ export default {
   computed: {
     ...mapGetters({
       allStages: 'pipelines/getAllStages',
+      accountId: 'getCurrentAccountId',
     }),
     selectedStage() {
       return (
@@ -33,6 +34,30 @@ export default {
     this.$store.dispatch('pipelines/get');
   },
   methods: {
+    findKanbanStageId(stageName) {
+      try {
+        const storageKey = `cw-pipelines-${this.accountId}`;
+        const raw = localStorage.getItem(storageKey);
+        if (!raw) return null;
+        const data = JSON.parse(raw);
+        const pipelines = data.pipelines || [];
+        let result = null;
+        pipelines.some(pipeline => {
+          const match = (pipeline.stages || []).find(
+            s => s.name.toLowerCase() === stageName.toLowerCase()
+          );
+          if (match) {
+            result = { stageId: match.id, pipelineId: pipeline.id };
+            return true;
+          }
+          return false;
+        });
+        return result;
+      } catch {
+        // ignore
+      }
+      return null;
+    },
     onPipelineStageChange(stage) {
       const stageId = stage ? stage.id : null;
       if (stageId === this.pipelineStageId) return;
@@ -44,6 +69,18 @@ export default {
         })
         .then(() => {
           this.$emit('update', stage);
+          if (stage) {
+            const kanbanMatch = this.findKanbanStageId(stage.name);
+            if (kanbanMatch) {
+              this.$store.dispatch('updateCustomAttributes', {
+                conversationId: this.conversationId,
+                customAttributes: {
+                  pipeline_stage: kanbanMatch.stageId,
+                  pipeline_id: kanbanMatch.pipelineId,
+                },
+              });
+            }
+          }
         });
     },
   },

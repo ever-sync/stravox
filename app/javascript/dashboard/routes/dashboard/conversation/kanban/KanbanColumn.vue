@@ -67,7 +67,7 @@ const onOpenContextMenu = (event, chat) => {
 
 <template>
   <div
-    class="flex flex-col flex-shrink-0 w-72 min-w-[260px] rounded-xl overflow-hidden"
+    class="flex flex-col flex-shrink-0 flex-1 w-72 min-w-[260px] rounded-xl overflow-hidden"
   >
     <!-- Column header -->
     <div

@@ -223,7 +223,7 @@ const onColumnChange = async ({ conversation, newStageId }) => {
   try {
     await store.dispatch('updateCustomAttributes', {
       conversationId: conversation.id,
-      custom_attributes: {
+      customAttributes: {
         pipeline_stage: newStageId,
       },
     });
@@ -245,7 +245,7 @@ const onOutcome = async ({ conversation, outcome }) => {
   try {
     await store.dispatch('updateCustomAttributes', {
       conversationId: conversation.id,
-      custom_attributes: {
+      customAttributes: {
         outcome,
         outcome_at: new Date().toISOString(),
         pipeline_stage: '__archived__',
@@ -414,7 +414,7 @@ const onChangeInbox = inboxId => {
 </script>
 
 <template>
-  <div class="flex flex-col h-full overflow-hidden bg-n-background p-4">
+  <div class="flex flex-col w-full h-full overflow-hidden bg-n-background p-4">
     <KanbanHeader
       :active-assignee-tab="assigneeTab"
       :active-sort="sortKey"

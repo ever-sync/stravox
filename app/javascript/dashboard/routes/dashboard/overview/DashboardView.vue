@@ -108,7 +108,7 @@ const agentMetrics = computed(() => {
   const agentList = agents.value || [];
   return metrics
     .map(m => {
-      const agent = agentList.find(a => a.id === m.id) || {};
+      const agent = agentList.find(a => a.id === m.assignee_id) || {};
       return {
         ...m,
         name: agent.name || m.name || 'Unknown',
@@ -180,7 +180,7 @@ onMounted(async () => {
 
 <template>
   <div
-    class="flex flex-col min-h-full overflow-y-auto bg-n-background p-6 gap-6"
+    class="flex flex-col w-full min-h-full overflow-y-auto bg-n-background p-6 gap-6"
   >
     <!-- Header -->
     <header class="flex items-center justify-between">
