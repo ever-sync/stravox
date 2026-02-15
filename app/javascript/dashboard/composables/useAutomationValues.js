@@ -27,6 +27,7 @@ export default function useAutomationValues() {
   const labels = useMapGetter('labels/getLabels');
   const teams = useMapGetter('teams/getTeams');
   const slaPolicies = useMapGetter('sla/getSLA');
+  const pipelineStages = useMapGetter('pipelines/getAllStages');
 
   const booleanFilterOptions = computed(() => [
     { id: true, name: t('FILTER.ATTRIBUTE_LABELS.TRUE') },
@@ -126,6 +127,10 @@ export default function useAutomationValues() {
       labels: labels.value,
       teams: teams.value,
       slaPolicies: slaPolicies.value,
+      pipelineStages: (pipelineStages.value || []).map(s => ({
+        id: s.id,
+        name: s.full_name || s.name,
+      })),
       languages,
       type,
       addNoneToListFn: addNoneToList,

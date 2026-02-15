@@ -445,10 +445,14 @@
     "ASSIGNEE_LABEL": "Agente atribuído",
     "SELF_ASSIGN": "Atribuir a mim",
     "TEAM_LABEL": "Time atribuído",
-    "PIPELINE_LABEL": "Estágio do Pipeline",
-    "SELECT_PIPELINE": "Selecione um estágio",
-    "SEARCH_PIPELINE": "Buscar por um estágio",
-    "NO_PIPELINE_RESULTS": "Nenhum estágio encontrado",
+    "PIPELINE_LABEL": "Pipeline",
+    "PIPELINE_STAGE_LABEL": "Etapa da Pipeline",
+    "SELECT_PIPELINE": "Selecione uma pipeline",
+    "SELECT_STAGE": "Selecione uma etapa",
+    "SEARCH_PIPELINE": "Buscar por uma pipeline",
+    "SEARCH_STAGE": "Buscar por uma etapa",
+    "NO_PIPELINE_RESULTS": "Nenhuma pipeline encontrada",
+    "NO_STAGE_RESULTS": "Nenhuma etapa encontrada",
     "SELECT": {
       "PLACEHOLDER": "Nenhuma"
     },

@@ -127,6 +127,7 @@ export default {
     this.$store.dispatch('teams/get');
     this.$store.dispatch('labels/get');
     this.$store.dispatch('campaigns/get');
+    this.$store.dispatch('pipelines/get');
     this.allCustomAttributes = this.$store.getters['attributes/getAttributes'];
     this.manifestCustomAttributes();
   },

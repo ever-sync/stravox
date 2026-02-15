@@ -19,15 +19,55 @@ export default {
     },
   },
   emits: ['update'],
+  data() {
+    return {
+      selectedPipelineId: null,
+    };
+  },
   computed: {
     ...mapGetters({
+      pipelines: 'pipelines/getPipelines',
       allStages: 'pipelines/getAllStages',
       accountId: 'getCurrentAccountId',
     }),
+    selectedPipeline() {
+      if (!this.selectedPipelineId) return null;
+      return this.pipelines.find(p => p.id === this.selectedPipelineId) || null;
+    },
+    filteredStages() {
+      if (!this.selectedPipelineId) return [];
+      return this.allStages.filter(
+        s => s.pipeline_id === this.selectedPipelineId
+      );
+    },
     selectedStage() {
       return (
         this.allStages.find(stage => stage.id === this.pipelineStageId) || null
       );
+    },
+  },
+  watch: {
+    pipelineStageId: {
+      handler(newVal) {
+        if (newVal) {
+          const stage = this.allStages.find(s => s.id === newVal);
+          if (stage) {
+            this.selectedPipelineId = stage.pipeline_id;
+          }
+        }
+      },
+      immediate: true,
+    },
+    allStages: {
+      handler() {
+        if (this.pipelineStageId && !this.selectedPipelineId) {
+          const stage = this.allStages.find(s => s.id === this.pipelineStageId);
+          if (stage) {
+            this.selectedPipelineId = stage.pipeline_id;
+          }
+        }
+      },
+      immediate: true,
     },
   },
   mounted() {
@@ -40,9 +80,9 @@ export default {
         const raw = localStorage.getItem(storageKey);
         if (!raw) return null;
         const data = JSON.parse(raw);
-        const pipelines = data.pipelines || [];
+        const kanbanPipelines = data.pipelines || [];
         let result = null;
-        pipelines.some(pipeline => {
+        kanbanPipelines.some(pipeline => {
           const match = (pipeline.stages || []).find(
             s => s.name.toLowerCase() === stageName.toLowerCase()
           );
@@ -57,6 +97,10 @@ export default {
         // ignore
       }
       return null;
+    },
+    onPipelineChange(pipeline) {
+      if (!pipeline) return;
+      this.selectedPipelineId = pipeline.id;
     },
     onPipelineStageChange(stage) {
       const stageId = stage ? stage.id : null;
@@ -88,19 +132,36 @@ export default {
 </script>
 
 <template>
-  <div class="multiselect-wrap--small">
-    <ContactDetailsItem
-      compact
-      :title="$t('CONVERSATION_SIDEBAR.PIPELINE_LABEL')"
-    />
-    <MultiselectDropdown
-      :options="allStages"
-      :selected-item="selectedStage"
-      :multiselector-title="$t('CONVERSATION_SIDEBAR.PIPELINE_LABEL')"
-      :multiselector-placeholder="$t('CONVERSATION_SIDEBAR.SELECT_PIPELINE')"
-      :no-search-result="$t('CONVERSATION_SIDEBAR.NO_PIPELINE_RESULTS')"
-      :input-placeholder="$t('CONVERSATION_SIDEBAR.SEARCH_PIPELINE')"
-      @select="onPipelineStageChange"
-    />
+  <div>
+    <div class="multiselect-wrap--small">
+      <ContactDetailsItem
+        compact
+        :title="$t('CONVERSATION_SIDEBAR.PIPELINE_LABEL')"
+      />
+      <MultiselectDropdown
+        :options="pipelines"
+        :selected-item="selectedPipeline"
+        :multiselector-title="$t('CONVERSATION_SIDEBAR.PIPELINE_LABEL')"
+        :multiselector-placeholder="$t('CONVERSATION_SIDEBAR.SELECT_PIPELINE')"
+        :no-search-result="$t('CONVERSATION_SIDEBAR.NO_PIPELINE_RESULTS')"
+        :input-placeholder="$t('CONVERSATION_SIDEBAR.SEARCH_PIPELINE')"
+        @select="onPipelineChange"
+      />
+    </div>
+    <div v-if="selectedPipelineId" class="multiselect-wrap--small">
+      <ContactDetailsItem
+        compact
+        :title="$t('CONVERSATION_SIDEBAR.PIPELINE_STAGE_LABEL')"
+      />
+      <MultiselectDropdown
+        :options="filteredStages"
+        :selected-item="selectedStage"
+        :multiselector-title="$t('CONVERSATION_SIDEBAR.PIPELINE_STAGE_LABEL')"
+        :multiselector-placeholder="$t('CONVERSATION_SIDEBAR.SELECT_STAGE')"
+        :no-search-result="$t('CONVERSATION_SIDEBAR.NO_STAGE_RESULTS')"
+        :input-placeholder="$t('CONVERSATION_SIDEBAR.SEARCH_STAGE')"
+        @select="onPipelineStageChange"
+      />
+    </div>
   </div>
 </template>

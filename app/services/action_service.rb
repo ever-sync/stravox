@@ -83,6 +83,19 @@ class ActionService
     end
   end
 
+  def move_to_pipeline_stage(stage_ids)
+    stage = PipelineStage.find_by(id: stage_ids[0])
+    return unless stage
+
+    @conversation.update!(pipeline_stage_id: stage.id)
+
+    # Also update custom_attributes to sync with Kanban board
+    attrs = @conversation.custom_attributes || {}
+    attrs['pipeline_stage'] = stage.name.parameterize(separator: '_')
+    attrs['pipeline_id'] = stage.pipeline_id.to_s
+    @conversation.update!(custom_attributes: attrs)
+  end
+
   private
 
   def agent_belongs_to_inbox?(agent_ids)
