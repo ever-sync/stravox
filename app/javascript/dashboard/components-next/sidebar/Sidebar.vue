@@ -840,7 +840,7 @@ const managementItems = computed(() =>
       </div>
     </section>
     <nav
-      class="grid overflow-y-scroll flex-grow gap-0.5 pb-3 no-scrollbar min-w-0"
+      class="flex flex-col overflow-y-scroll flex-grow gap-0.5 pb-3 no-scrollbar min-w-0"
       :class="isEffectivelyCollapsed ? 'px-1' : 'px-2'"
     >
       <!-- Principal -->
