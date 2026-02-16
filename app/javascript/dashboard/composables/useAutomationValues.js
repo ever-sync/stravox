@@ -136,7 +136,10 @@ export default function useAutomationValues() {
           const stages = [];
           (data.pipelines || []).forEach(p => {
             (p.stages || []).forEach(s => {
-              stages.push({ id: s.id, name: `${p.name} - ${s.name}` });
+              stages.push({
+                id: `${p.id}::${s.id}`,
+                name: `${p.name} - ${s.name}`,
+              });
             });
           });
           return stages;

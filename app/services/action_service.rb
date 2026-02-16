@@ -84,15 +84,21 @@ class ActionService
   end
 
   def move_to_pipeline_stage(stage_ids)
-    stage = PipelineStage.find_by(id: stage_ids[0])
-    return unless stage
+    composite = stage_ids[0].to_s
+    return if composite.blank?
 
-    @conversation.update!(pipeline_stage_id: stage.id)
+    if composite.include?('::')
+      pipeline_id, stage_id = composite.split('::', 2)
+    else
+      pipeline_id = nil
+      stage_id = composite
+    end
 
-    # Also update custom_attributes to sync with Kanban board
+    return if stage_id.blank?
+
     attrs = @conversation.custom_attributes || {}
-    attrs['pipeline_stage'] = stage.name.parameterize(separator: '_')
-    attrs['pipeline_id'] = stage.pipeline_id.to_s
+    attrs['pipeline_stage'] = stage_id
+    attrs['pipeline_id'] = pipeline_id if pipeline_id.present?
     @conversation.update!(custom_attributes: attrs)
   end
 
