@@ -25,7 +25,9 @@
     "SIGNUP_QUESTION": "Don't have an account?",
     "SUBTITLE": "Access your dashboard with chat, CRM, automation and AI in one place.",
     "TESTIMONIAL": {
+      "QUOTE_START": "\u201c",
       "QUOTE": "Organizou nosso WhatsApp, CRM e automações. Hoje cada conversa vira uma oportunidade real.",
+      "QUOTE_END": "\u201d",
       "AUTHOR": "Ana Ribeiro",
       "ROLE": "Head de Vendas, Grupo Lumina"
     },

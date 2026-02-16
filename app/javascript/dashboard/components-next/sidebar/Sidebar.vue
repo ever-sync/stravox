@@ -857,7 +857,7 @@ const managementItems = computed(() =>
       <!-- CRM Section -->
       <div
         v-if="!isEffectivelyCollapsed"
-        class="text-[10px] uppercase tracking-[0.15em] text-violet-400/30 font-semibold px-3 py-1.5 mt-0.5"
+        class="text-[10px] uppercase tracking-[0.15em] text-[#702bdd] font-semibold px-3 py-1.5"
       >
         {{ t('SIDEBAR.SECTION_CRM') }}
       </div>
@@ -871,7 +871,7 @@ const managementItems = computed(() =>
       <!-- Gestao Section -->
       <div
         v-if="!isEffectivelyCollapsed"
-        class="text-[10px] uppercase tracking-[0.15em] text-violet-400/30 font-semibold px-3 py-1.5 mt-0.5"
+        class="text-[10px] uppercase tracking-[0.15em] text-[#702bdd] font-semibold px-3 py-1.5"
       >
         {{ t('SIDEBAR.SECTION_MANAGEMENT') }}
       </div>
