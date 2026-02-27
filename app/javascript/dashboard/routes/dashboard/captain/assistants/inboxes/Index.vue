@@ -1,8 +1,9 @@
 <script setup>
 import { computed, watch, ref, nextTick } from 'vue';
-import { useMapGetter, useStore } from 'dashboard/composables/store';
+import { useMapGetter } from 'dashboard/composables/store';
 import { useRoute } from 'vue-router';
 import { FEATURE_FLAGS } from 'dashboard/featureFlags';
+import { useCaptainInboxes } from 'dashboard/composables/useCaptainInboxes';
 
 import DeleteDialog from 'dashboard/components-next/captain/pageComponents/DeleteDialog.vue';
 import PageLayout from 'dashboard/components-next/captain/PageLayout.vue';
@@ -10,23 +11,31 @@ import ConnectInboxDialog from 'dashboard/components-next/captain/pageComponents
 import InboxCard from 'dashboard/components-next/captain/assistant/InboxCard.vue';
 import InboxPageEmptyState from 'dashboard/components-next/captain/pageComponents/emptyStates/InboxPageEmptyState.vue';
 
-const store = useStore();
 const dialogType = ref('');
 const route = useRoute();
 
-const assistantId = computed(() => route.params.assistantId);
+const assistantId = computed(() => Number(route.params.assistantId));
 const assistantUiFlags = useMapGetter('captainAssistants/getUIFlags');
-const uiFlags = useMapGetter('captainInboxes/getUIFlags');
+const {
+  captainInboxes,
+  isFetchingCaptainInboxes,
+  fetchCaptainInboxes,
+  deleteCaptainInbox,
+} = useCaptainInboxes();
 const isFetchingAssistant = computed(() => assistantUiFlags.value.fetchingItem);
-const isFetching = computed(() => uiFlags.value.fetchingList);
-
-const captainInboxes = useMapGetter('captainInboxes/getRecords');
+const isFetching = computed(() => isFetchingCaptainInboxes.value);
 
 const selectedInbox = ref(null);
 const disconnectInboxDialog = ref(null);
 
 const handleDelete = () => {
   disconnectInboxDialog.value.dialogRef.open();
+};
+const deleteSelectedInbox = () => {
+  return deleteCaptainInbox({
+    assistantId: assistantId.value,
+    inboxId: selectedInbox.value.id,
+  });
 };
 
 const connectInboxDialog = ref(null);
@@ -52,7 +61,7 @@ const handleCreateClose = () => {
 watch(
   assistantId,
   newId => {
-    store.dispatch('captainInboxes/get', {
+    fetchCaptainInboxes({
       assistantId: newId,
     });
   },
@@ -92,10 +101,7 @@ watch(
       v-if="selectedInbox"
       ref="disconnectInboxDialog"
       :entity="selectedInbox"
-      :delete-payload="{
-        assistantId: assistantId,
-        inboxId: selectedInbox.id,
-      }"
+      :delete-action="deleteSelectedInbox"
       type="Inboxes"
     />
 

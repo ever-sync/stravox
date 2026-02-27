@@ -2,7 +2,7 @@
 import { ref, computed, watch } from 'vue';
 import ToolsDropdown from 'dashboard/components-next/captain/assistant/ToolsDropdown.vue';
 import { useKeyboardNavigableList } from 'dashboard/composables/useKeyboardNavigableList';
-import { useMapGetter } from 'dashboard/composables/store.js';
+import { useCaptainTools } from 'dashboard/composables/useCaptainTools';
 
 const props = defineProps({
   searchKey: {
@@ -13,7 +13,7 @@ const props = defineProps({
 
 const emit = defineEmits(['selectTool']);
 
-const tools = useMapGetter('captainTools/getRecords');
+const { tools } = useCaptainTools();
 
 const selectedIndex = ref(0);
 

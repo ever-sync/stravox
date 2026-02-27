@@ -1,11 +1,11 @@
 <script setup>
 import { computed, onMounted, ref, nextTick } from 'vue';
-import { useMapGetter, useStore } from 'dashboard/composables/store';
 import { useI18n } from 'vue-i18n';
 import { useRouter, useRoute } from 'vue-router';
 import { FEATURE_FLAGS } from 'dashboard/featureFlags';
 import { debounce } from '@chatwoot/utils';
 import { useAccount } from 'dashboard/composables/useAccount';
+import { useCaptainResponses } from 'dashboard/composables/useCaptainResponses';
 
 import Banner from 'dashboard/components-next/banner/Banner.vue';
 import Input from 'dashboard/components-next/input/Input.vue';
@@ -22,12 +22,17 @@ import LimitBanner from 'dashboard/components-next/captain/pageComponents/respon
 
 const router = useRouter();
 const route = useRoute();
-const store = useStore();
 const { isOnStravoXCloud } = useAccount();
-const uiFlags = useMapGetter('captainResponses/getUIFlags');
-const responseMeta = useMapGetter('captainResponses/getMeta');
-const responses = useMapGetter('captainResponses/getRecords');
-const isFetching = computed(() => uiFlags.value.fetchingList);
+const {
+  responses,
+  responseMeta,
+  pendingCount,
+  isFetchingResponses,
+  fetchResponses,
+  fetchPendingCount,
+  deleteResponse,
+} = useCaptainResponses();
+const isFetching = computed(() => isFetchingResponses.value);
 
 const selectedResponse = ref(null);
 const deleteDialog = ref(null);
@@ -40,8 +45,6 @@ const { t } = useI18n();
 const createDialog = ref(null);
 
 const selectedAssistantId = computed(() => Number(route.params.assistantId));
-
-const pendingCount = useMapGetter('captainResponses/getPendingCount');
 
 const handleDelete = () => {
   deleteDialog.value.dialogRef.open();
@@ -95,7 +98,7 @@ const updateURLWithFilters = (page, search) => {
   router.replace({ query });
 };
 
-const fetchResponses = (page = 1) => {
+const fetchResponsesPage = page => {
   const filterParams = { page, status: 'approved' };
 
   if (selectedAssistantId.value) {
@@ -108,7 +111,7 @@ const fetchResponses = (page = 1) => {
   // Update URL with current filters
   updateURLWithFilters(page, searchQuery.value);
 
-  store.dispatch('captainResponses/get', filterParams);
+  return fetchResponses(filterParams);
 };
 
 // Bulk action
@@ -147,10 +150,10 @@ const fetchResponseAfterBulkAction = () => {
     // Page is now empty after bulk action.
     // Fetch the previous page if not already on the first page.
     const pageToFetch = currentPage > 1 ? currentPage - 1 : currentPage;
-    fetchResponses(pageToFetch);
+    fetchResponsesPage(pageToFetch);
   } else {
     // Page still has responses left, re-fetch the same page.
-    fetchResponses(currentPage);
+    fetchResponsesPage(currentPage);
   }
 
   // Clear selection
@@ -160,7 +163,7 @@ const fetchResponseAfterBulkAction = () => {
 const onPageChange = page => {
   const hadSelection = bulkSelectedIds.value.size > 0;
 
-  fetchResponses(page);
+  fetchResponsesPage(page);
 
   if (hadSelection) {
     bulkSelectedIds.value = new Set();
@@ -178,7 +181,7 @@ const onBulkDeleteSuccess = () => {
 };
 
 const debouncedSearch = debounce(async () => {
-  fetchResponses(1);
+  fetchResponsesPage(1);
 }, 500);
 
 const initializeFromURL = () => {
@@ -186,7 +189,7 @@ const initializeFromURL = () => {
     searchQuery.value = route.query.search;
   }
   const pageFromURL = parseInt(route.query.page, 10) || 1;
-  fetchResponses(pageFromURL);
+  fetchResponsesPage(pageFromURL);
 };
 
 const navigateToPendingFAQs = () => {
@@ -195,10 +198,7 @@ const navigateToPendingFAQs = () => {
 
 onMounted(() => {
   initializeFromURL();
-  store.dispatch(
-    'captainResponses/fetchPendingCount',
-    selectedAssistantId.value
-  );
+  fetchPendingCount(selectedAssistantId.value);
 });
 </script>
 
@@ -309,6 +309,7 @@ onMounted(() => {
       ref="deleteDialog"
       :entity="selectedResponse"
       type="Responses"
+      :delete-action="deleteResponse"
       @delete-success="onDeleteSuccess"
     />
 

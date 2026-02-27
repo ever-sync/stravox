@@ -1,5 +1,4 @@
 import { createApp } from 'vue';
-import { createI18n } from 'vue-i18n';
 
 import VueDOMPurifyHTML from 'vue-dompurify-html';
 import store from '../widget/store';
@@ -8,6 +7,8 @@ import ActionCableConnector from '../widget/helpers/actionCable';
 import i18nMessages from '../widget/i18n';
 import router from '../widget/router';
 import { directive as onClickaway } from 'vue3-click-away';
+import { mountVueAppOnLoad } from 'shared/helpers/VueEntryPointHelper';
+import { createVueI18n } from 'shared/helpers/VueI18nHelper';
 import { domPurifyConfig } from '../shared/helpers/HTMLSanitizer';
 import { plugin, defaultConfig } from '@formkit/vue';
 
@@ -16,7 +17,7 @@ import {
   isPhoneNumberValidWithDialCode,
 } from 'shared/helpers/Validators';
 
-const i18n = createI18n({
+const i18n = createVueI18n({
   legacy: false, // https://github.com/intlify/vue-i18n/issues/1902
   locale: 'en',
   messages: i18nMessages,
@@ -45,10 +46,13 @@ app.use(
 
 // Vue.config.productionTip = false;
 
-window.onload = () => {
-  window.WOOT_WIDGET = app.mount('#app');
-  window.actionCable = new ActionCableConnector(
-    window.WOOT_WIDGET,
-    window.stravoxPubsubToken
-  );
-};
+mountVueAppOnLoad({
+  app,
+  onMounted: mountedApp => {
+    window.WOOT_WIDGET = mountedApp;
+    window.actionCable = new ActionCableConnector(
+      mountedApp,
+      window.stravoxPubsubToken
+    );
+  },
+});

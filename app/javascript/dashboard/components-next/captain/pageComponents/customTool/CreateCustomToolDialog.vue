@@ -1,9 +1,9 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { useStore } from 'dashboard/composables/store';
 import { useAlert } from 'dashboard/composables';
 import { useI18n } from 'vue-i18n';
 import { parseAPIErrorResponse } from 'dashboard/store/utils/api';
+import { useCaptainCustomTools } from 'dashboard/composables/useCaptainCustomTools';
 
 import Dialog from 'dashboard/components-next/dialog/Dialog.vue';
 import CustomToolForm from './CustomToolForm.vue';
@@ -22,12 +22,12 @@ const props = defineProps({
 
 const emit = defineEmits(['close']);
 const { t } = useI18n();
-const store = useStore();
+const { createCustomTool, updateCustomTool } = useCaptainCustomTools();
 
 const dialogRef = ref(null);
 
 const updateTool = toolDetails =>
-  store.dispatch('captainCustomTools/update', {
+  updateCustomTool({
     id: props.selectedTool.id,
     ...toolDetails,
   });
@@ -36,8 +36,7 @@ const i18nKey = computed(
   () => `CAPTAIN.CUSTOM_TOOLS.${props.type.toUpperCase()}`
 );
 
-const createTool = toolDetails =>
-  store.dispatch('captainCustomTools/create', toolDetails);
+const createTool = toolDetails => createCustomTool(toolDetails);
 
 const handleSubmit = async updatedTool => {
   try {

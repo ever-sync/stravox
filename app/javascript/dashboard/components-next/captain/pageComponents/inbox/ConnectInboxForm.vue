@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 import { useMapGetter } from 'dashboard/composables/store';
+import { useCaptainInboxes } from 'dashboard/composables/useCaptainInboxes';
 
 import Button from 'dashboard/components-next/button/Button.vue';
 import ComboBox from 'dashboard/components-next/combobox/ComboBox.vue';
@@ -18,11 +19,10 @@ const props = defineProps({
 const emit = defineEmits(['submit', 'cancel']);
 
 const { t } = useI18n();
+const { captainInboxes, captainInboxesUIFlags } = useCaptainInboxes();
 
 const formState = {
-  uiFlags: useMapGetter('captainInboxes/getUIFlags'),
   inboxes: useMapGetter('inboxes/getInboxes'),
-  captainInboxes: useMapGetter('captainInboxes/getRecords'),
 };
 
 const initialState = {
@@ -36,7 +36,7 @@ const validationRules = {
 };
 
 const inboxList = computed(() => {
-  const captainInboxIds = formState.captainInboxes.value.map(inbox => inbox.id);
+  const captainInboxIds = captainInboxes.value.map(inbox => inbox.id);
 
   return formState.inboxes.value
     .filter(inbox => !captainInboxIds.includes(inbox.id))
@@ -48,7 +48,7 @@ const inboxList = computed(() => {
 
 const v$ = useVuelidate(validationRules, state);
 
-const isLoading = computed(() => formState.uiFlags.value.creatingItem);
+const isLoading = computed(() => captainInboxesUIFlags.value.creatingItem);
 
 const getErrorMessage = (field, errorKey) => {
   return v$.value[field].$error

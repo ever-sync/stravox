@@ -3,7 +3,7 @@ import { reactive, computed, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
-import { useMapGetter } from 'dashboard/composables/store';
+import { useCaptainCustomTools } from 'dashboard/composables/useCaptainCustomTools';
 
 import Input from 'dashboard/components-next/input/Input.vue';
 import TextArea from 'dashboard/components-next/textarea/TextArea.vue';
@@ -27,10 +27,7 @@ const props = defineProps({
 const emit = defineEmits(['submit', 'cancel']);
 
 const { t } = useI18n();
-
-const formState = {
-  uiFlags: useMapGetter('captainCustomTools/getUIFlags'),
-};
+const { customToolsUIFlags } = useCaptainCustomTools();
 
 const initialState = {
   title: '',
@@ -98,8 +95,8 @@ const v$ = useVuelidate(validationRules, state);
 
 const isLoading = computed(() =>
   props.mode === 'edit'
-    ? formState.uiFlags.value.updatingItem
-    : formState.uiFlags.value.creatingItem
+    ? customToolsUIFlags.value.updatingItem
+    : customToolsUIFlags.value.creatingItem
 );
 
 const getErrorMessage = (field, errorKey) => {

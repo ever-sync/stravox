@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { useStore, useMapGetter } from 'dashboard/composables/store';
 import { useI18n } from 'vue-i18n';
+import { useCaptainResponses } from 'dashboard/composables/useCaptainResponses';
 import Spinner from 'dashboard/components-next/spinner/Spinner.vue';
 import Dialog from 'dashboard/components-next/dialog/Dialog.vue';
 import ResponseCard from '../../assistant/ResponseCard.vue';
@@ -13,21 +13,18 @@ const props = defineProps({
 });
 const emit = defineEmits(['close']);
 const { t } = useI18n();
-const store = useStore();
 const dialogRef = ref(null);
-
-const uiFlags = useMapGetter('captainResponses/getUIFlags');
-const responses = useMapGetter('captainResponses/getRecords');
-const meta = useMapGetter('captainResponses/getMeta');
-const isFetching = computed(() => uiFlags.value.fetchingList);
-const totalCount = computed(() => meta.value.totalCount || 0);
+const { responses, responseMeta, isFetchingResponses, fetchResponses } =
+  useCaptainResponses();
+const isFetching = computed(() => isFetchingResponses.value);
+const totalCount = computed(() => responseMeta.value.totalCount || 0);
 
 const handleClose = () => {
   emit('close');
 };
 
 onMounted(() => {
-  store.dispatch('captainResponses/get', {
+  fetchResponses({
     assistantId: props.captainDocument.assistant.id,
     documentId: props.captainDocument.id,
   });

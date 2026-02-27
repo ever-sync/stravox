@@ -1,9 +1,9 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { useStore } from 'dashboard/composables/store';
 import { useAlert } from 'dashboard/composables';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
+import { useCaptainResponses } from 'dashboard/composables/useCaptainResponses';
 
 import Dialog from 'dashboard/components-next/dialog/Dialog.vue';
 import ResponseForm from './ResponseForm.vue';
@@ -21,14 +21,17 @@ const props = defineProps({
 });
 const emit = defineEmits(['close']);
 const { t } = useI18n();
-const store = useStore();
 const route = useRoute();
+const {
+  createResponse: createCaptainResponse,
+  updateResponse: updateCaptainResponse,
+} = useCaptainResponses();
 
 const dialogRef = ref(null);
 const responseForm = ref(null);
 
 const updateResponse = responseDetails =>
-  store.dispatch('captainResponses/update', {
+  updateCaptainResponse({
     id: props.selectedResponse.id,
     ...responseDetails,
   });
@@ -36,7 +39,7 @@ const updateResponse = responseDetails =>
 const i18nKey = computed(() => `CAPTAIN.RESPONSES.${props.type.toUpperCase()}`);
 
 const createResponse = responseDetails =>
-  store.dispatch('captainResponses/create', responseDetails);
+  createCaptainResponse(responseDetails);
 
 const handleSubmit = async updatedResponse => {
   try {

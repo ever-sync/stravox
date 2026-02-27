@@ -3,7 +3,7 @@ import { reactive, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useVuelidate } from '@vuelidate/core';
 import { required, minLength } from '@vuelidate/validators';
-import { useMapGetter } from 'dashboard/composables/store';
+import { useCaptainResponses } from 'dashboard/composables/useCaptainResponses';
 
 import Input from 'dashboard/components-next/input/Input.vue';
 import Editor from 'dashboard/components-next/Editor/Editor.vue';
@@ -23,10 +23,7 @@ const props = defineProps({
 
 const emit = defineEmits(['submit', 'cancel']);
 const { t } = useI18n();
-
-const formState = {
-  uiFlags: useMapGetter('captainResponses/getUIFlags'),
-};
+const { responsesUIFlags } = useCaptainResponses();
 
 const initialState = {
   question: '',
@@ -42,7 +39,11 @@ const validationRules = {
 
 const v$ = useVuelidate(validationRules, state);
 
-const isLoading = computed(() => formState.uiFlags.value.creatingItem);
+const isLoading = computed(() => {
+  return props.mode === 'edit'
+    ? responsesUIFlags.value.updatingItem
+    : responsesUIFlags.value.creatingItem;
+});
 
 const getErrorMessage = (field, errorKey) => {
   return v$.value[field].$error

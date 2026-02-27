@@ -18,17 +18,15 @@ Rails.application.routes.draw do
 
     get '/app', to: 'dashboard#index'
     get '/app/*params', to: 'dashboard#index'
-    get '/app/accounts/:account_id/settings/inboxes/new/twitter', to: 'dashboard#index', as: 'app_new_twitter_inbox'
-    get '/app/accounts/:account_id/settings/inboxes/new/microsoft', to: 'dashboard#index', as: 'app_new_microsoft_inbox'
-    get '/app/accounts/:account_id/settings/inboxes/new/instagram', to: 'dashboard#index', as: 'app_new_instagram_inbox'
-    get '/app/accounts/:account_id/settings/inboxes/new/tiktok', to: 'dashboard#index', as: 'app_new_tiktok_inbox'
-    get '/app/accounts/:account_id/settings/inboxes/new/:inbox_id/agents', to: 'dashboard#index', as: 'app_twitter_inbox_agents'
-    get '/app/accounts/:account_id/settings/inboxes/new/:inbox_id/agents', to: 'dashboard#index', as: 'app_email_inbox_agents'
-    get '/app/accounts/:account_id/settings/inboxes/new/:inbox_id/agents', to: 'dashboard#index', as: 'app_instagram_inbox_agents'
-    get '/app/accounts/:account_id/settings/inboxes/new/:inbox_id/agents', to: 'dashboard#index', as: 'app_tiktok_inbox_agents'
-    get '/app/accounts/:account_id/settings/inboxes/:inbox_id', to: 'dashboard#index', as: 'app_instagram_inbox_settings'
-    get '/app/accounts/:account_id/settings/inboxes/:inbox_id', to: 'dashboard#index', as: 'app_tiktok_inbox_settings'
-    get '/app/accounts/:account_id/settings/inboxes/:inbox_id', to: 'dashboard#index', as: 'app_email_inbox_settings'
+    %i[twitter microsoft instagram tiktok].each do |provider|
+      get "/app/accounts/:account_id/settings/inboxes/new/#{provider}", to: 'dashboard#index', as: :"app_new_#{provider}_inbox"
+    end
+    %i[twitter email instagram tiktok].each do |provider|
+      get '/app/accounts/:account_id/settings/inboxes/new/:inbox_id/agents', to: 'dashboard#index', as: :"app_#{provider}_inbox_agents"
+    end
+    %i[instagram tiktok email].each do |provider|
+      get '/app/accounts/:account_id/settings/inboxes/:inbox_id', to: 'dashboard#index', as: :"app_#{provider}_inbox_settings"
+    end
 
     resource :widget, only: [:show]
     namespace :survey do
@@ -39,6 +37,250 @@ Rails.application.routes.draw do
 
   get '/health', to: 'health#show'
   get '/api', to: 'api#index'
+
+  concern :account_captain_routes do
+    namespace :captain do
+      resource :preferences, only: [:show, :update]
+      resources :assistants do
+        member do
+          post :playground
+        end
+        collection do
+          get :tools
+        end
+        resources :inboxes, only: [:index, :create, :destroy], param: :inbox_id
+        resources :scenarios
+      end
+      resources :assistant_responses
+      resources :bulk_actions, only: [:create]
+      resources :copilot_threads, only: [:index, :create] do
+        resources :copilot_messages, only: [:index, :create]
+      end
+      resources :custom_tools
+      resources :documents, only: [:index, :show, :create, :destroy]
+      resource :tasks, only: [], controller: 'tasks' do
+        post :rewrite
+        post :summarize
+        post :reply_suggestion
+        post :label_suggestion
+        post :follow_up
+      end
+    end
+  end
+
+  concern :account_conversation_routes do
+    collection do
+      get :meta
+      get :search
+      post :filter
+    end
+
+    scope module: :conversations do
+      resources :messages, only: [:index, :create, :destroy, :update] do
+        member do
+          post :translate
+          post :retry
+        end
+      end
+      resources :assignments, only: [:create]
+      resources :labels, only: [:create, :index]
+      resource :participants, only: [:show, :create, :update, :destroy]
+      resource :direct_uploads, only: [:create]
+      resource :draft_messages, only: [:show, :update, :destroy]
+    end
+
+    member do
+      post :mute
+      post :unmute
+      post :transcript
+      post :toggle_status
+      post :toggle_priority
+      post :toggle_typing_status
+      post :update_last_seen
+      post :unread
+      post :custom_attributes
+      get :attachments
+      get :inbox_assistant
+      get :reporting_events if StravoXApp.enterprise?
+    end
+  end
+
+  concern :account_contact_routes do
+    collection do
+      get :active
+      get :search
+      post :filter
+      post :import
+      post :export
+    end
+
+    member do
+      get :contactable_inboxes
+      post :destroy_custom_attributes
+      delete :avatar
+    end
+
+    scope module: :contacts do
+      resources :conversations, only: [:index]
+      resources :contact_inboxes, only: [:create]
+      resources :labels, only: [:create, :index]
+      resources :notes
+      post :call, on: :member, to: 'calls#create' if StravoXApp.enterprise?
+    end
+  end
+
+  concern :account_inbox_routes do
+    get :assignable_agents, on: :member
+    get :campaigns, on: :member
+    get :agent_bot, on: :member
+    post :set_agent_bot, on: :member
+    delete :avatar, on: :member
+    post :sync_templates, on: :member
+    get :health, on: :member
+
+    if StravoXApp.enterprise?
+      resource :conference, only: %i[create destroy], controller: 'conference' do
+        get :token, on: :member
+      end
+    end
+
+    resource :csat_template, only: [:show, :create], controller: 'inbox_csat_templates'
+  end
+
+  concern :account_notification_routes do
+    collection do
+      post :read_all
+      get :unread_count
+      post :destroy_all
+    end
+
+    member do
+      post :snooze
+      post :unread
+    end
+  end
+
+  concern :account_team_routes do
+    resources :team_members, only: [:index, :create] do
+      collection do
+        delete :destroy
+        patch :update
+      end
+    end
+  end
+
+  concern :api_v1_widget_routes do
+    namespace :widget do
+      resource :direct_uploads, only: [:create]
+      resource :config, only: [:create]
+      resources :campaigns, only: [:index]
+      resources :events, only: [:create]
+      resources :messages, only: [:index, :create, :update]
+      resources :conversations, only: [:index, :create] do
+        collection do
+          post :destroy_custom_attributes
+          post :set_custom_attributes
+          post :update_last_seen
+          post :toggle_typing
+          post :transcript
+          get :toggle_status
+        end
+      end
+      resource :contact, only: [:show, :update] do
+        collection do
+          post :destroy_custom_attributes
+          patch :set_user
+        end
+      end
+      resources :inbox_members, only: [:index]
+      resources :labels, only: [:create, :destroy]
+      namespace :integrations do
+        resource :dyte, controller: 'dyte', only: [] do
+          collection do
+            post :add_participant_to_meeting
+          end
+        end
+      end
+    end
+  end
+
+  concern :api_v2_account_reporting_routes do
+    scope module: :accounts do
+      resources :summary_reports, only: [] do
+        collection do
+          get :agent
+          get :team
+          get :inbox
+          get :label
+          get :channel
+        end
+      end
+      resources :reports, only: [:index] do
+        collection do
+          get :summary
+          get :bot_summary
+          get :agents
+          get :inboxes
+          get :labels
+          get :teams
+          get :conversations
+          get :conversations_summary
+          get :conversation_traffic
+          get :bot_metrics
+          get :inbox_label_matrix
+          get :first_response_time_distribution
+          get :outgoing_messages_count
+        end
+      end
+      resource :year_in_review, only: [:show]
+      resources :live_reports, only: [] do
+        collection do
+          get :conversation_metrics
+          get :grouped_conversation_metrics
+        end
+      end
+    end
+  end
+
+  concern :public_api_inbox_contact_conversation_routes do
+    member do
+      post :toggle_status
+      post :toggle_typing
+      post :update_last_seen
+    end
+
+    resources :messages, only: [:index, :create, :update]
+  end
+
+  concern :public_api_inbox_contact_routes do
+    resources :conversations, only: [:index, :create, :show], concerns: :public_api_inbox_contact_conversation_routes
+  end
+
+  concern :enterprise_api_v1_account_routes do
+    member do
+      post :checkout
+      post :subscription
+      get :limits
+      post :toggle_deletion
+      post :topup_checkout
+    end
+  end
+
+  concern :platform_api_v1_user_routes do
+    member do
+      get :login
+      post :token
+    end
+  end
+
+  concern :platform_api_v1_account_routes do
+    resources :account_users, only: [:index, :create] do
+      collection do
+        delete :destroy
+      end
+    end
+  end
+
   namespace :api, defaults: { format: 'json' } do
     namespace :v1 do
       # ----------------------------------
@@ -57,33 +299,7 @@ Rails.application.routes.draw do
           resources :agents, only: [:index, :create, :update, :destroy] do
             post :bulk_create, on: :collection
           end
-          namespace :captain do
-            resource :preferences, only: [:show, :update]
-            resources :assistants do
-              member do
-                post :playground
-              end
-              collection do
-                get :tools
-              end
-              resources :inboxes, only: [:index, :create, :destroy], param: :inbox_id
-              resources :scenarios
-            end
-            resources :assistant_responses
-            resources :bulk_actions, only: [:create]
-            resources :copilot_threads, only: [:index, :create] do
-              resources :copilot_messages, only: [:index, :create]
-            end
-            resources :custom_tools
-            resources :documents, only: [:index, :show, :create, :destroy]
-            resource :tasks, only: [], controller: 'tasks' do
-              post :rewrite
-              post :summarize
-              post :reply_suggestion
-              post :label_suggestion
-              post :follow_up
-            end
-          end
+          concerns :account_captain_routes
           resource :saml_settings, only: [:show, :create, :update, :destroy]
           resources :agent_bots, only: [:index, :create, :show, :update, :destroy] do
             delete :avatar, on: :member
@@ -127,40 +343,7 @@ Rails.application.routes.draw do
           namespace :channels do
             resource :twilio_channel, only: [:create]
           end
-          resources :conversations, only: [:index, :create, :show, :update, :destroy] do
-            collection do
-              get :meta
-              get :search
-              post :filter
-            end
-            scope module: :conversations do
-              resources :messages, only: [:index, :create, :destroy, :update] do
-                member do
-                  post :translate
-                  post :retry
-                end
-              end
-              resources :assignments, only: [:create]
-              resources :labels, only: [:create, :index]
-              resource :participants, only: [:show, :create, :update, :destroy]
-              resource :direct_uploads, only: [:create]
-              resource :draft_messages, only: [:show, :update, :destroy]
-            end
-            member do
-              post :mute
-              post :unmute
-              post :transcript
-              post :toggle_status
-              post :toggle_priority
-              post :toggle_typing_status
-              post :update_last_seen
-              post :unread
-              post :custom_attributes
-              get :attachments
-              get :inbox_assistant
-              get :reporting_events if StravoXApp.enterprise?
-            end
-          end
+          resources :conversations, only: [:index, :create, :show, :update, :destroy], concerns: :account_conversation_routes
 
           resources :search, only: [:index] do
             collection do
@@ -176,27 +359,7 @@ Rails.application.routes.draw do
               get :search
             end
           end
-          resources :contacts, only: [:index, :show, :update, :create, :destroy] do
-            collection do
-              get :active
-              get :search
-              post :filter
-              post :import
-              post :export
-            end
-            member do
-              get :contactable_inboxes
-              post :destroy_custom_attributes
-              delete :avatar
-            end
-            scope module: :contacts do
-              resources :conversations, only: [:index]
-              resources :contact_inboxes, only: [:create]
-              resources :labels, only: [:create, :index]
-              resources :notes
-              post :call, on: :member, to: 'calls#create' if StravoXApp.enterprise?
-            end
-          end
+          resources :contacts, only: [:index, :show, :update, :create, :destroy], concerns: :account_contact_routes
           resources :csat_survey_responses, only: [:index] do
             collection do
               get :metrics
@@ -215,22 +378,7 @@ Rails.application.routes.draw do
           resources :reporting_events, only: [:index] if StravoXApp.enterprise?
           resources :custom_attribute_definitions, only: [:index, :show, :create, :update, :destroy]
           resources :custom_filters, only: [:index, :show, :create, :update, :destroy]
-          resources :inboxes, only: [:index, :show, :create, :update, :destroy] do
-            get :assignable_agents, on: :member
-            get :campaigns, on: :member
-            get :agent_bot, on: :member
-            post :set_agent_bot, on: :member
-            delete :avatar, on: :member
-            post :sync_templates, on: :member
-            get :health, on: :member
-            if StravoXApp.enterprise?
-              resource :conference, only: %i[create destroy], controller: 'conference' do
-                get :token, on: :member
-              end
-            end
-
-            resource :csat_template, only: [:show, :create], controller: 'inbox_csat_templates'
-          end
+          resources :inboxes, only: [:index, :show, :create, :update, :destroy], concerns: :account_inbox_routes
 
           resources :inbox_members, only: [:create, :show], param: :inbox_id do
             collection do
@@ -240,27 +388,10 @@ Rails.application.routes.draw do
           end
           resources :labels, only: [:index, :show, :create, :update, :destroy]
 
-          resources :notifications, only: [:index, :update, :destroy] do
-            collection do
-              post :read_all
-              get :unread_count
-              post :destroy_all
-            end
-            member do
-              post :snooze
-              post :unread
-            end
-          end
+          resources :notifications, only: [:index, :update, :destroy], concerns: :account_notification_routes
           resource :notification_settings, only: [:show, :update]
 
-          resources :teams do
-            resources :team_members, only: [:index, :create] do
-              collection do
-                delete :destroy
-                patch :update
-              end
-            end
-          end
+          resources :teams, concerns: :account_team_routes
 
           # Assignment V2 Routes
           resources :assignment_policies do
@@ -271,32 +402,10 @@ Rails.application.routes.draw do
             resource :assignment_policy, only: [:show, :create, :destroy], module: :inboxes
           end
 
-          namespace :twitter do
-            resource :authorization, only: [:create]
-          end
-
-          namespace :microsoft do
-            resource :authorization, only: [:create]
-          end
-
-          namespace :google do
-            resource :authorization, only: [:create]
-          end
-
-          namespace :instagram do
-            resource :authorization, only: [:create]
-          end
-
-          namespace :tiktok do
-            resource :authorization, only: [:create]
-          end
-
-          namespace :notion do
-            resource :authorization, only: [:create]
-          end
-
-          namespace :whatsapp do
-            resource :authorization, only: [:create]
+          %i[twitter microsoft google instagram tiktok notion whatsapp].each do |provider|
+            namespace provider do
+              resource :authorization, only: [:create]
+            end
           end
 
           resources :webhooks, only: [:index, :create, :update, :destroy]
@@ -391,78 +500,11 @@ Rails.application.routes.draw do
 
       resource :notification_subscriptions, only: [:create, :destroy]
 
-      namespace :widget do
-        resource :direct_uploads, only: [:create]
-        resource :config, only: [:create]
-        resources :campaigns, only: [:index]
-        resources :events, only: [:create]
-        resources :messages, only: [:index, :create, :update]
-        resources :conversations, only: [:index, :create] do
-          collection do
-            post :destroy_custom_attributes
-            post :set_custom_attributes
-            post :update_last_seen
-            post :toggle_typing
-            post :transcript
-            get  :toggle_status
-          end
-        end
-        resource :contact, only: [:show, :update] do
-          collection do
-            post :destroy_custom_attributes
-            patch :set_user
-          end
-        end
-        resources :inbox_members, only: [:index]
-        resources :labels, only: [:create, :destroy]
-        namespace :integrations do
-          resource :dyte, controller: 'dyte', only: [] do
-            collection do
-              post :add_participant_to_meeting
-            end
-          end
-        end
-      end
+      concerns :api_v1_widget_routes
     end
 
     namespace :v2 do
-      resources :accounts, only: [:create] do
-        scope module: :accounts do
-          resources :summary_reports, only: [] do
-            collection do
-              get :agent
-              get :team
-              get :inbox
-              get :label
-              get :channel
-            end
-          end
-          resources :reports, only: [:index] do
-            collection do
-              get :summary
-              get :bot_summary
-              get :agents
-              get :inboxes
-              get :labels
-              get :teams
-              get :conversations
-              get :conversations_summary
-              get :conversation_traffic
-              get :bot_metrics
-              get :inbox_label_matrix
-              get :first_response_time_distribution
-              get :outgoing_messages_count
-            end
-          end
-          resource :year_in_review, only: [:show]
-          resources :live_reports, only: [] do
-            collection do
-              get :conversation_metrics
-              get :grouped_conversation_metrics
-            end
-          end
-        end
-      end
+      resources :accounts, only: [:create], concerns: :api_v2_account_reporting_routes
     end
   end
 
@@ -470,15 +512,7 @@ Rails.application.routes.draw do
     namespace :enterprise, defaults: { format: 'json' } do
       namespace :api do
         namespace :v1 do
-          resources :accounts do
-            member do
-              post :checkout
-              post :subscription
-              get :limits
-              post :toggle_deletion
-              post :topup_checkout
-            end
-          end
+          resources :accounts, concerns: :enterprise_api_v1_account_routes
         end
       end
 
@@ -492,22 +526,11 @@ Rails.application.routes.draw do
   namespace :platform, defaults: { format: 'json' } do
     namespace :api do
       namespace :v1 do
-        resources :users, only: [:create, :show, :update, :destroy] do
-          member do
-            get :login
-            post :token
-          end
-        end
+        resources :users, only: [:create, :show, :update, :destroy], concerns: :platform_api_v1_user_routes
         resources :agent_bots, only: [:index, :create, :show, :update, :destroy] do
           delete :avatar, on: :member
         end
-        resources :accounts, only: [:index, :create, :show, :update, :destroy] do
-          resources :account_users, only: [:index, :create] do
-            collection do
-              delete :destroy
-            end
-          end
-        end
+        resources :accounts, only: [:index, :create, :show, :update, :destroy], concerns: :platform_api_v1_account_routes
       end
     end
   end
@@ -519,17 +542,7 @@ Rails.application.routes.draw do
       namespace :v1 do
         resources :inboxes do
           scope module: :inboxes do
-            resources :contacts, only: [:create, :show, :update] do
-              resources :conversations, only: [:index, :create, :show] do
-                member do
-                  post :toggle_status
-                  post :toggle_typing
-                  post :update_last_seen
-                end
-
-                resources :messages, only: [:index, :create, :update]
-              end
-            end
+            resources :contacts, only: [:create, :show, :update], concerns: :public_api_inbox_contact_routes
           end
         end
 
@@ -538,15 +551,19 @@ Rails.application.routes.draw do
     end
   end
 
-  get 'hc/:slug', to: 'public/api/v1/portals#show'
-  get 'hc/:slug/sitemap.xml', to: 'public/api/v1/portals#sitemap'
-  get 'hc/:slug/:locale', to: 'public/api/v1/portals#show'
-  get 'hc/:slug/:locale/articles', to: 'public/api/v1/portals/articles#index'
-  get 'hc/:slug/:locale/categories', to: 'public/api/v1/portals/categories#index'
-  get 'hc/:slug/:locale/categories/:category_slug', to: 'public/api/v1/portals/categories#show'
-  get 'hc/:slug/:locale/categories/:category_slug/articles', to: 'public/api/v1/portals/articles#index'
-  get 'hc/:slug/articles/:article_slug.png', to: 'public/api/v1/portals/articles#tracking_pixel'
-  get 'hc/:slug/articles/:article_slug', to: 'public/api/v1/portals/articles#show'
+  [
+    ['hc/:slug', 'public/api/v1/portals#show'],
+    ['hc/:slug/sitemap.xml', 'public/api/v1/portals#sitemap'],
+    ['hc/:slug/:locale', 'public/api/v1/portals#show'],
+    ['hc/:slug/:locale/articles', 'public/api/v1/portals/articles#index'],
+    ['hc/:slug/:locale/categories', 'public/api/v1/portals/categories#index'],
+    ['hc/:slug/:locale/categories/:category_slug', 'public/api/v1/portals/categories#show'],
+    ['hc/:slug/:locale/categories/:category_slug/articles', 'public/api/v1/portals/articles#index'],
+    ['hc/:slug/articles/:article_slug.png', 'public/api/v1/portals/articles#tracking_pixel'],
+    ['hc/:slug/articles/:article_slug', 'public/api/v1/portals/articles#show']
+  ].each do |path, target|
+    get path, to: target
+  end
 
   # ----------------------------------------------------------------------
   # Used in mailer templates
@@ -561,25 +578,23 @@ Rails.application.routes.draw do
   mount Facebook::Messenger::Server, at: 'bot'
   get 'webhooks/twitter', to: 'api/v1/webhooks#twitter_crc'
   post 'webhooks/twitter', to: 'api/v1/webhooks#twitter_events'
-  post 'webhooks/line/:line_channel_id', to: 'webhooks/line#process_payload'
-  post 'webhooks/telegram/:bot_token', to: 'webhooks/telegram#process_payload'
-  post 'webhooks/sms/:phone_number', to: 'webhooks/sms#process_payload'
+  {
+    line: :line_channel_id,
+    telegram: :bot_token,
+    sms: :phone_number
+  }.each do |provider, param|
+    post "webhooks/#{provider}/:#{param}", to: "webhooks/#{provider}#process_payload"
+  end
   get 'webhooks/whatsapp/:phone_number', to: 'webhooks/whatsapp#verify'
   post 'webhooks/whatsapp/:phone_number', to: 'webhooks/whatsapp#process_payload'
   get 'webhooks/instagram', to: 'webhooks/instagram#verify'
   post 'webhooks/instagram', to: 'webhooks/instagram#events'
   post 'webhooks/tiktok', to: 'webhooks/tiktok#events'
 
-  namespace :twitter do
-    resource :callback, only: [:show]
-  end
-
-  namespace :linear do
-    resource :callback, only: [:show]
-  end
-
-  namespace :shopify do
-    resource :callback, only: [:show]
+  %i[twitter linear shopify].each do |provider|
+    namespace provider do
+      resource :callback, only: [:show]
+    end
   end
 
   namespace :twilio do
@@ -593,11 +608,9 @@ Rails.application.routes.draw do
     end
   end
 
-  get 'microsoft/callback', to: 'microsoft/callbacks#show'
-  get 'google/callback', to: 'google/callbacks#show'
-  get 'instagram/callback', to: 'instagram/callbacks#show'
-  get 'tiktok/callback', to: 'tiktok/callbacks#show'
-  get 'notion/callback', to: 'notion/callbacks#show'
+  %i[microsoft google instagram tiktok notion].each do |provider|
+    get "#{provider}/callback", to: "#{provider}/callbacks#show"
+  end
   # ----------------------------------------------------------------------
   # Routes for external service verifications
   get '.well-known/assetlinks.json' => 'android_app#assetlinks'

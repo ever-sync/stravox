@@ -1,6 +1,7 @@
 import CaptainBulkActionsAPI from 'dashboard/api/captain/bulkActions';
 import { createStore } from '../storeFactory';
 import { throwErrorMessage } from 'dashboard/store/utils/api';
+import { useCaptainResponsesStore } from 'dashboard/stores/captainResponses';
 
 export default createStore({
   name: 'CaptainBulkAction',
@@ -32,10 +33,9 @@ export default createStore({
         ids,
       });
 
-      // Update the response store after successful API call
-      await dispatch('captainResponses/removeBulkResponses', ids, {
-        root: true,
-      });
+      // Keep Captain responses (Pinia) in sync with the bulk API result.
+      const captainResponsesStore = useCaptainResponsesStore();
+      captainResponsesStore.removeBulkResponses(ids);
       return response;
     },
 
@@ -46,10 +46,8 @@ export default createStore({
         ids,
       });
 
-      // Update response store after successful API call
-      await dispatch('captainResponses/updateBulkResponses', response, {
-        root: true,
-      });
+      const captainResponsesStore = useCaptainResponsesStore();
+      captainResponsesStore.updateBulkResponses(response);
       return response;
     },
   }),

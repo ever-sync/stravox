@@ -3,7 +3,8 @@ import { computed, h, ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import { picoSearch } from '@scmmishra/pico-search';
-import { useStore, useMapGetter } from 'dashboard/composables/store';
+import { useCaptainTools } from 'dashboard/composables/useCaptainTools';
+import { useCaptainScenarios } from 'dashboard/composables/useCaptainScenarios';
 import { useAlert } from 'dashboard/composables';
 import { useUISettings } from 'dashboard/composables/useUISettings';
 import { useMessageFormatter } from 'shared/composables/useMessageFormatter';
@@ -19,14 +20,20 @@ import AddNewScenariosDialog from 'dashboard/components-next/captain/assistant/A
 
 const { t } = useI18n();
 const route = useRoute();
-const store = useStore();
+const { ensureToolsLoaded } = useCaptainTools();
+const {
+  scenarios,
+  isFetchingScenarios,
+  fetchScenarios,
+  createScenario,
+  updateScenario: saveScenario,
+  deleteScenario: removeScenario,
+} = useCaptainScenarios();
 const { uiSettings, updateUISettings } = useUISettings();
 const { formatMessage } = useMessageFormatter();
 const assistantId = computed(() => Number(route.params.assistantId));
 
-const uiFlags = useMapGetter('captainScenarios/getUIFlags');
-const isFetching = computed(() => uiFlags.value.fetchingList);
-const scenarios = useMapGetter('captainScenarios/getRecords');
+const isFetching = computed(() => isFetchingScenarios.value);
 
 const searchQuery = ref('');
 
@@ -103,7 +110,7 @@ const getToolsFromInstruction = instruction => [
 
 const updateScenario = async scenario => {
   try {
-    await store.dispatch('captainScenarios/update', {
+    await saveScenario({
       id: scenario.id,
       assistantId: assistantId.value,
       ...scenario,
@@ -120,7 +127,7 @@ const updateScenario = async scenario => {
 
 const deleteScenario = async id => {
   try {
-    await store.dispatch('captainScenarios/delete', {
+    await removeScenario({
       id,
       assistantId: assistantId.value,
     });
@@ -138,7 +145,7 @@ const bulkDeleteScenarios = async ids => {
   const idsArray = ids || Array.from(bulkSelectedIds.value);
   await Promise.all(
     idsArray.map(id =>
-      store.dispatch('captainScenarios/delete', {
+      removeScenario({
         id,
         assistantId: assistantId.value,
       })
@@ -150,7 +157,7 @@ const bulkDeleteScenarios = async ids => {
 
 const addScenario = async scenario => {
   try {
-    await store.dispatch('captainScenarios/create', {
+    await createScenario({
       assistantId: assistantId.value,
       ...scenario,
       tools: getToolsFromInstruction(scenario.instruction),
@@ -166,12 +173,14 @@ const addScenario = async scenario => {
 
 const addAllExampleScenarios = async () => {
   try {
-    scenariosExample.forEach(async scenario => {
-      await store.dispatch('captainScenarios/create', {
-        assistantId: assistantId.value,
-        ...scenario,
-      });
-    });
+    await Promise.all(
+      scenariosExample.map(scenario =>
+        createScenario({
+          assistantId: assistantId.value,
+          ...scenario,
+        })
+      )
+    );
     useAlert(t('CAPTAIN.ASSISTANTS.SCENARIOS.API.ADD.SUCCESS'));
   } catch (error) {
     const errorMessage =
@@ -182,10 +191,10 @@ const addAllExampleScenarios = async () => {
 };
 
 onMounted(() => {
-  store.dispatch('captainScenarios/get', {
+  fetchScenarios({
     assistantId: assistantId.value,
   });
-  store.dispatch('captainTools/getTools');
+  ensureToolsLoaded();
 });
 </script>
 

@@ -1,12 +1,13 @@
 <script setup>
 import { computed, onMounted, ref, nextTick } from 'vue';
-import { useMapGetter, useStore } from 'dashboard/composables/store';
+import { useStore } from 'dashboard/composables/store';
 import { useAlert } from 'dashboard/composables';
 import { useI18n } from 'vue-i18n';
 import { useRouter, useRoute } from 'vue-router';
 import { FEATURE_FLAGS } from 'dashboard/featureFlags';
 import { debounce } from '@chatwoot/utils';
 import { useAccount } from 'dashboard/composables/useAccount';
+import { useCaptainResponses } from 'dashboard/composables/useCaptainResponses';
 
 import Button from 'dashboard/components-next/button/Button.vue';
 import Input from 'dashboard/components-next/input/Input.vue';
@@ -25,10 +26,15 @@ const router = useRouter();
 const route = useRoute();
 const store = useStore();
 const { isOnStravoXCloud } = useAccount();
-const uiFlags = useMapGetter('captainResponses/getUIFlags');
-const responseMeta = useMapGetter('captainResponses/getMeta');
-const responses = useMapGetter('captainResponses/getRecords');
-const isFetching = computed(() => uiFlags.value.fetchingList);
+const {
+  responses,
+  responseMeta,
+  isFetchingResponses,
+  fetchResponses,
+  updateResponse,
+  deleteResponse,
+} = useCaptainResponses();
+const isFetching = computed(() => isFetchingResponses.value);
 
 const selectedResponse = ref(null);
 const deleteDialog = ref(null);
@@ -60,7 +66,7 @@ const handleDelete = () => {
 
 const handleAccept = async () => {
   try {
-    await store.dispatch('captainResponses/update', {
+    await updateResponse({
       id: selectedResponse.value.id,
       status: 'approved',
     });
@@ -122,7 +128,7 @@ const updateURLWithFilters = (page, search) => {
   router.replace({ query });
 };
 
-const fetchResponses = (page = 1) => {
+const fetchResponsesPage = page => {
   const filterParams = { page, status: 'pending' };
 
   if (selectedAssistantId.value) {
@@ -135,7 +141,7 @@ const fetchResponses = (page = 1) => {
   // Update URL with current filters
   updateURLWithFilters(page, searchQuery.value);
 
-  store.dispatch('captainResponses/get', filterParams);
+  return fetchResponses(filterParams);
 };
 
 // Bulk action
@@ -172,9 +178,9 @@ const fetchResponseAfterBulkAction = () => {
 
   if (hasNoResponsesLeft) {
     const pageToFetch = currentPage > 1 ? currentPage - 1 : currentPage;
-    fetchResponses(pageToFetch);
+    fetchResponsesPage(pageToFetch);
   } else {
-    fetchResponses(currentPage);
+    fetchResponsesPage(currentPage);
   }
 
   bulkSelectedIds.value = new Set();
@@ -199,7 +205,7 @@ const handleBulkApprove = async () => {
 const onPageChange = page => {
   const hadSelection = bulkSelectedIds.value.size > 0;
 
-  fetchResponses(page);
+  fetchResponsesPage(page);
 
   if (hadSelection) {
     bulkSelectedIds.value = new Set();
@@ -217,7 +223,7 @@ const onBulkDeleteSuccess = () => {
 };
 
 const debouncedSearch = debounce(async () => {
-  fetchResponses(1);
+  fetchResponsesPage(1);
 }, 500);
 
 const hasActiveFilters = computed(() => {
@@ -226,7 +232,7 @@ const hasActiveFilters = computed(() => {
 
 const clearFilters = () => {
   searchQuery.value = '';
-  fetchResponses(1);
+  fetchResponsesPage(1);
 };
 
 const initializeFromURL = () => {
@@ -234,7 +240,7 @@ const initializeFromURL = () => {
     searchQuery.value = route.query.search;
   }
   const pageFromURL = parseInt(route.query.page, 10) || 1;
-  fetchResponses(pageFromURL);
+  fetchResponsesPage(pageFromURL);
 };
 
 onMounted(() => {
@@ -354,6 +360,7 @@ onMounted(() => {
       ref="deleteDialog"
       :entity="selectedResponse"
       type="Responses"
+      :delete-action="deleteResponse"
       @delete-success="onDeleteSuccess"
     />
 

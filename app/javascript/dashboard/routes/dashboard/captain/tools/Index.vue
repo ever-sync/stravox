@@ -1,7 +1,7 @@
 <script setup>
-import { computed, onMounted, ref, nextTick } from 'vue';
-import { useMapGetter, useStore } from 'dashboard/composables/store';
+import { onMounted, ref, nextTick } from 'vue';
 import { FEATURE_FLAGS } from 'dashboard/featureFlags';
+import { useCaptainCustomTools } from 'dashboard/composables/useCaptainCustomTools';
 
 import PageLayout from 'dashboard/components-next/captain/PageLayout.vue';
 import CaptainPaywall from 'dashboard/components-next/captain/pageComponents/Paywall.vue';
@@ -10,23 +10,22 @@ import CreateCustomToolDialog from 'dashboard/components-next/captain/pageCompon
 import CustomToolCard from 'dashboard/components-next/captain/pageComponents/customTool/CustomToolCard.vue';
 import DeleteDialog from 'dashboard/components-next/captain/pageComponents/DeleteDialog.vue';
 
-const store = useStore();
-
-const uiFlags = useMapGetter('captainCustomTools/getUIFlags');
-const customTools = useMapGetter('captainCustomTools/getRecords');
-const isFetching = computed(() => uiFlags.value.fetchingList);
-const customToolsMeta = useMapGetter('captainCustomTools/getMeta');
+const {
+  customTools,
+  customToolsMeta,
+  isFetchingCustomTools,
+  fetchCustomTools,
+  deleteCustomTool,
+} = useCaptainCustomTools();
 
 const createDialogRef = ref(null);
 const deleteDialogRef = ref(null);
 const selectedTool = ref(null);
 const dialogType = ref('');
 
-const fetchCustomTools = (page = 1) => {
-  store.dispatch('captainCustomTools/get', { page });
-};
+const fetchCustomToolsPage = page => fetchCustomTools({ page });
 
-const onPageChange = page => fetchCustomTools(page);
+const onPageChange = page => fetchCustomToolsPage(page);
 
 const openCreateDialog = () => {
   dialogType.value = 'create';
@@ -61,18 +60,16 @@ const handleDialogClose = () => {
 
 const onDeleteSuccess = () => {
   selectedTool.value = null;
-  // Check if page will be empty after deletion
-  if (customTools.value.length === 1 && customToolsMeta.value.page > 1) {
-    // Go to previous page if current page will be empty
-    onPageChange(customToolsMeta.value.page - 1);
-  } else {
-    // Refresh current page
-    fetchCustomTools(customToolsMeta.value.page);
-  }
+  const isLastToolOnPage = (customTools.value?.length || 0) <= 1;
+  const currentPage = customToolsMeta.value?.page || 1;
+  const targetPage =
+    isLastToolOnPage && currentPage > 1 ? currentPage - 1 : currentPage;
+
+  fetchCustomToolsPage(targetPage);
 };
 
 onMounted(() => {
-  fetchCustomTools();
+  fetchCustomToolsPage(1);
 });
 </script>
 
@@ -83,8 +80,8 @@ onMounted(() => {
     :button-policy="['administrator']"
     :total-count="customToolsMeta.totalCount"
     :current-page="customToolsMeta.page"
-    :show-pagination-footer="!isFetching && !!customTools.length"
-    :is-fetching="isFetching"
+    :show-pagination-footer="!isFetchingCustomTools && !!customTools.length"
+    :is-fetching="isFetchingCustomTools"
     :is-empty="!customTools.length"
     :feature-flag="FEATURE_FLAGS.CAPTAIN_V2"
     :show-know-more="false"
@@ -134,6 +131,7 @@ onMounted(() => {
     :entity="selectedTool"
     type="CustomTools"
     translation-key="CUSTOM_TOOLS"
+    :delete-action="deleteCustomTool"
     @delete-success="onDeleteSuccess"
   />
 </template>

@@ -3,6 +3,11 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { useMapGetter, useStore } from 'dashboard/composables/store.js';
+import { useCaptainDocuments } from 'dashboard/composables/useCaptainDocuments';
+import { useCaptainCustomTools } from 'dashboard/composables/useCaptainCustomTools';
+import { useCaptainScenarios } from 'dashboard/composables/useCaptainScenarios';
+import { useCaptainResponses } from 'dashboard/composables/useCaptainResponses';
+import { useCaptainInboxes } from 'dashboard/composables/useCaptainInboxes';
 
 import Button from 'dashboard/components-next/button/Button.vue';
 import Avatar from 'dashboard/components-next/avatar/Avatar.vue';
@@ -13,6 +18,11 @@ const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const store = useStore();
+const { fetchDocuments } = useCaptainDocuments();
+const { fetchCustomTools } = useCaptainCustomTools();
+const { fetchScenarios } = useCaptainScenarios();
+const { fetchResponses, fetchPendingCount } = useCaptainResponses();
+const { fetchCaptainInboxes } = useCaptainInboxes();
 
 const assistants = useMapGetter('captainAssistants/getRecords');
 
@@ -25,29 +35,29 @@ const isAssistantActive = assistant => {
 const fetchDataForRoute = async (routeName, assistantId) => {
   const dataFetchMap = {
     captain_assistants_responses_index: async () => {
-      await store.dispatch('captainResponses/get', { assistantId });
-      await store.dispatch('captainResponses/fetchPendingCount', assistantId);
+      await fetchResponses({ assistantId });
+      await fetchPendingCount(assistantId);
     },
     captain_assistants_responses_pending: async () => {
-      await store.dispatch('captainResponses/get', {
+      await fetchResponses({
         assistantId,
         status: 'pending',
       });
     },
     captain_assistants_documents_index: async () => {
-      await store.dispatch('captainDocuments/get', { assistantId });
+      await fetchDocuments({ assistantId });
     },
     captain_assistants_scenarios_index: async () => {
-      await store.dispatch('captainScenarios/get', { assistantId });
+      await fetchScenarios({ assistantId });
     },
     captain_assistants_playground_index: () => {
       // Playground doesn't need pre-fetching, it loads on interaction
     },
     captain_assistants_inboxes_index: async () => {
-      await store.dispatch('captainInboxes/get', { assistantId });
+      await fetchCaptainInboxes({ assistantId });
     },
     captain_tools_index: async () => {
-      await store.dispatch('captainCustomTools/get', { page: 1 });
+      await fetchCustomTools({ page: 1 });
     },
     captain_assistants_settings_index: async () => {
       await store.dispatch('captainAssistants/show', assistantId);

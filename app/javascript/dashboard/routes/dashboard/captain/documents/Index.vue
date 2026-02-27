@@ -1,9 +1,9 @@
 <script setup>
 import { computed, onMounted, ref, nextTick } from 'vue';
-import { useMapGetter, useStore } from 'dashboard/composables/store';
 import { useRoute } from 'vue-router';
 import { FEATURE_FLAGS } from 'dashboard/featureFlags';
 import { useAccount } from 'dashboard/composables/useAccount';
+import { useCaptainDocuments } from 'dashboard/composables/useCaptainDocuments';
 
 import DeleteDialog from 'dashboard/components-next/captain/pageComponents/DeleteDialog.vue';
 import DocumentCard from 'dashboard/components-next/captain/assistant/DocumentCard.vue';
@@ -16,13 +16,15 @@ import FeatureSpotlightPopover from 'dashboard/components-next/feature-spotlight
 import LimitBanner from 'dashboard/components-next/captain/pageComponents/document/LimitBanner.vue';
 
 const route = useRoute();
-const store = useStore();
 
 const { isOnStravoXCloud } = useAccount();
-const uiFlags = useMapGetter('captainDocuments/getUIFlags');
-const documents = useMapGetter('captainDocuments/getRecords');
-const isFetching = computed(() => uiFlags.value.fetchingList);
-const documentsMeta = useMapGetter('captainDocuments/getMeta');
+const {
+  documents,
+  documentsMeta,
+  isFetchingDocuments,
+  fetchDocuments,
+  deleteDocument,
+} = useCaptainDocuments();
 
 const selectedAssistantId = computed(() => Number(route.params.assistantId));
 
@@ -69,25 +71,28 @@ const handleAction = ({ action, id }) => {
   });
 };
 
-const fetchDocuments = (page = 1) => {
+const fetchDocumentsPage = page => {
   const filterParams = { page };
 
   if (selectedAssistantId.value) {
     filterParams.assistantId = selectedAssistantId.value;
   }
-  store.dispatch('captainDocuments/get', filterParams);
+  return fetchDocuments(filterParams);
 };
 
-const onPageChange = page => fetchDocuments(page);
+const onPageChange = page => fetchDocumentsPage(page);
 
 const onDeleteSuccess = () => {
-  if (documents.value?.length === 0 && documentsMeta.value?.page > 1) {
-    onPageChange(documentsMeta.value.page - 1);
-  }
+  const isLastDocumentOnPage = (documents.value?.length || 0) <= 1;
+  const currentPage = documentsMeta.value?.page || 1;
+  const targetPage =
+    isLastDocumentOnPage && currentPage > 1 ? currentPage - 1 : currentPage;
+
+  fetchDocumentsPage(targetPage);
 };
 
 onMounted(() => {
-  fetchDocuments();
+  fetchDocumentsPage(1);
 });
 </script>
 
@@ -98,8 +103,8 @@ onMounted(() => {
     :button-policy="['administrator']"
     :total-count="documentsMeta.totalCount"
     :current-page="documentsMeta.page"
-    :show-pagination-footer="!isFetching && !!documents.length"
-    :is-fetching="isFetching"
+    :show-pagination-footer="!isFetchingDocuments && !!documents.length"
+    :is-fetching="isFetchingDocuments"
     :is-empty="!documents.length"
     :show-know-more="false"
     :feature-flag="FEATURE_FLAGS.CAPTAIN"
@@ -160,6 +165,7 @@ onMounted(() => {
       ref="deleteDocumentDialog"
       :entity="selectedDocument"
       type="Documents"
+      :delete-action="deleteDocument"
       @delete-success="onDeleteSuccess"
     />
   </PageLayout>

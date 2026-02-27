@@ -22,6 +22,10 @@ const props = defineProps({
     type: Object,
     default: null,
   },
+  deleteAction: {
+    type: Function,
+    default: null,
+  },
 });
 
 const emit = defineEmits(['deleteSuccess']);
@@ -37,7 +41,11 @@ const deleteEntity = async payload => {
   if (!payload) return;
 
   try {
-    await store.dispatch(`captain${props.type}/delete`, payload);
+    if (props.deleteAction) {
+      await props.deleteAction(payload);
+    } else {
+      await store.dispatch(`captain${props.type}/delete`, payload);
+    }
     emit('deleteSuccess');
     useAlert(t(`CAPTAIN.${i18nKey.value}.DELETE.SUCCESS_MESSAGE`));
   } catch (error) {

@@ -3,8 +3,8 @@ import { reactive, computed, ref, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useVuelidate } from '@vuelidate/core';
 import { minLength, requiredIf, url } from '@vuelidate/validators';
-import { useMapGetter } from 'dashboard/composables/store';
 import { useAlert } from 'dashboard/composables';
+import { useCaptainDocuments } from 'dashboard/composables/useCaptainDocuments';
 
 import Input from 'dashboard/components-next/input/Input.vue';
 import Button from 'dashboard/components-next/button/Button.vue';
@@ -22,10 +22,7 @@ const emit = defineEmits(['submit', 'cancel']);
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 const { t } = useI18n();
-
-const formState = {
-  uiFlags: useMapGetter('captainDocuments/getUIFlags'),
-};
+const { documentsUIFlags } = useCaptainDocuments();
 
 const initialState = {
   name: '',
@@ -55,7 +52,7 @@ const documentTypeOptions = [
 
 const v$ = useVuelidate(validationRules, state);
 
-const isLoading = computed(() => formState.uiFlags.value.creatingItem);
+const isLoading = computed(() => documentsUIFlags.value.creatingItem);
 
 const hasPdfFileError = computed(() => v$.value.pdfFile.$error);
 
