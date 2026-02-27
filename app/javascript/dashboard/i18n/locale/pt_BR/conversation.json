@@ -383,7 +383,10 @@
       "TEMPERATURE_COLD": "Frio",
       "ACTIVE": "ativos",
       "FILTER_ALL": "Todos",
-      "FILTER_MINE": "Meus"
+      "FILTER_MINE": "Meus",
+      "FILTER_TEMPERATURE": "Temperatura",
+      "TEMPERATURE_ALL": "Todas",
+      "CLEAR_FILTERS": "Limpar filtros"
     },
     "VOICE_WIDGET": {
       "INCOMING_CALL": "Chamada recebida",

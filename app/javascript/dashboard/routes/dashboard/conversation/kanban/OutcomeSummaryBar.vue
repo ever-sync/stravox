@@ -41,6 +41,20 @@ const wonTotal = computed(() =>
   )
 );
 
+const lostTotal = computed(() =>
+  lostDeals.value.reduce(
+    (sum, c) => sum + (c.custom_attributes?.deal_value || 0),
+    0
+  )
+);
+
+const abandonedTotal = computed(() =>
+  abandonedDeals.value.reduce(
+    (sum, c) => sum + (c.custom_attributes?.deal_value || 0),
+    0
+  )
+);
+
 const activeTotal = computed(() =>
   props.conversations
     .filter(c => !c.custom_attributes?.outcome)
@@ -67,6 +81,7 @@ const metrics = computed(() => [
   {
     label: t('CONVERSATION.PIPELINE.OUTCOME_LOST'),
     value: lostDeals.value.length,
+    subValue: lostTotal.value > 0 ? formatCurrency(lostTotal.value) : null,
     icon: 'i-lucide-x-circle',
     color: 'text-n-ruby-11',
     bgColor: 'bg-n-ruby-3/30',
@@ -74,6 +89,8 @@ const metrics = computed(() => [
   {
     label: t('CONVERSATION.PIPELINE.OUTCOME_ABANDONED'),
     value: abandonedDeals.value.length,
+    subValue:
+      abandonedTotal.value > 0 ? formatCurrency(abandonedTotal.value) : null,
     icon: 'i-lucide-ban',
     color: 'text-n-slate-11',
     bgColor: 'bg-n-slate-3/30',

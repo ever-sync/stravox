@@ -30,11 +30,26 @@ const chatMetadata = computed(() => props.chat.meta || {});
 const assignee = computed(() => chatMetadata.value.assignee || {});
 const senderId = computed(() => chatMetadata.value.sender?.id);
 
+// Contact with fallback to meta.sender (contact may not be loaded in store yet)
 const currentContact = computed(() => {
-  return senderId.value
+  const fromStore = senderId.value
     ? store.getters['contacts/getContact'](senderId.value)
-    : {};
+    : null;
+  return fromStore && fromStore.name ? fromStore : null;
 });
+
+const contactName = computed(
+  () =>
+    currentContact.value?.name ||
+    props.chat.meta?.sender?.name ||
+    '—'
+);
+const contactThumbnail = computed(
+  () => currentContact.value?.thumbnail || props.chat.meta?.sender?.thumbnail
+);
+const contactStatus = computed(
+  () => currentContact.value?.availability_status
+);
 
 const unreadCount = computed(() => props.chat.unread_count || 0);
 const hasUnread = computed(() => unreadCount.value > 0);
@@ -136,10 +151,10 @@ const onContextMenu = e => {
     @click="onCardClick"
     @contextmenu="onContextMenu"
   >
-    <!-- Temperature strip -->
+    <!-- Temperature strip (thicker for better visibility) -->
     <div
       v-if="temperatureConfig"
-      class="absolute top-0 left-0 w-full h-1 rounded-t-xl bg-gradient-to-r"
+      class="absolute top-0 left-0 w-full h-[3px] rounded-t-xl bg-gradient-to-r"
       :class="temperatureConfig.gradient"
     />
 
@@ -147,10 +162,10 @@ const onContextMenu = e => {
     <div class="flex items-start justify-between gap-2 min-w-0">
       <div class="flex items-center gap-2.5 min-w-0 flex-1">
         <Avatar
-          :name="currentContact.name"
-          :src="currentContact.thumbnail"
+          :name="contactName"
+          :src="contactThumbnail"
           :size="32"
-          :status="currentContact.availability_status"
+          :status="contactStatus"
           hide-offline-status
           rounded-full
         />
@@ -158,8 +173,9 @@ const onContextMenu = e => {
           <h4
             class="text-sm text-n-slate-12 truncate leading-tight"
             :class="hasUnread ? 'font-semibold' : 'font-medium'"
+            :title="contactName"
           >
-            {{ currentContact.name }}
+            {{ contactName }}
           </h4>
           <span class="text-xxs text-n-slate-10 leading-tight">
             {{ `#${chat.id}` }}
@@ -230,7 +246,7 @@ const onContextMenu = e => {
       </span>
     </div>
 
-    <!-- Footer: Inbox + Assignee + Priority -->
+    <!-- Footer: Inbox + Assignee avatar + Priority -->
     <div
       class="flex items-center justify-between gap-1 pt-1.5 border-t border-n-weak/50"
     >
@@ -238,14 +254,18 @@ const onContextMenu = e => {
         <InboxName :inbox="inbox" class="text-xxs min-w-0 truncate" />
         <div
           v-if="showAssignee && assignee.name"
-          class="flex items-center gap-0.5 text-xxs text-n-slate-11 truncate"
+          class="flex items-center gap-1 min-w-0 flex-shrink-0"
+          :title="assignee.name"
         >
-          <fluent-icon
-            icon="person"
-            size="10"
-            class="text-n-slate-10 flex-shrink-0"
+          <Avatar
+            :name="assignee.name"
+            :src="assignee.avatar_url"
+            :size="16"
+            rounded-full
           />
-          <span class="truncate">{{ assignee.name }}</span>
+          <span class="text-xxs text-n-slate-11 truncate max-w-[80px]">
+            {{ assignee.name }}
+          </span>
         </div>
       </div>
       <PriorityMark :priority="chat.priority" class="flex-shrink-0" />

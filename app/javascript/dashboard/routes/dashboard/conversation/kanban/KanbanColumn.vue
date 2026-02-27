@@ -69,9 +69,10 @@ const onOpenContextMenu = (event, chat) => {
   <div
     class="flex flex-col flex-shrink-0 flex-1 w-72 min-w-[260px] rounded-xl overflow-hidden"
   >
-    <!-- Column header -->
+    <!-- Column header with stage color accent on top border -->
     <div
-      class="flex items-center gap-2.5 px-3 py-2.5 bg-n-alpha-1 border border-n-weak rounded-t-xl"
+      class="flex items-center gap-2.5 px-3 py-2.5 bg-n-alpha-1 border border-n-weak rounded-t-xl border-t-2"
+      :style="{ borderTopColor: color }"
     >
       <span
         class="w-3 h-3 rounded-full flex-shrink-0 ring-2 ring-white shadow-sm"

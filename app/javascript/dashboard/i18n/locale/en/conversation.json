@@ -384,7 +384,10 @@
       "TEMPERATURE_COLD": "Cold",
       "ACTIVE": "active",
       "FILTER_ALL": "All",
-      "FILTER_MINE": "Mine"
+      "FILTER_MINE": "Mine",
+      "FILTER_TEMPERATURE": "Temperature",
+      "TEMPERATURE_ALL": "All",
+      "CLEAR_FILTERS": "Clear filters"
     },
     "VOICE_WIDGET": {
       "INCOMING_CALL": "Incoming call",

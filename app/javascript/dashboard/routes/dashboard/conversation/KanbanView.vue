@@ -32,6 +32,7 @@ const assigneeTab = ref(ASSIGNEE_TYPE.ALL);
 const sortKey = ref(SORT_BY_TYPE.LAST_ACTIVITY_AT_DESC);
 const searchQuery = ref('');
 const selectedInboxId = ref('');
+const selectedTemperature = ref('');
 const loading = ref(false);
 const isDragging = ref(false);
 const showConfigModal = ref(false);
@@ -84,6 +85,13 @@ const pipelineConversations = computed(() => {
   if (selectedInboxId.value) {
     const inboxId = Number(selectedInboxId.value);
     result = result.filter(c => c.inbox_id === inboxId);
+  }
+
+  // Filter by temperature
+  if (selectedTemperature.value) {
+    result = result.filter(
+      c => c.custom_attributes?.temperature === selectedTemperature.value
+    );
   }
 
   // Filter by search query
@@ -379,6 +387,10 @@ const onUpdateSearch = query => {
 const onChangeInbox = inboxId => {
   selectedInboxId.value = inboxId;
 };
+
+const onChangeTemperature = temp => {
+  selectedTemperature.value = temp;
+};
 </script>
 
 <template>
@@ -388,6 +400,7 @@ const onChangeInbox = inboxId => {
       :active-sort="sortKey"
       :search-query="searchQuery"
       :selected-inbox-id="selectedInboxId"
+      :selected-temperature="selectedTemperature"
       :inboxes="inboxes"
       :total-count="totalFilteredCount"
       :pipelines="pipelines"
@@ -396,6 +409,7 @@ const onChangeInbox = inboxId => {
       @change-sort="onChangeSort"
       @update-search="onUpdateSearch"
       @change-inbox="onChangeInbox"
+      @change-temperature="onChangeTemperature"
       @change-pipeline="onChangePipeline"
       @open-config="onOpenConfig"
     />
