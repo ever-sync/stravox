@@ -27,7 +27,7 @@ export default function useAutomationValues() {
   const labels = useMapGetter('labels/getLabels');
   const teams = useMapGetter('teams/getTeams');
   const slaPolicies = useMapGetter('sla/getSLA');
-  const accountId = useMapGetter('getCurrentAccountId');
+  const allPipelineStages = useMapGetter('pipelines/getAllStages');
 
   const booleanFilterOptions = computed(() => [
     { id: true, name: t('FILTER.ATTRIBUTE_LABELS.TRUE') },
@@ -127,26 +127,10 @@ export default function useAutomationValues() {
       labels: labels.value,
       teams: teams.value,
       slaPolicies: slaPolicies.value,
-      pipelineStages: (() => {
-        try {
-          const key = `cw-pipelines-${accountId.value}`;
-          const raw = localStorage.getItem(key);
-          if (!raw) return [];
-          const data = JSON.parse(raw);
-          const stages = [];
-          (data.pipelines || []).forEach(p => {
-            (p.stages || []).forEach(s => {
-              stages.push({
-                id: `${p.id}::${s.id}`,
-                name: `${p.name} - ${s.name}`,
-              });
-            });
-          });
-          return stages;
-        } catch {
-          return [];
-        }
-      })(),
+      pipelineStages: (allPipelineStages.value || []).map(s => ({
+        id: s.pipeline_id + '::' + s.id,
+        name: s.full_name || s.pipeline_name + ' - ' + s.name,
+      })),
       languages,
       type,
       addNoneToListFn: addNoneToList,

@@ -23,36 +23,21 @@ export default {
   },
   computed: {
     ...mapGetters({
-      accountId: 'getCurrentAccountId',
       currentChat: 'getSelectedChat',
+      localPipelines: 'pipelines/getPipelines',
     }),
-    storageKey() {
-      return `cw-pipelines-${this.accountId}`;
-    },
-    localPipelines() {
-      try {
-        const raw = localStorage.getItem(this.storageKey);
-        if (!raw) return [];
-        const data = JSON.parse(raw);
-        return (data.pipelines || []).map(p => ({
-          id: p.id,
-          name: p.name,
-          stages: p.stages || [],
-        }));
-      } catch {
-        return [];
-      }
-    },
     selectedPipeline() {
       if (!this.selectedPipelineId) return null;
       return (
-        this.localPipelines.find(p => p.id === this.selectedPipelineId) || null
+        this.localPipelines.find(
+          p => p.id === String(this.selectedPipelineId)
+        ) || null
       );
     },
     filteredStages() {
       if (!this.selectedPipeline) return [];
       return this.selectedPipeline.stages.map(s => ({
-        id: s.id,
+        id: String(s.id),
         name: s.name,
         color: s.color,
       }));
@@ -60,7 +45,9 @@ export default {
     selectedStage() {
       if (!this.selectedStageId) return null;
       return (
-        this.filteredStages.find(s => s.id === this.selectedStageId) || null
+        this.filteredStages.find(
+          s => s.id === String(this.selectedStageId)
+        ) || null
       );
     },
     currentPipelineStage() {
@@ -83,10 +70,10 @@ export default {
   methods: {
     syncFromConversation() {
       if (this.currentPipelineId) {
-        this.selectedPipelineId = this.currentPipelineId;
+        this.selectedPipelineId = String(this.currentPipelineId);
       }
       if (this.currentPipelineStage) {
-        this.selectedStageId = this.currentPipelineStage;
+        this.selectedStageId = String(this.currentPipelineStage);
       }
     },
     onPipelineChange(pipeline) {

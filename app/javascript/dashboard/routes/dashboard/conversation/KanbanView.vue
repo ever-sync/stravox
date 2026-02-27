@@ -19,56 +19,16 @@ const { ASSIGNEE_TYPE, SORT_BY_TYPE, STATUS_TYPE } = wootConstants;
 const { t } = useI18n();
 const store = useStore();
 
-// --- Pipeline config persistence ---
-const accountId = useMapGetter('getCurrentAccountId');
-
-const STORAGE_KEY = computed(() => `cw-pipelines-${accountId.value}`);
-
-const DEFAULT_PIPELINE = {
-  id: 'default',
-  name: 'Pipeline de Vendas',
-  stages: [
-    { id: 'lead', name: 'Novo Lead', color: '#3B82F6' },
-    { id: 'contact', name: 'Contato Feito', color: '#8B5CF6' },
-    { id: 'qualified', name: 'Qualificado', color: '#F59E0B' },
-    { id: 'proposal', name: 'Proposta Enviada', color: '#EF4444' },
-    { id: 'negotiation', name: 'Negociacao', color: '#EC4899' },
-    { id: 'closing', name: 'Fechamento', color: '#10B981' },
-  ],
-};
-
-const loadPipelines = () => {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY.value);
-    if (raw) {
-      const data = JSON.parse(raw);
-      if (data.pipelines?.length) return data;
-    }
-  } catch {
-    // ignore
-  }
-  return { pipelines: [DEFAULT_PIPELINE], activePipelineId: 'default' };
-};
-
-const savePipelines = (pipelines, activePipelineId) => {
-  localStorage.setItem(
-    STORAGE_KEY.value,
-    JSON.stringify({ pipelines, activePipelineId })
-  );
-};
-
-// --- Reactive state ---
-const pipelineData = ref(loadPipelines());
-const pipelines = computed(() => pipelineData.value.pipelines);
-const activePipelineId = ref(pipelineData.value.activePipelineId);
-
+// --- Pipeline config from Vuex store (shared across all users via backend) ---
+const pipelines = useMapGetter('pipelines/getPipelines');
+const activePipelineId = computed(() =>
+  store.getters['pipelines/getActivePipelineId']
+);
 const activePipeline = computed(
-  () =>
-    pipelines.value.find(p => p.id === activePipelineId.value) ||
-    pipelines.value[0]
+  () => store.getters['pipelines/getActivePipeline']
 );
 
-const assigneeTab = ref(ASSIGNEE_TYPE.ME);
+const assigneeTab = ref(ASSIGNEE_TYPE.ALL);
 const sortKey = ref(SORT_BY_TYPE.LAST_ACTIVITY_AT_DESC);
 const searchQuery = ref('');
 const selectedInboxId = ref('');
@@ -95,15 +55,15 @@ const pipelineConversations = computed(() => {
   let result = allConversations.value || [];
   const pipelineId = activePipelineId.value;
 
-  // Filter by pipeline_id in custom_attributes
+  // Filter by pipeline_id in custom_attributes (compare as strings)
   result = result.filter(c => {
     const attrs = c.custom_attributes || {};
-    // Include conversations assigned to this pipeline
-    // Also include conversations with no pipeline assigned (for "default" pipeline)
-    if (pipelineId === 'default') {
-      return !attrs.pipeline_id || attrs.pipeline_id === 'default';
+    const convPipelineId = attrs.pipeline_id != null ? String(attrs.pipeline_id) : null;
+    // For first pipeline or "default", also include conversations with no pipeline_id set
+    if (!pipelineId || pipelineId === pipelines.value[0]?.id) {
+      return !convPipelineId || convPipelineId === pipelineId;
     }
-    return attrs.pipeline_id === pipelineId;
+    return convPipelineId === String(pipelineId);
   });
 
   // Exclude archived/outcome conversations from board
@@ -150,10 +110,11 @@ const allPipelineConversations = computed(() => {
   const pipelineId = activePipelineId.value;
   return result.filter(c => {
     const attrs = c.custom_attributes || {};
-    if (pipelineId === 'default') {
-      return !attrs.pipeline_id || attrs.pipeline_id === 'default';
+    const convPipelineId = attrs.pipeline_id != null ? String(attrs.pipeline_id) : null;
+    if (!pipelineId || pipelineId === pipelines.value[0]?.id) {
+      return !convPipelineId || convPipelineId === pipelineId;
     }
-    return attrs.pipeline_id === pipelineId;
+    return convPipelineId === String(pipelineId);
   });
 });
 
@@ -225,6 +186,7 @@ const onColumnChange = async ({ conversation, newStageId }) => {
       conversationId: conversation.id,
       customAttributes: {
         pipeline_stage: newStageId,
+        pipeline_id: activePipelineId.value,
       },
     });
   } catch {
@@ -279,20 +241,17 @@ const onCloseConfig = () => {
   showConfigModal.value = false;
 };
 
-const onSaveConfig = (newPipelines, newActivePipelineId) => {
-  pipelineData.value = {
+const onSaveConfig = async (newPipelines, newActivePipelineId) => {
+  showConfigModal.value = false;
+  await store.dispatch('pipelines/savePipelineConfig', {
     pipelines: newPipelines,
     activePipelineId: newActivePipelineId,
-  };
-  activePipelineId.value = newActivePipelineId;
-  savePipelines(newPipelines, newActivePipelineId);
-  showConfigModal.value = false;
+  });
   syncFromStore();
 };
 
 const onChangePipeline = id => {
-  activePipelineId.value = id;
-  savePipelines(pipelines.value, id);
+  store.dispatch('pipelines/setActivePipeline', id);
 };
 
 // --- Snooze ---
@@ -384,10 +343,19 @@ provide('onAssignTeam', onAssignTeam);
 provide('onAssignPriority', onAssignPriority);
 provide('onUpdateConversation', onUpdateConversation);
 
-// --- Fetch conversations on mount ---
+// --- Fetch on mount ---
 onMounted(async () => {
   loading.value = true;
   try {
+    // Load pipeline config from backend (shared across all users)
+    await store.dispatch('pipelines/fetchPipelines');
+
+    // Fetch all open conversations for pipeline view (override chat list filters)
+    await store.dispatch('updateChatListFilters', {
+      assignee_type: undefined,
+      status: 'open',
+      page: 1,
+    });
     await store.dispatch('fetchAllConversations', {});
   } finally {
     loading.value = false;
