@@ -87,19 +87,20 @@ class ActionService
     composite = stage_ids[0].to_s
     return if composite.blank?
 
-    if composite.include?('::')
-      pipeline_id, stage_id = composite.split('::', 2)
-    else
-      pipeline_id = nil
-      stage_id = composite
-    end
+    _pipeline_id, stage_id =
+      if composite.include?('::')
+        composite.split('::', 2)
+      else
+        [nil, composite]
+      end
 
     return if stage_id.blank?
 
-    attrs = @conversation.custom_attributes || {}
-    attrs['pipeline_stage'] = stage_id
-    attrs['pipeline_id'] = pipeline_id if pipeline_id.present?
-    @conversation.update!(custom_attributes: attrs)
+    Conversations::PipelineTransitionService.new(
+      conversation: @conversation,
+      pipeline_stage_id: stage_id,
+      source: 'automation'
+    ).perform
   end
 
   private
