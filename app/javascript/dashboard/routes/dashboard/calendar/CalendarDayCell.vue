@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { isSameMonth } from 'date-fns';
 import CalendarEventCard from './CalendarEventCard.vue';
 
@@ -12,6 +13,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['select']);
+const { t } = useI18n();
 
 const isCurrentMonth = computed(() =>
   isSameMonth(props.day, props.currentMonth)
@@ -28,6 +30,12 @@ const statusCounts = computed(() => {
 });
 
 const hasDots = computed(() => props.conversations.length > 0);
+const statusLabels = computed(() => ({
+  open: t('CONVERSATION.KANBAN.STATUS_OPEN'),
+  pending: t('CONVERSATION.KANBAN.STATUS_PENDING'),
+  snoozed: t('CONVERSATION.KANBAN.STATUS_SNOOZED'),
+  resolved: t('CONVERSATION.KANBAN.STATUS_RESOLVED'),
+}));
 
 const visibleConversations = computed(() => props.conversations.slice(0, 3));
 
@@ -64,22 +72,22 @@ const onSelect = () => emit('select', props.day);
         <span
           v-if="statusCounts.open"
           class="w-1.5 h-1.5 rounded-full bg-n-teal-9"
-          :title="`${statusCounts.open} open`"
+          :title="`${statusCounts.open} ${statusLabels.open}`"
         />
         <span
           v-if="statusCounts.pending"
           class="w-1.5 h-1.5 rounded-full bg-n-amber-9"
-          :title="`${statusCounts.pending} pending`"
+          :title="`${statusCounts.pending} ${statusLabels.pending}`"
         />
         <span
           v-if="statusCounts.snoozed"
           class="w-1.5 h-1.5 rounded-full bg-n-violet-9"
-          :title="`${statusCounts.snoozed} snoozed`"
+          :title="`${statusCounts.snoozed} ${statusLabels.snoozed}`"
         />
         <span
           v-if="statusCounts.resolved"
           class="w-1.5 h-1.5 rounded-full bg-n-slate-9"
-          :title="`${statusCounts.resolved} resolved`"
+          :title="`${statusCounts.resolved} ${statusLabels.resolved}`"
         />
       </div>
     </div>

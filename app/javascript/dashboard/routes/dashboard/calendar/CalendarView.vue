@@ -1,7 +1,7 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useStore, useMapGetter } from 'dashboard/composables/store';
+import ConversationApi from 'dashboard/api/inbox/conversation';
 import {
   format,
   addMonths,
@@ -15,35 +15,42 @@ import {
   eachDayOfInterval,
   isToday as isDateToday,
 } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { enUS, ptBR } from 'date-fns/locale';
 import CalendarGrid from './CalendarGrid.vue';
 import CalendarEventCard from './CalendarEventCard.vue';
 
-const { t } = useI18n();
-const store = useStore();
+const { t, locale } = useI18n();
 
 // --- State ---
 const currentDate = ref(new Date());
 const selectedDay = ref(null);
 const viewMode = ref('month');
 const loading = ref(false);
+const calendarConversations = ref([]);
 
-// --- Store getters ---
-const allConversations = useMapGetter('getAllConversations');
+const CALENDAR_PAGE_SIZE = 25;
+const CALENDAR_MAX_PAGES = 40;
 
 // --- Date navigation ---
-const dateLocale = { locale: ptBR };
+const dateFnsLocale = computed(() => {
+  const normalizedLocale = String(locale.value || '')
+    .toLowerCase()
+    .replace('-', '_');
+  return normalizedLocale.startsWith('pt') ? ptBR : enUS;
+});
+const formatDate = (date, pattern) =>
+  format(date, pattern, { locale: dateFnsLocale.value });
 
 const headerTitle = computed(() => {
   if (viewMode.value === 'day' && selectedDay.value) {
-    return format(selectedDay.value, 'EEEE, d MMMM yyyy', dateLocale);
+    return formatDate(selectedDay.value, 'EEEE, d MMMM yyyy');
   }
   if (viewMode.value === 'week') {
     const weekStart = startOfWeek(currentDate.value, { weekStartsOn: 1 });
     const weekEnd = endOfWeek(currentDate.value, { weekStartsOn: 1 });
-    return `${format(weekStart, 'd MMM', dateLocale)} - ${format(weekEnd, 'd MMM yyyy', dateLocale)}`;
+    return `${formatDate(weekStart, 'd MMM')} - ${formatDate(weekEnd, 'd MMM yyyy')}`;
   }
-  return format(currentDate.value, 'MMMM yyyy', dateLocale);
+  return formatDate(currentDate.value, 'MMMM yyyy');
 });
 
 const goToToday = () => {
@@ -78,13 +85,16 @@ const getDateKey = date => format(date, 'yyyy-MM-dd');
 
 const conversationsByDay = computed(() => {
   const map = {};
-  const conversations = allConversations.value || [];
+  const conversations = calendarConversations.value || [];
 
   conversations.forEach(conv => {
     const ts = conv.last_activity_at || conv.timestamp || conv.created_at;
-    if (!ts) return;
+    if (ts == null) return;
 
-    const date = new Date(ts * 1000);
+    const date = new Date(
+      typeof ts === 'number' ? ts * 1000 : ts
+    );
+    if (Number.isNaN(date.getTime())) return;
     const key = getDateKey(date);
     if (!map[key]) map[key] = [];
     map[key].push(conv);
@@ -92,6 +102,7 @@ const conversationsByDay = computed(() => {
     // Also map snoozed conversations to their snoozed_until date
     if (conv.snoozed_until) {
       const snoozedDate = new Date(conv.snoozed_until);
+      if (Number.isNaN(snoozedDate.getTime())) return;
       const snoozedKey = getDateKey(snoozedDate);
       if (snoozedKey !== key) {
         if (!map[snoozedKey]) map[snoozedKey] = [];
@@ -130,15 +141,46 @@ const closeDayPanel = () => {
   selectedDay.value = null;
 };
 
-// --- Fetch data on mount ---
-onMounted(async () => {
+const fetchCalendarConversations = async () => {
   loading.value = true;
+  const allItems = [];
+  const seenConversationIds = new Set();
+
   try {
-    await store.dispatch('fetchAllConversations', {});
+    for (let page = 1; page <= CALENDAR_MAX_PAGES; page += 1) {
+      const response = await ConversationApi.get({
+        status: 'all',
+        assigneeType: 'all',
+        sortBy: 'last_activity_at_desc',
+        page,
+      });
+
+      const pageItems = response?.data?.data || [];
+      if (!pageItems.length) break;
+
+      pageItems.forEach(item => {
+        if (seenConversationIds.has(item.id)) return;
+        seenConversationIds.add(item.id);
+        allItems.push(item);
+      });
+
+      if (pageItems.length < CALENDAR_PAGE_SIZE) break;
+    }
+
+    calendarConversations.value = allItems;
   } finally {
     loading.value = false;
   }
+};
+
+// --- Fetch data on mount ---
+watch(viewMode, mode => {
+  if (mode === 'day' && !selectedDay.value) {
+    selectedDay.value = currentDate.value;
+  }
 });
+
+onMounted(fetchCalendarConversations);
 </script>
 
 <template>
@@ -231,7 +273,7 @@ onMounted(async () => {
               :class="isDateToday(day) ? 'bg-n-violet-3/20' : 'bg-n-alpha-1'"
             >
               <p class="text-xs font-medium text-n-slate-10 uppercase">
-                {{ format(day, 'EEE', dateLocale) }}
+                {{ formatDate(day, 'EEE') }}
               </p>
               <p
                 class="text-lg font-semibold"
@@ -239,7 +281,7 @@ onMounted(async () => {
                   isDateToday(day) ? 'text-n-violet-9' : 'text-n-slate-12'
                 "
               >
-                {{ format(day, 'd') }}
+                {{ formatDate(day, 'd') }}
               </p>
             </div>
             <div class="flex-1 overflow-y-auto p-1 space-y-0.5">
@@ -280,7 +322,12 @@ onMounted(async () => {
       </div>
 
       <!-- Selected day side panel (month view) -->
-      <transition name="slide-panel">
+      <transition
+        enter-active-class="transition-all duration-200 ease-out"
+        enter-from-class="opacity-0 translate-x-5"
+        leave-active-class="transition-all duration-200 ease-in"
+        leave-to-class="opacity-0 translate-x-5"
+      >
         <div
           v-if="viewMode === 'month' && selectedDay"
           class="w-80 border-l border-n-weak bg-n-background flex flex-col overflow-hidden flex-shrink-0"
@@ -290,10 +337,10 @@ onMounted(async () => {
           >
             <div>
               <p class="text-sm font-semibold text-n-slate-12">
-                {{ format(selectedDay, 'EEEE', dateLocale) }}
+                {{ formatDate(selectedDay, 'EEEE') }}
               </p>
               <p class="text-xs text-n-slate-10">
-                {{ format(selectedDay, 'd MMMM yyyy', dateLocale) }}
+                {{ formatDate(selectedDay, 'd MMMM yyyy') }}
               </p>
             </div>
             <button
@@ -339,16 +386,3 @@ onMounted(async () => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.slide-panel-enter-active,
-.slide-panel-leave-active {
-  transition: all 0.2s ease;
-}
-
-.slide-panel-enter-from,
-.slide-panel-leave-to {
-  opacity: 0;
-  transform: translateX(20px);
-}
-</style>
