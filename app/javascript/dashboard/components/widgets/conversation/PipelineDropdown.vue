@@ -25,6 +25,7 @@ export default {
     ...mapGetters({
       currentChat: 'getSelectedChat',
       localPipelines: 'pipelines/getPipelines',
+      pipelinesInitialized: 'pipelines/getPipelinesInitialized',
     }),
     selectedPipeline() {
       if (!this.selectedPipelineId) return null;
@@ -66,6 +67,10 @@ export default {
       },
       immediate: true,
     },
+  },
+  mounted() {
+    if (this.pipelinesInitialized && this.localPipelines.length) return;
+    this.$store.dispatch('pipelines/get');
   },
   methods: {
     syncFromConversation() {
