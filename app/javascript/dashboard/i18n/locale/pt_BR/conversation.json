@@ -456,6 +456,9 @@
     "SEARCH_STAGE": "Buscar por uma etapa",
     "NO_PIPELINE_RESULTS": "Nenhuma pipeline encontrada",
     "NO_STAGE_RESULTS": "Nenhuma etapa encontrada",
+    "PIPELINE_REMOVE": "Remover da pipeline",
+    "PIPELINE_STAGE_UPDATE_ERROR": "Falha ao atualizar etapa da pipeline. Tente novamente.",
+    "PIPELINE_REMOVE_ERROR": "Falha ao remover da pipeline. Tente novamente.",
     "SELECT": {
       "PLACEHOLDER": "Nenhuma"
     },

@@ -1,1 +1,2 @@
 json.custom_attributes @conversation.custom_attributes
+json.pipeline_stage_id @conversation.pipeline_stage_id
