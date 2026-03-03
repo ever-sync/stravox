@@ -470,13 +470,14 @@ const actions = {
         conversationId,
         customAttributes,
       });
-      const { custom_attributes } = response.data;
+      const { custom_attributes, pipeline_stage_id } = response.data;
       commit(types.UPDATE_CONVERSATION_CUSTOM_ATTRIBUTES, {
         conversationId,
         customAttributes: custom_attributes,
+        pipelineStageId: pipeline_stage_id,
       });
     } catch (error) {
-      // Handle error
+      throw error;
     }
   },
 
