@@ -21,8 +21,8 @@ const store = useStore();
 
 // --- Pipeline config from Vuex store (shared across all users via backend) ---
 const pipelines = useMapGetter('pipelines/getPipelines');
-const activePipelineId = computed(() =>
-  store.getters['pipelines/getActivePipelineId']
+const activePipelineId = computed(
+  () => store.getters['pipelines/getActivePipelineId']
 );
 const activePipeline = computed(
   () => store.getters['pipelines/getActivePipeline']
@@ -50,22 +50,28 @@ const pendingSnoozeConversation = ref(null);
 const allConversations = useMapGetter('getAllConversations');
 const currentUser = useMapGetter('getCurrentUser');
 const inboxes = useMapGetter('inboxes/getInboxes');
+const activeStageIds = computed(() =>
+  (activePipeline.value?.stages || []).map(stage => String(stage.id))
+);
+
+const belongsToActivePipeline = conversation => {
+  const pipelineId = String(activePipelineId.value || '');
+  if (!pipelineId) return false;
+
+  const attrs = conversation.custom_attributes || {};
+  const convPipelineId =
+    attrs.pipeline_id != null ? String(attrs.pipeline_id) : null;
+  const convStageId =
+    attrs.pipeline_stage != null ? String(attrs.pipeline_stage) : null;
+
+  if (convPipelineId === pipelineId) return true;
+  return !!convStageId && activeStageIds.value.includes(convStageId);
+};
 
 // --- Pipeline-filtered conversations ---
 const pipelineConversations = computed(() => {
   let result = allConversations.value || [];
-  const pipelineId = activePipelineId.value;
-
-  // Filter by pipeline_id in custom_attributes (compare as strings)
-  result = result.filter(c => {
-    const attrs = c.custom_attributes || {};
-    const convPipelineId = attrs.pipeline_id != null ? String(attrs.pipeline_id) : null;
-    // For first pipeline or "default", also include conversations with no pipeline_id set
-    if (!pipelineId || pipelineId === pipelines.value[0]?.id) {
-      return !convPipelineId || convPipelineId === pipelineId;
-    }
-    return convPipelineId === String(pipelineId);
-  });
+  result = result.filter(belongsToActivePipeline);
 
   // Exclude archived/outcome conversations from board
   result = result.filter(c => {
@@ -115,15 +121,7 @@ const pipelineConversations = computed(() => {
 // All conversations for pipeline metrics (including outcomes)
 const allPipelineConversations = computed(() => {
   const result = allConversations.value || [];
-  const pipelineId = activePipelineId.value;
-  return result.filter(c => {
-    const attrs = c.custom_attributes || {};
-    const convPipelineId = attrs.pipeline_id != null ? String(attrs.pipeline_id) : null;
-    if (!pipelineId || pipelineId === pipelines.value[0]?.id) {
-      return !convPipelineId || convPipelineId === pipelineId;
-    }
-    return convPipelineId === String(pipelineId);
-  });
+  return result.filter(belongsToActivePipeline);
 });
 
 const totalFilteredCount = computed(() => pipelineConversations.value.length);
@@ -358,12 +356,20 @@ onMounted(async () => {
     // Load pipeline config from backend (shared across all users)
     await store.dispatch('pipelines/fetchPipelines');
 
-    // Fetch all open conversations for pipeline view (override chat list filters)
-    await store.dispatch('updateChatListFilters', {
-      assignee_type: undefined,
+    // Fetch all open conversations for pipeline view with explicit filters.
+    // Use camelCase keys expected by the conversations store/API.
+    await store.dispatch('setChatListFilters', {
+      assigneeType: ASSIGNEE_TYPE.ALL,
       status: 'open',
       page: 1,
+      inboxId: undefined,
+      labels: undefined,
+      teamId: undefined,
+      conversationType: undefined,
+      sortBy: undefined,
+      updatedWithin: undefined,
     });
+    await store.dispatch('emptyAllConversations');
     await store.dispatch('fetchAllConversations', {});
   } finally {
     loading.value = false;
