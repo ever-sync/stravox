@@ -457,6 +457,9 @@
     "SEARCH_STAGE": "Search for a stage",
     "NO_PIPELINE_RESULTS": "No pipelines found",
     "NO_STAGE_RESULTS": "No stages found",
+    "PIPELINE_REMOVE": "Remove from pipeline",
+    "PIPELINE_STAGE_UPDATE_ERROR": "Failed to update pipeline stage. Please try again.",
+    "PIPELINE_REMOVE_ERROR": "Failed to remove from pipeline. Please try again.",
     "SELECT": {
       "PLACEHOLDER": "None"
     },

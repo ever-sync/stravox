@@ -131,7 +131,15 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
   end
 
   def custom_attributes
-    @conversation.custom_attributes = params.permit(custom_attributes: {})[:custom_attributes]
+    new_attrs = params.permit(custom_attributes: {})[:custom_attributes]
+    @conversation.custom_attributes = new_attrs
+
+    # Sync the pipeline_stage_id FK whenever pipeline_stage is present in the payload
+    if new_attrs.key?('pipeline_stage')
+      stage_id = new_attrs['pipeline_stage']
+      @conversation.pipeline_stage_id = stage_id.present? ? stage_id.to_i : nil
+    end
+
     @conversation.save!
   end
 
