@@ -1,5 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
+import { emitter } from 'shared/helpers/mitt';
+import { BUS_EVENTS } from 'shared/constants/busEvents';
 import ContactDetailsItem from 'dashboard/routes/dashboard/conversation/ContactDetailsItem.vue';
 import MultiselectDropdown from 'shared/components/ui/MultiselectDropdown.vue';
 
@@ -19,6 +21,7 @@ export default {
     return {
       selectedPipelineId: null,
       selectedStageId: null,
+      isSaving: false,
     };
   },
   computed: {
@@ -46,9 +49,8 @@ export default {
     selectedStage() {
       if (!this.selectedStageId) return null;
       return (
-        this.filteredStages.find(
-          s => s.id === String(this.selectedStageId)
-        ) || null
+        this.filteredStages.find(s => s.id === String(this.selectedStageId)) ||
+        null
       );
     },
     currentPipelineStage() {
@@ -70,7 +72,7 @@ export default {
   },
   mounted() {
     if (this.pipelinesInitialized && this.localPipelines.length) return;
-    this.$store.dispatch('pipelines/get');
+    this.$store.dispatch('pipelines/fetchPipelines');
   },
   methods: {
     syncFromConversation() {
@@ -86,21 +88,49 @@ export default {
       this.selectedPipelineId = pipeline.id;
       this.selectedStageId = null;
     },
-    onStageChange(stage) {
+    async onStageChange(stage) {
       if (!stage || stage.id === this.selectedStageId) return;
+      const previousStageId = this.selectedStageId;
       this.selectedStageId = stage.id;
-
-      this.$store
-        .dispatch('updateCustomAttributes', {
+      this.isSaving = true;
+      try {
+        await this.$store.dispatch('updateCustomAttributes', {
           conversationId: this.conversationId,
           customAttributes: {
             pipeline_stage: stage.id,
             pipeline_id: this.selectedPipelineId,
           },
-        })
-        .then(() => {
-          this.$emit('update', stage);
         });
+        this.$emit('update', stage);
+      } catch {
+        emitter.emit(BUS_EVENTS.SHOW_TOAST, {
+          message: this.$t('CONVERSATION_SIDEBAR.PIPELINE_STAGE_UPDATE_ERROR'),
+        });
+        this.selectedStageId = previousStageId;
+      } finally {
+        this.isSaving = false;
+      }
+    },
+    async removeFromPipeline() {
+      this.isSaving = true;
+      try {
+        await this.$store.dispatch('updateCustomAttributes', {
+          conversationId: this.conversationId,
+          customAttributes: {
+            pipeline_stage: null,
+            pipeline_id: null,
+          },
+        });
+        this.selectedPipelineId = null;
+        this.selectedStageId = null;
+        this.$emit('update', null);
+      } catch {
+        emitter.emit(BUS_EVENTS.SHOW_TOAST, {
+          message: this.$t('CONVERSATION_SIDEBAR.PIPELINE_REMOVE_ERROR'),
+        });
+      } finally {
+        this.isSaving = false;
+      }
     },
   },
 };
@@ -137,6 +167,16 @@ export default {
         :input-placeholder="$t('CONVERSATION_SIDEBAR.SEARCH_STAGE')"
         @select="onStageChange"
       />
+    </div>
+    <div v-if="selectedPipelineId" class="multiselect-wrap--small mt-1">
+      <button
+        class="text-xs text-n-ruby-9 hover:text-n-ruby-11 hover:underline disabled:opacity-50 flex items-center gap-1 transition-colors"
+        :disabled="isSaving"
+        @click="removeFromPipeline"
+      >
+        <fluent-icon icon="dismiss" size="12" />
+        {{ $t('CONVERSATION_SIDEBAR.PIPELINE_REMOVE') }}
+      </button>
     </div>
   </div>
 </template>

@@ -123,7 +123,7 @@ export const mutations = {
 
   [types.UPDATE_CONVERSATION_CUSTOM_ATTRIBUTES](
     _state,
-    { conversationId, customAttributes }
+    { conversationId, customAttributes, pipelineStageId }
   ) {
     const conversation = _state.allConversations.find(
       c => c.id === conversationId
@@ -133,6 +133,9 @@ export const mutations = {
         ...conversation.custom_attributes,
         ...customAttributes,
       };
+      if (pipelineStageId !== undefined) {
+        conversation.pipeline_stage_id = pipelineStageId;
+      }
     }
   },
 
