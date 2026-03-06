@@ -236,6 +236,14 @@ pt_BR:
       sla:
         added: '%{user_name} adicionou política de SLA %{sla_name}'
         removed: '%{user_name} removeu a política de SLA %{sla_name}'
+      pipeline_stage:
+        added: '%{user_name} adicionou esta conversa em %{new_stage}'
+        updated: '%{user_name} moveu esta conversa de %{old_stage} para %{new_stage}'
+        removed: '%{user_name} removeu esta conversa de %{old_stage}'
+      pipeline_outcome:
+        won: '%{user_name} marcou este negócio como Ganho'
+        lost: '%{user_name} marcou este negócio como Perdido'
+        abandoned: '%{user_name} marcou este negócio como Abandonado'
       linear:
         issue_created: 'Problema linear %{issue_id} foi criado por %{user_name}'
         issue_linked: 'Problema linear %{issue_id} foi vinculado por %{user_name}'

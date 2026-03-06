@@ -17,11 +17,25 @@ class Conversations::EventDataPresenter < SimpleDelegator
       first_reply_created_at: first_reply_created_at,
       priority: priority,
       waiting_since: waiting_since.to_i,
+      pipeline_stage_id: pipeline_stage_id,
+      pipeline_stage: push_pipeline_stage,
       **push_timestamps
     }
   end
 
   private
+
+  def push_pipeline_stage
+    return nil unless pipeline_stage
+
+    {
+      id: pipeline_stage.id,
+      name: pipeline_stage.name,
+      color: pipeline_stage.color,
+      pipeline_id: pipeline_stage.pipeline_id,
+      pipeline_name: pipeline_stage.pipeline.name
+    }
+  end
 
   def push_messages
     [messages.chat.last&.push_event_data].compact

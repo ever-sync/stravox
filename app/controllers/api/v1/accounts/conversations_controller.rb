@@ -141,6 +141,8 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
     end
 
     @conversation.save!
+
+    create_outcome_activity_message(new_attrs['outcome']) if new_attrs.key?('outcome') && new_attrs['outcome'].present?
   end
 
   def destroy
@@ -154,6 +156,16 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
   def permitted_update_params
     # TODO: Move the other conversation attributes to this method and remove specific endpoints for each attribute
     params.permit(:priority, :pipeline_stage_id)
+  end
+
+  def create_outcome_activity_message(outcome)
+    content = I18n.t("conversations.activity.pipeline_outcome.#{outcome}",
+                      user_name: Current.user&.name || I18n.t('automation.system_name'))
+    ::Conversations::ActivityMessageJob.perform_later(
+      @conversation,
+      { account_id: @conversation.account_id, inbox_id: @conversation.inbox_id,
+        message_type: :activity, content: content }
+    )
   end
 
   def attachment_params

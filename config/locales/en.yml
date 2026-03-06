@@ -261,6 +261,14 @@ en:
       sla:
         added: '%{user_name} added SLA policy %{sla_name}'
         removed: '%{user_name} removed SLA policy %{sla_name}'
+      pipeline_stage:
+        added: '%{user_name} added this conversation to %{new_stage}'
+        updated: '%{user_name} moved this conversation from %{old_stage} to %{new_stage}'
+        removed: '%{user_name} removed this conversation from %{old_stage}'
+      pipeline_outcome:
+        won: '%{user_name} marked this deal as Won'
+        lost: '%{user_name} marked this deal as Lost'
+        abandoned: '%{user_name} marked this deal as Abandoned'
       linear:
         issue_created: 'Linear issue %{issue_id} was created by %{user_name}'
         issue_linked: 'Linear issue %{issue_id} was linked by %{user_name}'

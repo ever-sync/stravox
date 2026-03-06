@@ -225,6 +225,7 @@ class Conversation < ApplicationRecord
     handle_resolved_status_change
     notify_status_change
     create_activity
+    notify_pipeline_stage_change
     notify_conversation_updation
   end
 
@@ -275,6 +276,12 @@ class Conversation < ApplicationRecord
 
   def notify_conversation_creation
     dispatcher_dispatch(CONVERSATION_CREATED)
+  end
+
+  def notify_pipeline_stage_change
+    return unless saved_change_to_pipeline_stage_id?
+
+    dispatcher_dispatch(CONVERSATION_PIPELINE_STAGE_CHANGED, previous_changes)
   end
 
   def notify_conversation_updation
