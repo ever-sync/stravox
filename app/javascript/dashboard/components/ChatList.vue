@@ -902,10 +902,12 @@ watch(conversationFilters, (newVal, oldVal) => {
 
 <template>
   <div
-    class="flex flex-col flex-shrink-0 conversations-list-wrap bg-n-surface-1"
+    class="conversations-list-wrap flex flex-shrink-0 flex-col overflow-hidden border-r border-n-weak/70 bg-gradient-to-b from-white via-n-surface-1 to-n-alpha-1"
     :class="[
       { hidden: !showConversationList },
-      isOnExpandedLayout ? 'basis-full' : 'w-[340px] 2xl:w-[412px]',
+      isOnExpandedLayout
+        ? 'basis-full rounded-[28px] border border-n-weak/80 shadow-[0_20px_60px_rgba(15,23,42,0.08)]'
+        : 'w-[360px] rounded-[28px] border border-n-weak/80 shadow-[0_20px_60px_rgba(15,23,42,0.08)] 2xl:w-[420px]',
     ]"
   >
     <slot />
@@ -955,7 +957,7 @@ watch(conversationFilters, (newVal, oldVal) => {
 
     <p
       v-if="!chatListLoading && !conversationList.length"
-      class="flex overflow-auto justify-center items-center p-4"
+      class="flex items-center justify-center overflow-auto p-8 text-sm text-n-slate-11"
     >
       {{ $t('CHAT_LIST.LIST.404') }}
     </p>
@@ -975,7 +977,7 @@ watch(conversationFilters, (newVal, oldVal) => {
     />
     <div
       ref="conversationListRef"
-      class="overflow-hidden flex-1 conversations-list hover:overflow-y-auto"
+      class="conversations-list flex-1 overflow-hidden hover:overflow-y-auto"
       :class="{ 'overflow-hidden': isContextMenuOpen }"
     >
       <DynamicScroller

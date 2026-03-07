@@ -141,8 +141,7 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
 
     # Sync the pipeline_stage_id FK whenever pipeline_stage is present in the payload
     if new_attrs.key?('pipeline_stage')
-      stage_id = new_attrs['pipeline_stage']
-      @conversation.pipeline_stage_id = stage_id.present? ? stage_id.to_i : nil
+      @conversation.pipeline_stage_id = parse_pipeline_stage_id(new_attrs['pipeline_stage'])
     end
 
     @conversation.save!
@@ -254,6 +253,13 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
 
   def assignee?
     @conversation.assignee_id? && Current.user == @conversation.assignee
+  end
+
+  def parse_pipeline_stage_id(stage_id)
+    return if stage_id.blank?
+
+    normalized_stage_id = stage_id.to_s.strip
+    return normalized_stage_id.to_i if normalized_stage_id.match?(/\A\d+\z/)
   end
 end
 

@@ -209,8 +209,8 @@ export default {
 </script>
 
 <template>
-  <div>
-    <div class="multiselect-wrap--small">
+  <div class="space-y-4 p-1">
+    <div class="multiselect-wrap--small rounded-2xl border border-n-weak/70 bg-white/70 p-3">
       <ContactDetailsItem
         compact
         :title="$t('CONVERSATION_SIDEBAR.ASSIGNEE_LABEL')"
@@ -241,7 +241,7 @@ export default {
         @select="onClickAssignAgent"
       />
     </div>
-    <div class="multiselect-wrap--small">
+    <div class="multiselect-wrap--small rounded-2xl border border-n-weak/70 bg-white/70 p-3">
       <ContactDetailsItem
         compact
         :title="$t('CONVERSATION_SIDEBAR.TEAM_LABEL')"
@@ -260,7 +260,7 @@ export default {
         @select="onClickAssignTeam"
       />
     </div>
-    <div class="multiselect-wrap--small">
+    <div class="multiselect-wrap--small rounded-2xl border border-n-weak/70 bg-white/70 p-3">
       <ContactDetailsItem compact :title="$t('CONVERSATION.PRIORITY.TITLE')" />
       <MultiselectDropdown
         :options="priorityOptions"
@@ -278,11 +278,15 @@ export default {
         @select="onClickAssignPriority"
       />
     </div>
-    <PipelineDropdown :conversation-id="conversationId" />
-    <ContactDetailsItem
-      compact
-      :title="$t('CONVERSATION_SIDEBAR.ACCORDION.CONVERSATION_LABELS')"
-    />
-    <ConversationLabels :conversation-id="conversationId" />
+    <div class="rounded-2xl border border-n-weak/70 bg-white/70 p-3">
+      <PipelineDropdown :conversation-id="conversationId" />
+    </div>
+    <div class="rounded-2xl border border-n-weak/70 bg-white/70 p-3">
+      <ContactDetailsItem
+        compact
+        :title="$t('CONVERSATION_SIDEBAR.ACCORDION.CONVERSATION_LABELS')"
+      />
+      <ConversationLabels :conversation-id="conversationId" />
+    </div>
   </div>
 </template>

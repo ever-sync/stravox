@@ -20,11 +20,18 @@ const handleButtonClick = button => {
 
 <template>
   <div
-    class="flex items-center justify-between px-4 py-2 border-b border-n-weak h-12"
+    class="flex h-16 items-center justify-between border-b border-n-weak/80 bg-n-slate-1/80 px-5 py-3 backdrop-blur"
   >
     <div class="flex items-center justify-between gap-2 flex-1">
-      <span class="font-medium text-sm text-n-slate-12">{{ title }}</span>
-      <div class="flex items-center">
+      <div class="flex min-w-0 flex-col">
+        <span class="text-[10px] font-semibold uppercase tracking-[0.18em] text-n-slate-10">
+          Workspace
+        </span>
+        <span class="truncate text-sm font-semibold text-n-slate-12">
+          {{ title }}
+        </span>
+      </div>
+      <div class="flex items-center gap-1">
         <Button
           v-for="button in buttons"
           :key="button.key"

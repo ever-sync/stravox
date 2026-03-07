@@ -185,7 +185,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="h-full w-full flex-1">
+  <div class="h-full w-full flex-1 bg-gradient-to-br from-n-slate-1 via-n-surface-1 to-n-alpha-1">
     <div v-if="showEmptyState" class="flex w-full h-full">
       <InboxEmptyState
         :empty-state-message="$t('INBOX.LIST.NO_MESSAGES_AVAILABLE')"
@@ -201,13 +201,13 @@ onMounted(async () => {
       />
       <div
         v-if="isConversationLoading"
-        class="flex items-center flex-1 my-4 justify-center bg-n-solid-1"
+        class="my-4 flex flex-1 items-center justify-center rounded-[24px] border border-n-weak/70 bg-white/60"
       >
         <Spinner class="text-n-brand" />
       </div>
-      <div v-else class="flex h-[calc(100%-48px)] min-w-0">
+      <div v-else class="flex h-[calc(100%-48px)] min-w-0 gap-3 p-3">
         <ConversationBox
-          class="flex-1 [&.conversation-details-wrap]:!border-0"
+          class="flex-1 overflow-hidden rounded-[28px] border border-n-weak/80 bg-white/70 shadow-[0_20px_60px_rgba(15,23,42,0.08)] [&.conversation-details-wrap]:!border-0"
           is-inbox-view
           :inbox-id="inboxId"
           :is-on-expanded-layout="false"

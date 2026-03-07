@@ -8,6 +8,7 @@ import {
   isOnMentionsView,
   isOnUnattendedView,
   isOnFoldersView,
+  setContacts,
 } from './helpers/actionHelpers';
 import messageReadActions from './actions/messageReadActions';
 import messageTranslateActions from './actions/messageTranslateActions';
@@ -56,6 +57,52 @@ const actions = {
       );
     } catch (error) {
       // Handle error
+    }
+  },
+
+  fetchAllConversationsForKanban: async (
+    { commit, state, dispatch },
+    { pipelineId, pipelineStageId } = {}
+  ) => {
+    commit(types.SET_LIST_LOADING_STATUS);
+    try {
+      const baseParams = {
+        ...state.conversationFilters,
+        pipelineId,
+        pipelineStageId,
+      };
+      const perPage = 25;
+      let page = 1;
+
+      while (true) {
+        const params = { ...baseParams, page };
+        const {
+          data: { data },
+        } = await ConversationApi.get(params);
+        const { payload: conversationList = [], meta: metaData } = data;
+
+        commit(types.SET_ALL_CONVERSATION, conversationList);
+        dispatch('conversationStats/set', metaData);
+        dispatch('conversationLabels/setBulkConversationLabels', conversationList);
+
+        if (page === 1) {
+          setContacts(commit, conversationList);
+        } else {
+          conversationList.forEach(chat => {
+            commit(`contacts/${types.SET_CONTACT_ITEM}`, chat.meta.sender);
+          });
+        }
+
+        if (conversationList.length < perPage) {
+          break;
+        }
+
+        page += 1;
+      }
+    } catch (error) {
+      // Handle error
+    } finally {
+      commit(types.CLEAR_LIST_LOADING_STATUS);
     }
   },
 

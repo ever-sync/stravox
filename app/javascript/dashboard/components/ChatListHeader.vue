@@ -57,14 +57,17 @@ const toggleConversationLayout = () => {
 
 <template>
   <div
-    class="flex items-center justify-between gap-2 px-3 h-[3.25rem]"
+    class="flex h-[4.5rem] items-center justify-between gap-3 border-b border-n-weak/70 bg-white/70 px-4 backdrop-blur"
     :class="{
-      'border-b border-n-violet-7/20': hasAppliedFiltersOrActiveFolders,
+      'shadow-[inset_0_-1px_0_rgba(148,163,184,0.12)]': hasAppliedFiltersOrActiveFolders,
     }"
   >
-    <div class="flex items-center justify-center min-w-0">
+    <div class="flex min-w-0 items-center justify-center gap-2">
+      <span class="hidden rounded-full bg-n-alpha-2 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-n-slate-10 lg:inline-flex">
+        Inbox
+      </span>
       <h1
-        class="text-base font-medium truncate text-n-slate-12"
+        class="truncate text-base font-semibold tracking-[-0.02em] text-n-slate-12"
         :title="pageTitle"
       >
         {{ pageTitle }}
@@ -73,19 +76,19 @@ const toggleConversationLayout = () => {
         v-if="
           allCount > 0 && hasAppliedFiltersOrActiveFolders && !isListLoading
         "
-        class="px-2 py-1 my-0.5 mx-1 rounded-md capitalize bg-n-violet-4/50 text-xxs text-n-violet-11 shrink-0 font-medium"
+        class="mx-1 my-0.5 shrink-0 rounded-full bg-n-alpha-2 px-2.5 py-1 text-xxs font-semibold capitalize text-n-slate-11"
         :title="allCount"
       >
         {{ formattedAllCount }}
       </span>
       <span
         v-if="!hasAppliedFiltersOrActiveFolders"
-        class="px-2 py-1 my-0.5 mx-1 rounded-md capitalize bg-n-violet-4/50 text-xxs text-n-violet-11 shrink-0 font-medium"
+        class="mx-1 my-0.5 shrink-0 rounded-full bg-n-alpha-2 px-2.5 py-1 text-xxs font-semibold capitalize text-n-slate-11"
       >
         {{ $t(`CHAT_LIST.CHAT_STATUS_FILTER_ITEMS.${activeStatus}.TEXT`) }}
       </span>
     </div>
-    <div class="flex items-center gap-1">
+    <div class="flex items-center gap-2">
       <template v-if="hasAppliedFilters && !hasActiveFolders">
         <div class="relative">
           <NextButton
@@ -94,6 +97,7 @@ const toggleConversationLayout = () => {
             slate
             xs
             faded
+            class="rounded-xl !bg-n-alpha-2 hover:!bg-n-alpha-3"
             @click="emit('addFolders')"
           />
           <div
@@ -108,6 +112,7 @@ const toggleConversationLayout = () => {
           ruby
           faded
           xs
+          class="rounded-xl"
           @click="emit('resetFilters')"
         />
       </template>
@@ -120,6 +125,7 @@ const toggleConversationLayout = () => {
             slate
             xs
             faded
+            class="rounded-xl !bg-n-alpha-2 hover:!bg-n-alpha-3"
             @click="emit('filtersModal')"
           />
           <div
@@ -135,6 +141,7 @@ const toggleConversationLayout = () => {
           ruby
           xs
           faded
+          class="rounded-xl"
           @click="emit('deleteFolders')"
         />
       </template>
@@ -146,6 +153,7 @@ const toggleConversationLayout = () => {
           slate
           xs
           faded
+          class="rounded-xl !bg-n-alpha-2 hover:!bg-n-alpha-3"
           @click="emit('filtersModal')"
         />
         <div

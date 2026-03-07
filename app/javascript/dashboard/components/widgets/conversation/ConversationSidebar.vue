@@ -42,7 +42,7 @@ const closeContactPanel = () => {
 <template>
   <div
     v-on-click-outside="() => closeContactPanel()"
-    class="bg-n-surface-2 h-full overflow-hidden flex flex-col fixed top-0 z-40 w-full max-w-sm transition-transform duration-300 ease-in-out ltr:right-0 rtl:left-0 md:static md:w-[320px] md:min-w-[320px] ltr:border-l rtl:border-r border-n-weak 2xl:min-w-[360px] 2xl:w-[360px] shadow-lg md:shadow-none"
+    class="fixed top-0 z-40 flex h-full w-full max-w-sm flex-col overflow-hidden border-n-weak bg-gradient-to-b from-n-slate-1 via-n-surface-2 to-n-alpha-1 shadow-2xl transition-transform duration-300 ease-in-out ltr:right-0 rtl:left-0 md:static md:w-[360px] md:min-w-[360px] md:border-l md:shadow-none 2xl:w-[388px] 2xl:min-w-[388px]"
     :class="[
       {
         'md:flex': activeTab === 0,

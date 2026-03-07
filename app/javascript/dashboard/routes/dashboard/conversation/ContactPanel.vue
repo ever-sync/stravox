@@ -131,20 +131,22 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-full">
+  <div class="w-full bg-transparent">
     <SidebarActionsHeader
       :title="$t('CONVERSATION.SIDEBAR.CONTACT')"
       @close="closeContactPanel"
     />
-    <ContactInfo :contact="contact" :channel-type="channelType" />
-    <div class="px-2 pb-8 list-group">
+    <div class="px-3 pt-3">
+      <ContactInfo :contact="contact" :channel-type="channelType" />
+    </div>
+    <div class="list-group px-3 pb-8 pt-3">
       <Draggable
         :list="conversationSidebarItems"
         animation="200"
         ghost-class="ghost"
         handle=".drag-handle"
         item-key="name"
-        class="flex flex-col gap-3"
+        class="flex flex-col gap-4"
         @start="dragging = true"
         @end="onDragEnd"
       >
@@ -302,23 +304,3 @@ onMounted(() => {
     </div>
   </div>
 </template>
-
-<style lang="scss" scoped>
-::v-deep {
-  .contact--profile {
-    @apply pb-3 border-b border-solid border-n-weak;
-  }
-
-  .conversation--actions .multiselect-wrap--small {
-    .multiselect {
-      @apply box-border pl-6;
-    }
-
-    .multiselect__element {
-      span {
-        @apply w-full;
-      }
-    }
-  }
-}
-</style>
