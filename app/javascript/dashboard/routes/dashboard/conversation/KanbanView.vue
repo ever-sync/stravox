@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, onMounted, provide } from 'vue';
+import { ref, computed, watch, onMounted, onBeforeUnmount, provide } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useStore, useMapGetter } from 'dashboard/composables/store';
 import wootConstants from 'dashboard/constants/globals';
@@ -375,6 +375,19 @@ onMounted(async () => {
     loading.value = false;
     syncFromStore();
   }
+});
+
+// --- Real-time pipeline sync ---
+const onRemotePipelineChange = () => {
+  syncFromStore();
+};
+
+onMounted(() => {
+  emitter.on(BUS_EVENTS.PIPELINE_STAGE_CHANGED, onRemotePipelineChange);
+});
+
+onBeforeUnmount(() => {
+  emitter.off(BUS_EVENTS.PIPELINE_STAGE_CHANGED, onRemotePipelineChange);
 });
 
 // --- Handlers ---

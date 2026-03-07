@@ -10,6 +10,7 @@ import { useVuelidate } from '@vuelidate/core';
 import { emitter } from 'shared/helpers/mitt';
 
 import NextButton from 'dashboard/components-next/button/Button.vue';
+import FileAttribute from 'dashboard/components-next/CustomAttributes/FileAttribute.vue';
 
 const DATE_FORMAT = 'yyyy-MM-dd';
 
@@ -18,6 +19,7 @@ export default {
     MultiselectDropdown,
     HelperTextPopup,
     NextButton,
+    FileAttribute,
   },
   props: {
     label: { type: String, required: true },
@@ -83,6 +85,9 @@ export default {
     isAttributeTypeDate() {
       return this.attributeType === 'date';
     },
+    isAttributeTypeFile() {
+      return this.attributeType === 'file';
+    },
     hasValue() {
       return this.value !== null && this.value !== '';
     },
@@ -93,7 +98,11 @@ export default {
       return isValidURL(this.value) ? this.value : '';
     },
     notAttributeTypeCheckboxAndList() {
-      return !this.isAttributeTypeCheckbox && !this.isAttributeTypeList;
+      return (
+        !this.isAttributeTypeCheckbox &&
+        !this.isAttributeTypeList &&
+        !this.isAttributeTypeFile
+      );
     },
     inputType() {
       return this.isAttributeTypeLink ? 'url' : this.attributeType;
@@ -329,6 +338,18 @@ export default {
           )
         "
         @select="onUpdateListValue"
+      />
+    </div>
+    <div v-if="isAttributeTypeFile">
+      <FileAttribute
+        :attribute="{
+          attributeKey: attributeKey,
+          attributeDisplayType: 'file',
+          value: value,
+        }"
+        :is-editing-view="showActions"
+        @update="val => $emit('update', attributeKey, val)"
+        @delete="onDelete"
       />
     </div>
   </div>
