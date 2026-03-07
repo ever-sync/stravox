@@ -178,8 +178,8 @@ export default {
 </script>
 
 <template>
-  <div class="relative items-center w-full p-4">
-    <div class="flex flex-col w-full gap-2 text-left rtl:text-right">
+  <div class="relative w-full rounded-[28px] border border-n-weak/80 bg-gradient-to-br from-white via-n-slate-1 to-n-alpha-1 p-5 shadow-[0_18px_60px_rgba(15,23,42,0.08)]">
+    <div class="flex w-full flex-col gap-4 text-left rtl:text-right">
       <div class="flex flex-row justify-between">
         <Avatar
           v-if="showAvatar"
@@ -192,10 +192,10 @@ export default {
         />
       </div>
 
-      <div class="flex flex-col items-start gap-1.5 min-w-0 w-full">
-        <div v-if="showAvatar" class="flex items-center w-full min-w-0 gap-3">
+      <div class="flex min-w-0 w-full flex-col items-start gap-2">
+        <div v-if="showAvatar" class="flex w-full min-w-0 items-center gap-3">
           <h3
-            class="flex-shrink max-w-full min-w-0 my-0 text-base capitalize break-words text-n-slate-12"
+            class="my-0 max-w-full min-w-0 flex-shrink break-words text-lg font-semibold capitalize tracking-[-0.02em] text-n-slate-12"
           >
             {{ contact.name }}
           </h3>
@@ -220,10 +220,13 @@ export default {
           </div>
         </div>
 
-        <p v-if="additionalAttributes.description" class="break-words mb-0.5">
+        <p
+          v-if="additionalAttributes.description"
+          class="mb-0.5 rounded-2xl bg-n-alpha-1 px-3 py-2 text-sm leading-6 text-n-slate-11 break-words"
+        >
           {{ additionalAttributes.description }}
         </p>
-        <div class="flex flex-col items-start w-full gap-2">
+        <div class="flex w-full flex-col items-start gap-2 rounded-2xl border border-n-weak/70 bg-white/70 p-3">
           <ContactInfoRow
             :href="contact.email ? `mailto:${contact.email}` : ''"
             :value="contact.email"
@@ -263,7 +266,7 @@ export default {
           <SocialIcons :social-profiles="socialProfiles" />
         </div>
       </div>
-      <div class="flex items-center w-full mt-0.5 gap-2">
+      <div class="mt-1 grid w-full grid-cols-5 gap-2">
         <ComposeConversation
           :contact-id="String(contact.id)"
           is-modal
@@ -276,6 +279,7 @@ export default {
               slate
               faded
               sm
+              class="!h-11 !w-full !justify-center rounded-2xl !bg-n-alpha-2 hover:!bg-n-alpha-3"
               @click="openComposeConversationModal(toggle)"
             />
           </template>
@@ -288,6 +292,7 @@ export default {
           :tooltip-label="$t('CONTACT_PANEL.CALL')"
           slate
           faded
+          class="!h-11 !w-full !justify-center rounded-2xl !bg-n-alpha-2 hover:!bg-n-alpha-3"
         />
         <NextButton
           v-tooltip.top-end="$t('EDIT_CONTACT.BUTTON_LABEL')"
@@ -295,6 +300,7 @@ export default {
           slate
           faded
           sm
+          class="!h-11 !w-full !justify-center rounded-2xl !bg-n-alpha-2 hover:!bg-n-alpha-3"
           @click="toggleEditModal"
         />
         <NextButton
@@ -303,6 +309,7 @@ export default {
           slate
           faded
           sm
+          class="!h-11 !w-full !justify-center rounded-2xl !bg-n-alpha-2 hover:!bg-n-alpha-3"
           :disabled="uiFlags.isMerging"
           @click="openMergeModal"
         />
@@ -314,6 +321,7 @@ export default {
           faded
           sm
           ruby
+          class="!h-11 !w-full !justify-center rounded-2xl"
           :disabled="uiFlags.isDeleting"
           @click="toggleDeleteModal"
         />

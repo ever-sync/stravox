@@ -234,13 +234,13 @@ const deleteConversation = () => {
 
 <template>
   <div
-    class="relative flex items-start flex-grow-0 flex-shrink-0 w-auto max-w-full py-0 border-t-0 border-b-0 border-l-0 border-r-0 border-transparent border-solid cursor-pointer conversation hover:bg-gradient-to-r hover:from-n-violet-3/30 hover:via-n-violet-4/20 hover:to-transparent transition-all duration-200 group"
+    class="conversation group relative mx-2 my-1.5 flex w-auto max-w-full cursor-pointer items-start rounded-[22px] border border-transparent py-0 transition-all duration-200 hover:-translate-y-0.5 hover:border-n-weak/80 hover:bg-white/90 hover:shadow-[0_14px_34px_rgba(15,23,42,0.08)]"
     :class="{
-      'active animate-card-select bg-gradient-to-r from-n-violet-5/40 via-n-violet-4/30 to-transparent border-l-2 !border-l-n-violet-9 shadow-[inset_0_0_0_1px_rgba(135,105,230,0.15)]':
+      'active animate-card-select border-n-brand/30 bg-gradient-to-r from-white via-n-alpha-1 to-n-alpha-2 shadow-[0_18px_40px_rgba(15,23,42,0.12)]':
         isActiveChat,
-      'bg-n-violet-3/20': selected,
+      'border-n-brand/20 bg-n-alpha-1': selected,
       'px-0': compact,
-      'px-3': !compact,
+      'px-2': !compact,
     }"
     @click="onCardClick"
     @contextmenu="openContextMenu($event)"
@@ -256,7 +256,7 @@ const deleteConversation = () => {
         :src="currentContact.thumbnail"
         :size="32"
         :status="currentContact.availability_status"
-        :class="!showInboxName ? 'mt-4' : 'mt-8'"
+        :class="!showInboxName ? 'mt-4' : 'mt-7'"
         hide-offline-status
         rounded-full
       >
@@ -279,7 +279,7 @@ const deleteConversation = () => {
       </Avatar>
     </div>
     <div
-      class="px-0 py-3 border-b group-hover:border-transparent flex-1 border-n-violet-6/10 min-w-0"
+      class="min-w-0 flex-1 border-n-weak/40 px-1 py-3"
     >
       <div
         v-if="showMetaSection"
@@ -298,7 +298,7 @@ const deleteConversation = () => {
         >
           <span
             v-if="showAssignee && assignee.name"
-            class="text-n-slate-11 text-xs font-medium leading-3 py-0.5 px-0 inline-flex items-center truncate"
+            class="inline-flex items-center truncate rounded-full bg-n-alpha-2 px-2 py-1 text-[11px] font-semibold leading-3 text-n-slate-11"
           >
             <fluent-icon icon="person" size="12" class="text-n-slate-11" />
             {{ assignee.name }}
@@ -307,7 +307,7 @@ const deleteConversation = () => {
         </div>
       </div>
       <h4
-        class="conversation--user text-sm my-0 mx-2 capitalize pt-0.5 text-ellipsis overflow-hidden whitespace-nowrap flex-1 min-w-0 ltr:pr-16 rtl:pl-16 text-n-slate-12"
+        class="conversation--user mx-2 my-0 flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap pt-1 text-sm capitalize tracking-[-0.01em] text-n-slate-12 ltr:pr-16 rtl:pl-16"
         :class="hasUnread ? 'font-semibold' : 'font-medium'"
       >
         {{ currentContact.name }}
@@ -345,7 +345,7 @@ const deleteConversation = () => {
         class="absolute flex flex-col ltr:right-3 rtl:left-3"
         :class="showMetaSection ? 'top-8' : 'top-4'"
       >
-        <span class="ml-auto font-normal leading-4 text-xxs">
+        <span class="ml-auto rounded-full bg-white/80 px-1.5 py-0.5 font-medium leading-4 text-[10px] text-n-slate-10 shadow-sm">
           <TimeAgo
             :last-activity-timestamp="chat.timestamp"
             :created-at-timestamp="chat.created_at"

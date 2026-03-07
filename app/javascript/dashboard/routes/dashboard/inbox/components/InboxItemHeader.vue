@@ -109,7 +109,7 @@ export default {
 
 <template>
   <div
-    class="flex items-center justify-between w-full gap-2 border-b px-3 h-12 rtl:border-r border-n-weak flex-shrink-0 bg-n-surface-1"
+    class="flex h-16 w-full flex-shrink-0 items-center justify-between gap-2 border-b border-n-weak/80 bg-white/75 px-4 backdrop-blur"
   >
     <div class="flex items-center gap-4">
       <BackButton
@@ -132,7 +132,7 @@ export default {
         slate
         xs
         faded
-        class="[&>.truncate]:hidden md:[&>.truncate]:block"
+        class="rounded-xl !bg-n-alpha-2 hover:!bg-n-alpha-3 [&>.truncate]:hidden md:[&>.truncate]:block"
         @click="openSnoozeNotificationModal"
       />
       <NextButton
@@ -141,7 +141,7 @@ export default {
         slate
         xs
         faded
-        class="[&>.truncate]:hidden md:[&>.truncate]:block"
+        class="rounded-xl !bg-n-alpha-2 hover:!bg-n-alpha-3 [&>.truncate]:hidden md:[&>.truncate]:block"
         @click="deleteNotification"
       />
     </div>

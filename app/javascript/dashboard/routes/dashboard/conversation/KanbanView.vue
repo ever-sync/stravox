@@ -46,6 +46,23 @@ const contextMenuChat = ref(null);
 const showSnoozeModal = ref(false);
 const pendingSnoozeConversation = ref(null);
 
+const loadPipelineConversations = async pipelineId => {
+  if (!pipelineId) {
+    await store.dispatch('emptyAllConversations');
+    syncFromStore();
+    return;
+  }
+
+  loading.value = true;
+  try {
+    await store.dispatch('emptyAllConversations');
+    await store.dispatch('fetchAllConversationsForKanban', { pipelineId });
+  } finally {
+    loading.value = false;
+    syncFromStore();
+  }
+};
+
 // --- Store getters ---
 const allConversations = useMapGetter('getAllConversations');
 const currentUser = useMapGetter('getCurrentUser');
@@ -216,7 +233,8 @@ const onOutcome = async ({ conversation, outcome }) => {
       customAttributes: {
         outcome,
         outcome_at: new Date().toISOString(),
-        pipeline_stage: '__archived__',
+        pipeline_stage: null,
+        pipeline_id: activePipelineId.value,
       },
     });
 
@@ -256,8 +274,9 @@ const onSaveConfig = async (newPipelines, newActivePipelineId) => {
   syncFromStore();
 };
 
-const onChangePipeline = id => {
+const onChangePipeline = async id => {
   store.dispatch('pipelines/setActivePipeline', id);
+  await loadPipelineConversations(id);
 };
 
 // --- Snooze ---
@@ -369,8 +388,7 @@ onMounted(async () => {
       sortBy: undefined,
       updatedWithin: undefined,
     });
-    await store.dispatch('emptyAllConversations');
-    await store.dispatch('fetchAllConversations', {});
+    await loadPipelineConversations(activePipelineId.value);
   } finally {
     loading.value = false;
     syncFromStore();

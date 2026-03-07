@@ -66,6 +66,7 @@ class ConversationFinder
     filter_by_status unless params[:q]
     filter_by_team
     filter_by_labels
+    filter_by_pipeline
     filter_by_query
     filter_by_source_id
   end
@@ -157,6 +158,28 @@ class ConversationFinder
     return unless params[:labels]
 
     @conversations = @conversations.tagged_with(params[:labels], any: true)
+  end
+
+  def filter_by_pipeline
+    return unless params[:pipeline_id].present? || params[:pipeline_stage_id].present?
+
+    @conversations = @conversations.left_joins(:pipeline_stage)
+
+    if params[:pipeline_id].present?
+      @conversations = @conversations.where(
+        "conversations.custom_attributes ->> 'pipeline_id' = :pipeline_id OR pipeline_stages.pipeline_id = :pipeline_backend_id",
+        pipeline_id: params[:pipeline_id].to_s,
+        pipeline_backend_id: params[:pipeline_id].to_i
+      )
+    end
+
+    return unless params[:pipeline_stage_id].present?
+
+    @conversations = @conversations.where(
+      "conversations.custom_attributes ->> 'pipeline_stage' = :pipeline_stage_id OR conversations.pipeline_stage_id = :pipeline_stage_backend_id",
+      pipeline_stage_id: params[:pipeline_stage_id].to_s,
+      pipeline_stage_backend_id: params[:pipeline_stage_id].to_i
+    )
   end
 
   def filter_by_source_id
