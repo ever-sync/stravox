@@ -8,6 +8,7 @@ import { useAlert } from 'dashboard/composables';
 import ListAttribute from 'dashboard/components-next/CustomAttributes/ListAttribute.vue';
 import CheckboxAttribute from 'dashboard/components-next/CustomAttributes/CheckboxAttribute.vue';
 import DateAttribute from 'dashboard/components-next/CustomAttributes/DateAttribute.vue';
+import FileAttribute from 'dashboard/components-next/CustomAttributes/FileAttribute.vue';
 import OtherAttribute from 'dashboard/components-next/CustomAttributes/OtherAttribute.vue';
 
 const props = defineProps({
@@ -44,6 +45,15 @@ const handleDelete = async () => {
 
 const handleUpdate = async value => {
   try {
+    // File attributes update the JSONB on the backend during upload,
+    // so we just need to refresh the contact to get the updated data.
+    if (value && typeof value === 'object' && value.file_id) {
+      await store.dispatch('contacts/show', {
+        id: route.params.contactId,
+      });
+      return;
+    }
+
     await store.dispatch('contacts/update', {
       id: route.params.contactId,
       customAttributes: {
@@ -63,6 +73,7 @@ const componentMap = {
   list: ListAttribute,
   checkbox: CheckboxAttribute,
   date: DateAttribute,
+  file: FileAttribute,
   default: OtherAttribute,
 };
 

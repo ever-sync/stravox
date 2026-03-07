@@ -198,6 +198,21 @@ const onClickToggle = () => {
 };
 
 const onUpdate = async (key, value) => {
+  // File attributes update the JSONB on the backend during upload,
+  // so we just need to refresh the conversation/contact to get the updated data.
+  if (value && typeof value === 'object' && value.file_id) {
+    try {
+      if (props.attributeType === 'conversation_attribute') {
+        await store.dispatch('getConversation', conversationId.value);
+      } else {
+        await store.dispatch('contacts/show', { id: props.contactId });
+      }
+    } catch {
+      // Silently ignore refresh errors
+    }
+    return;
+  }
+
   const updatedAttributes = { ...customAttributes.value, [key]: value };
   try {
     if (props.attributeType === 'conversation_attribute') {

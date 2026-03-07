@@ -132,6 +132,11 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
 
   def custom_attributes
     new_attrs = params.permit(custom_attributes: {})[:custom_attributes]
+
+    # Cleanup file records for removed attribute keys
+    removed_keys = (@conversation.custom_attributes || {}).keys - new_attrs.keys
+    @conversation.custom_attribute_files.where(attribute_key: removed_keys).destroy_all if removed_keys.any?
+
     @conversation.custom_attributes = new_attrs
 
     # Sync the pipeline_stage_id FK whenever pipeline_stage is present in the payload

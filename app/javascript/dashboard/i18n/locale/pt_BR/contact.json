@@ -531,6 +531,12 @@
           "DELETE_SUCCESS_MESSAGE": "Atributo excluído com sucesso",
           "UPDATE_ERROR": "Não foi possível atualizar o atributo. Por favor, tente mais tarde",
           "DELETE_ERROR": "Não foi possível excluir o atributo. Por favor, tente mais tarde"
+        },
+        "FILE": {
+          "CHOOSE_FILE": "Escolher arquivo",
+          "UPLOAD_SUCCESS": "Arquivo enviado com sucesso",
+          "UPLOAD_ERROR": "Erro ao enviar arquivo",
+          "REPLACE": "Substituir arquivo"
         }
       },
       "MERGE": {

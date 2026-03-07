@@ -78,6 +78,9 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
 
   # TODO : refactor this method into dedicated contacts/custom_attributes controller class and routes
   def destroy_custom_attributes
+    # Cleanup associated file records for file-type attributes
+    @contact.custom_attribute_files.where(attribute_key: params[:custom_attributes]).destroy_all
+
     @contact.custom_attributes = @contact.custom_attributes.excluding(params[:custom_attributes])
     @contact.save!
   end

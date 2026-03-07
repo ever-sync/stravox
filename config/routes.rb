@@ -102,6 +102,7 @@ Rails.application.routes.draw do
       get :attachments
       get :inbox_assistant
       get :reporting_events if StravoXApp.enterprise?
+      resources :custom_attribute_files, only: %i[create show destroy]
     end
   end
 
@@ -118,6 +119,7 @@ Rails.application.routes.draw do
       get :contactable_inboxes
       post :destroy_custom_attributes
       delete :avatar
+      resources :custom_attribute_files, only: %i[create show destroy]
     end
 
     scope module: :contacts do
