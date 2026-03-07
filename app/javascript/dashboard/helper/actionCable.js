@@ -32,6 +32,7 @@ class ActionCableConnector extends BaseActionCableConnector {
       'notification.updated': this.onNotificationUpdated,
       'conversation.read': this.onConversationRead,
       'conversation.updated': this.onConversationUpdated,
+      'conversation.pipeline_stage_changed': this.onPipelineStageChanged,
       'account.cache_invalidated': this.onCacheInvalidate,
       'copilot.message.created': this.onCopilotMessageCreated,
     };
@@ -116,6 +117,12 @@ class ActionCableConnector extends BaseActionCableConnector {
 
   onConversationUpdated = data => {
     this.app.$store.dispatch('updateConversation', data);
+    this.fetchConversationStats();
+  };
+
+  onPipelineStageChanged = data => {
+    this.app.$store.dispatch('updateConversation', data);
+    emitter.emit(BUS_EVENTS.PIPELINE_STAGE_CHANGED, data);
     this.fetchConversationStats();
   };
 
